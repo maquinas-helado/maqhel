@@ -1,0 +1,9 @@
+node_modules/
+.netlify/
+deploy/
+.claude/
+*.jpg
+*.jpeg
+*.png
+!assets/**
+1..html

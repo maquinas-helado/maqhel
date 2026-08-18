@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAQ.HEL — Panel de administración</title>
+<style>
+  :root{
+    --noche:#0A0B0D; --acero:#15171B; --panel:#1A1D22; --panel-2:#1F232A;
+    --hielo:#EDEFF3; --muted:#98A0AA; --muted-2:#666E78;
+    --frio-1:#1078D6; --frio-2:#0C3FA0; --calor-1:#EC4878; --calor-2:#C23361;
+    --ok:#2FBF71; --line: rgba(160,168,180,0.14); --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:linear-gradient(180deg,#0A0B0D 0%,#14161A 45%,#1C1F26 100%) fixed;color:var(--hielo);font-family:'Segoe UI',Inter,sans-serif;min-height:100vh;}
+  a{color:inherit;}
+  button{font-family:inherit;cursor:pointer;}
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 24px 80px;}
+
+  /* ---- login ---- */
+  #loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .login-box{width:100%;max-width:360px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:32px;}
+  .login-box h1{font-size:20px;margin:0 0 4px;}
+  .login-box p{color:var(--muted);font-size:13px;margin:0 0 22px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;}
+  .field input{width:100%;padding:10px 12px;border-radius:9px;border:1px solid var(--line);background:var(--noche);color:var(--hielo);font-size:14px;}
+  .field input:focus{outline:2px solid var(--frio-1);outline-offset:1px;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:10px;border:none;font-size:14px;font-weight:600;}
+  .btn-primary{background:linear-gradient(135deg,var(--frio-1),var(--frio-2));color:#fff;width:100%;margin-top:6px;}
+  .btn-ghost{background:transparent;border:1px solid var(--line);color:var(--hielo);}
+  .btn-small{padding:6px 12px;font-size:12.5px;border-radius:8px;}
+  .btn[disabled]{opacity:.55;cursor:default;}
+  .err-msg{background:rgba(236,72,120,.1);border:1px solid rgba(236,72,120,.3);color:#ffb3c8;padding:10px 12px;border-radius:9px;font-size:13px;margin-bottom:14px;}
+
+  /* ---- app shell ---- */
+  #app{display:none;}
+  header.top{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--line);}
+  header.top h1{font-size:16px;margin:0;letter-spacing:.02em;}
+  header.top .who{color:var(--muted);font-size:12.5px;}
+  .tabs{display:flex;gap:8px;margin:26px 0 22px;flex-wrap:wrap;}
+  .tab{padding:9px 16px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--muted);font-size:13.5px;font-weight:600;}
+  .tab.active{background:var(--frio-1);border-color:var(--frio-1);color:#fff;}
+  .tab .count{opacity:.75;font-weight:400;margin-left:4px;}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;margin-bottom:14px;}
+  .card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;}
+  .card-head h3{margin:0 0 4px;font-size:16px;}
+  .sub{color:var(--muted);font-size:12.5px;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;margin-top:12px;font-size:13px;}
+  @media(max-width:640px){.grid2{grid-template-columns:1fr;}}
+  .grid2 dt{color:var(--muted-2);}
+  .grid2 dd{margin:0 0 6px;}
+  .thumbs{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+  .thumbs img,.thumbs video{width:84px;height:84px;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:#000;}
+  .badge{font-size:11px;padding:3px 9px;border-radius:999px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;}
+  .badge-pending{background:rgba(236,72,120,.15);color:#ff8fac;}
+  .badge-published{background:rgba(47,191,113,.15);color:#5fe0a0;}
+  .badge-rejected{background:rgba(160,168,180,.15);color:var(--muted);}
+  .badge-new{background:rgba(16,120,214,.15);color:#6fb4ec;}
+  .badge-contacted{background:rgba(47,191,113,.15);color:#5fe0a0;}
+  .actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+  .empty{color:var(--muted);padding:40px 0;text-align:center;font-size:14px;}
+  .loading{color:var(--muted);padding:24px 0;text-align:center;font-size:13.5px;}
+  .desc{margin-top:10px;font-size:13.5px;color:var(--hielo);line-height:1.5;}
+</style>
+</head>
+<body>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/supabase-client.js"></script>
+
+<div id="loginScreen">
+  <div class="login-box">
+    <h1>MAQ.HEL — Panel</h1>
+    <p>Ingresá con tu cuenta de administrador.</p>
+    <div id="loginErr" class="err-msg" style="display:none;"></div>
+    <form id="loginForm">
+      <div class="field"><label>Email</label><input type="email" id="loginEmail" required autocomplete="username"></div>
+      <div class="field"><label>Contraseña</label><input type="password" id="loginPass" required autocomplete="current-password"></div>
+      <button type="submit" class="btn btn-primary" id="loginBtn">Ingresar →</button>
+    </form>
+  </div>
+</div>
+
+<div id="app">
+  <header class="top">
+    <h1>MAQ.HEL — Panel de administración</h1>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <span class="who" id="whoEmail"></span>
+      <button class="btn btn-ghost btn-small" id="logoutBtn">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="tabs">
+      <button class="tab active" data-tab="pending">Pendientes <span class="count" id="cnt-pending"></span></button>
+      <button class="tab" data-tab="published">Publicadas <span class="count" id="cnt-published"></span></button>
+      <button class="tab" data-tab="price">Solicitudes de precio <span class="count" id="cnt-price"></span></button>
+      <button class="tab" data-tab="brand">Solicitudes de marca <span class="count" id="cnt-brand"></span></button>
+    </div>
+    <div id="panelBody"><div class="loading">Cargando…</div></div>
+  </div>
+</div>
+
+<script>
+  var sb = window.mhSupabase;
+  var loginScreen = document.getElementById('loginScreen');
+  var appEl = document.getElementById('app');
+  var panelBody = document.getElementById('panelBody');
+  var currentTab = 'pending';
+  var cache = { listings: [], price_requests: [], brand_requests: [] };
+
+  // ---------- auth ----------
+  document.getElementById('loginForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    var btn = document.getElementById('loginBtn');
+    var errBox = document.getElementById('loginErr');
+    errBox.style.display = 'none';
+    btn.disabled = true; btn.textContent = 'Ingresando...';
+    var email = document.getElementById('loginEmail').value.trim();
+    var pass = document.getElementById('loginPass').value;
+    var { data, error } = await sb.auth.signInWithPassword({ email: email, password: pass });
+    btn.disabled = false; btn.textContent = 'Ingresar →';
+    if (error){
+      errBox.textContent = 'Email o contraseña incorrectos.';
+      errBox.style.display = 'block';
+      return;
+    }
+    await checkAdminAndEnter();
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', async function(){
+    await sb.auth.signOut();
+    appEl.style.display = 'none';
+    loginScreen.style.display = 'flex';
+  });
+
+  async function checkAdminAndEnter(){
+    var { data: { user } } = await sb.auth.getUser();
+    if (!user){ return; }
+    var { data: adminRows, error } = await sb.from('admins').select('user_id');
+    if (error || !adminRows || !adminRows.length){
+      var errBox = document.getElementById('loginErr');
+      errBox.textContent = 'Tu cuenta no tiene acceso al panel de administración.';
+      errBox.style.display = 'block';
+      await sb.auth.signOut();
+      return;
+    }
+    document.getElementById('whoEmail').textContent = user.email;
+    loginScreen.style.display = 'none';
+    appEl.style.display = 'block';
+    await loadAll();
+    renderTab();
+  }
+
+  (async function initSession(){
+    var { data: { session } } = await sb.auth.getSession();
+    if (session) await checkAdminAndEnter();
+  })();
+
+  // ---------- data ----------
+  async function loadAll(){
+    panelBody.innerHTML = '<div class="loading">Cargando…</div>';
+    var [l, p, b] = await Promise.all([
+      sb.from('listings').select('*').order('created_at', { ascending: false }),
+      sb.from('price_requests').select('*').order('created_at', { ascending: false }),
+      sb.from('brand_requests').select('*').order('created_at', { ascending: false })
+    ]);
+    cache.listings = l.data || [];
+    cache.price_requests = p.data || [];
+    cache.brand_requests = b.data || [];
+    updateCounts();
+  }
+
+  function updateCounts(){
+    document.getElementById('cnt-pending').textContent = cache.listings.filter(x => x.status === 'pending').length || '';
+    document.getElementById('cnt-published').textContent = cache.listings.filter(x => x.status === 'published').length || '';
+    document.getElementById('cnt-price').textContent = cache.price_requests.filter(x => x.status === 'new').length || '';
+    document.getElementById('cnt-brand').textContent = cache.brand_requests.filter(x => x.status === 'new').length || '';
+  }
+
+  document.querySelectorAll('.tab').forEach(function(tab){
+    tab.addEventListener('click', function(){
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentTab = tab.getAttribute('data-tab');
+      renderTab();
+    });
+  });
+
+  function esc(s){
+    return (s == null ? '' : String(s)).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  function fmtDate(iso){
+    if (!iso) return '';
+    var d = new Date(iso);
+    return d.toLocaleString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  }
+
+  function renderTab(){
+    if (currentTab === 'pending') renderListings('pending');
+    else if (currentTab === 'published') renderListings('published');
+    else if (currentTab === 'price') renderPriceRequests();
+    else if (currentTab === 'brand') renderBrandRequests();
+  }
+
+  function renderListings(status){
+    var rows = cache.listings.filter(x => x.status === status);
+    if (!rows.length){ panelBody.innerHTML = '<div class="empty">No hay publicaciones acá todavía.</div>'; return; }
+    panelBody.innerHTML = rows.map(function(l){
+      var media = (l.fotos || []).map(function(u){ return '<img src="'+esc(u)+'" loading="lazy">'; }).join('')
+        + (l.video_url ? '<video src="'+esc(l.video_url)+'" muted controls></video>' : '');
+      var badgeClass = status === 'pending' ? 'badge-pending' : (status === 'published' ? 'badge-published' : 'badge-rejected');
+      var precio = l.precio != null ? ((l.moneda === 'ARS' ? '$ ' : 'USD ') + l.precio) : 'Sin precio';
+      var actions = '';
+      if (status === 'pending'){
+        actions = '<div class="actions">'
+          + '<button class="btn btn-primary btn-small" data-action="publish" data-id="'+l.id+'">Aprobar y publicar</button>'
+          + '<button class="btn btn-ghost btn-small" data-action="reject" data-id="'+l.id+'">Rechazar</button>'
+          + '</div>';
+      } else if (status === 'published'){
+        actions = '<div class="actions"><button class="btn btn-ghost btn-small" data-action="unpublish" data-id="'+l.id+'">Despublicar</button></div>';
+      }
+      return '<div class="card">'
+        + '<div class="card-head"><div><h3>'+esc(l.marca)+' '+esc(l.modelo || l.tipo)+'</h3><div class="sub">'+fmtDate(l.created_at)+' · '+esc(l.localidad)+', '+esc(l.provincia)+', '+esc(l.pais)+'</div></div>'
+        + '<span class="badge '+badgeClass+'">'+esc(status)+'</span></div>'
+        + '<dl class="grid2">'
+        + '<dt>Precio</dt><dd>'+esc(precio)+'</dd>'
+        + '<dt>Tipo</dt><dd>'+esc(l.tipo)+'</dd>'
+        + '<dt>Capacidad</dt><dd>'+esc(l.capacidad)+'</dd>'
+        + '<dt>Año</dt><dd>'+esc(l.anio)+'</dd>'
+        + '<dt>Voltaje</dt><dd>'+esc(l.voltaje)+'</dd>'
+        + '<dt>Garantía</dt><dd>'+(l.garantia ? esc(l.garantia_tiempo || 'Sí') : 'No')+'</dd>'
+        + '<dt>Último service</dt><dd>'+esc(l.service_cuando)+(l.service_que ? ' — '+esc(l.service_que) : '')+'</dd>'
+        + '<dt>Cuotas</dt><dd>'+(l.cuotas ? esc(l.cuotas_como || 'Sí') : 'No')+'</dd>'
+        + '<dt>Contacto</dt><dd>'+esc(l.contacto_nombre)+' — '+esc(l.contacto_info)+'</dd>'
+        + '<dt>Dirección</dt><dd>'+esc(l.direccion)+'</dd>'
+        + '</dl>'
+        + (l.descripcion ? '<p class="desc">'+esc(l.descripcion)+'</p>' : '')
+        + (media ? '<div class="thumbs">'+media+'</div>' : '')
+        + actions
+        + '</div>';
+    }).join('');
+
+    panelBody.querySelectorAll('button[data-action]').forEach(function(btn){
+      btn.addEventListener('click', async function(){
+        var id = btn.getAttribute('data-id');
+        var action = btn.getAttribute('data-action');
+        var newStatus = action === 'publish' ? 'published' : (action === 'reject' ? 'rejected' : 'pending');
+        btn.disabled = true; btn.textContent = 'Guardando...';
+        var { error } = await sb.from('listings').update({ status: newStatus }).eq('id', id);
+        if (error){ alert('No se pudo actualizar. Intentá de nuevo.'); btn.disabled = false; return; }
+        var row = cache.listings.find(x => x.id === id);
+        if (row) row.status = newStatus;
+        updateCounts();
+        renderTab();
+      });
+    });
+  }
+
+  function renderPriceRequests(){
+    var rows = cache.price_requests;
+    if (!rows.length){ panelBody.innerHTML = '<div class="empty">Todavía no llegaron solicitudes de precio.</div>'; return; }
+    panelBody.innerHTML = rows.map(function(r){
+      var badgeClass = r.status === 'new' ? 'badge-new' : 'badge-contacted';
+      return '<div class="card">'
+        + '<div class="card-head"><div><h3>'+esc(r.ref)+' — '+esc(r.empresa)+'</h3><div class="sub">'+fmtDate(r.created_at)+'</div></div>'
+        + '<span class="badge '+badgeClass+'">'+(r.status === 'new' ? 'nueva' : 'contactada')+'</span></div>'
+        + '<dl class="grid2">'
+        + '<dt>Máquina consultada</dt><dd>'+esc(r.marca)+' '+esc(r.maquina)+'</dd>'
+        + '<dt>Ubicación</dt><dd>'+esc(r.localidad)+', '+esc(r.pais)+(r.ubicacion ? ' — '+esc(r.ubicacion) : '')+'</dd>'
+        + '<dt>Contacto</dt><dd>'+esc(r.contacto)+'</dd>'
+        + '<dt>WhatsApp</dt><dd>'+esc(r.whatsapp)+'</dd>'
+        + '<dt>Email</dt><dd>'+esc(r.email)+'</dd>'
+        + '</dl>'
+        + (r.comentarios ? '<p class="desc">'+esc(r.comentarios)+'</p>' : '')
+        + '<div class="actions">'
+        + (r.status === 'new'
+            ? '<button class="btn btn-primary btn-small" data-action="contacted" data-id="'+r.id+'" data-table="price_requests">Marcar como contactada</button>'
+            : '<button class="btn btn-ghost btn-small" data-action="new" data-id="'+r.id+'" data-table="price_requests">Marcar como nueva</button>')
+        + '</div></div>';
+    }).join('');
+    bindStatusToggle();
+  }
+
+  function renderBrandRequests(){
+    var rows = cache.brand_requests;
+    if (!rows.length){ panelBody.innerHTML = '<div class="empty">Todavía no llegaron solicitudes de marca.</div>'; return; }
+    panelBody.innerHTML = rows.map(function(r){
+      var badgeClass = r.status === 'new' ? 'badge-new' : 'badge-contacted';
+      var logo = r.logo_url ? '<div class="thumbs"><img src="'+esc(r.logo_url)+'"></div>' : '';
+      return '<div class="card">'
+        + '<div class="card-head"><div><h3>'+esc(r.empresa)+' — '+esc(r.marca)+'</h3><div class="sub">'+fmtDate(r.created_at)+(r.tipo ? ' · '+esc(r.tipo) : '')+'</div></div>'
+        + '<span class="badge '+badgeClass+'">'+(r.status === 'new' ? 'nueva' : 'contactada')+'</span></div>'
+        + '<dl class="grid2">'
+        + '<dt>Contacto</dt><dd>'+esc(r.contacto_nombre)+'</dd>'
+        + '<dt>WhatsApp</dt><dd>'+esc(r.whatsapp)+'</dd>'
+        + '<dt>Email</dt><dd>'+esc(r.email)+'</dd>'
+        + '<dt>País / Provincia</dt><dd>'+esc(r.pais_provincia)+'</dd>'
+        + '<dt>Sitio / Instagram</dt><dd>'+(r.sitio ? '<a href="'+esc(r.sitio)+'" target="_blank" rel="noopener">'+esc(r.sitio)+'</a>' : '')+'</dd>'
+        + '<dt>Productos</dt><dd>'+esc((r.productos || []).join(', '))+'</dd>'
+        + '</dl>'
+        + (r.mensaje ? '<p class="desc">'+esc(r.mensaje)+'</p>' : '')
+        + logo
+        + '<div class="actions">'
+        + (r.status === 'new'
+            ? '<button class="btn btn-primary btn-small" data-action="contacted" data-id="'+r.id+'" data-table="brand_requests">Marcar como contactada</button>'
+            : '<button class="btn btn-ghost btn-small" data-action="new" data-id="'+r.id+'" data-table="brand_requests">Marcar como nueva</button>')
+        + '</div></div>';
+    }).join('');
+    bindStatusToggle();
+  }
+
+  function bindStatusToggle(){
+    panelBody.querySelectorAll('button[data-action]').forEach(function(btn){
+      btn.addEventListener('click', async function(){
+        var id = btn.getAttribute('data-id');
+        var table = btn.getAttribute('data-table');
+        var newStatus = btn.getAttribute('data-action') === 'contacted' ? 'contacted' : 'new';
+        btn.disabled = true; btn.textContent = 'Guardando...';
+        var { error } = await sb.from(table).update({ status: newStatus }).eq('id', id);
+        if (error){ alert('No se pudo actualizar. Intentá de nuevo.'); btn.disabled = false; return; }
+        var row = cache[table].find(x => x.id === id);
+        if (row) row.status = newStatus;
+        updateCounts();
+        renderTab();
+      });
+    });
+  }
+</script>
+</body>
+</html>
