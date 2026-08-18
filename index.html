@@ -409,7 +409,7 @@
   @media(max-width:640px){.live-arrow{width:34px;height:34px;font-size:1.2rem;}}
   .live-card{width:230px;flex-shrink:0;background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .3s var(--ease), border-color .3s;}
   .live-card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.22);}
-  .live-card .shot{height:120px;position:relative;}
+  .live-card .shot{height:120px;position:relative;overflow:hidden;}
   .live-card .tag{position:absolute;top:9px;left:9px;font-family:'IBM Plex Mono';font-size:.64rem;padding:4px 9px;border-radius:100px;background:rgba(10,11,13,.65);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.14);}
   .live-card .body{padding:12px 14px 14px;}
   .live-card .price{font-family:'IBM Plex Mono';color:var(--frio-1);font-weight:600;font-size:.92rem;}
@@ -479,10 +479,10 @@
   .listing.is-reserved .stage{filter:grayscale(.5) brightness(.55);}
   .listing.is-reserved .body{opacity:.6;}
   .reserved-ribbon{
-    position:absolute;top:18px;right:-38px;width:150px;padding:5px 0;text-align:center;
+    position:absolute;top:22px;right:-46px;width:190px;padding:9px 0;text-align:center;
     background:linear-gradient(135deg,var(--calor-1),var(--calor-2));color:#fff;
-    font-family:'IBM Plex Mono';font-weight:700;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
-    transform:rotate(40deg);box-shadow:0 3px 10px rgba(0,0,0,.4);z-index:2;
+    font-family:'IBM Plex Mono';font-weight:800;font-size:.92rem;letter-spacing:.1em;text-transform:uppercase;
+    transform:rotate(40deg);box-shadow:0 4px 14px rgba(0,0,0,.5);z-index:2;border:1px solid rgba(255,255,255,.25);
   }
 
   .sell-panel{background:linear-gradient(165deg,var(--panel-2),var(--acero));border:1px solid var(--line);border-radius:22px;padding:32px;position:sticky;top:100px;}
@@ -602,6 +602,10 @@
   .vd-field input:focus,.vd-field select:focus,.vd-field textarea:focus{border-color:var(--frio-1);}
   .vd-field textarea{resize:vertical;font-family:'Inter';}
   .vd-optional-tag{color:var(--muted-2);font-weight:400;text-transform:none;letter-spacing:0;}
+  .ld-phone-row{display:flex;gap:8px;}
+  .ld-country-select{flex-shrink:0;width:auto;max-width:118px;background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:12px 8px;color:var(--hielo);font-family:'Inter';font-size:.9rem;outline:none;transition:border-color .25s;}
+  .ld-country-select:focus{border-color:var(--frio-1);}
+  .ld-phone-row input{flex:1;min-width:0;}
   .vd-field-error input,.vd-field-error select,.vd-field-error textarea{border-color:#EC4878 !important;box-shadow:0 0 0 3px rgba(236,72,120,.15);}
   .vd-photo-grid.vd-field-error{outline:2px solid #EC4878;outline-offset:8px;border-radius:16px;}
   .vd-step-error{color:#EC4878;font-size:.86rem;line-height:1.5;margin-top:18px;background:rgba(236,72,120,.08);border:1px solid rgba(236,72,120,.28);padding:12px 15px;border-radius:12px;}
@@ -1803,7 +1807,10 @@
           </div>
           <div class="vd-field" style="margin-bottom:14px;">
             <label>Tu WhatsApp <span class="vd-optional-tag">(para avisarte cuando esté todo listo)</span></label>
-            <input type="text" id="ldBuyerWhatsapp" placeholder="Ej: +54 9 11 5555-5555">
+            <div class="ld-phone-row">
+              <select id="ldCountryCode" class="ld-country-select"></select>
+              <input type="text" id="ldBuyerWhatsapp" placeholder="Ej: 11 5555-5555">
+            </div>
           </div>
           <a href="#" id="ldPayLink" class="btn btn-pay" style="width:100%;justify-content:center;">Pagar la seña del 10% →</a>
           <p class="ld-secure-note">🔒 Pago 100% seguro, procesado por Mercado Pago</p>
@@ -2606,6 +2613,31 @@
   var ldCurrent = null;
   var ldPhotoIdx = 0;
 
+  // países más consultados primero; banderas emoji (siempre nítidas, cada
+  // sistema operativo las dibuja con su propio set moderno, sin necesidad
+  // de imágenes que se puedan ver borrosas)
+  var LD_COUNTRIES = [
+    {c:'54', f:'🇦🇷', n:'Argentina'},
+    {c:'598', f:'🇺🇾', n:'Uruguay'},
+    {c:'595', f:'🇵🇾', n:'Paraguay'},
+    {c:'591', f:'🇧🇴', n:'Bolivia'},
+    {c:'55', f:'🇧🇷', n:'Brasil'},
+    {c:'56', f:'🇨🇱', n:'Chile'},
+    {c:'51', f:'🇵🇪', n:'Perú'},
+    {c:'57', f:'🇨🇴', n:'Colombia'},
+    {c:'52', f:'🇲🇽', n:'México'},
+    {c:'1', f:'🇺🇸', n:'Estados Unidos'},
+    {c:'34', f:'🇪🇸', n:'España'},
+    {c:'39', f:'🇮🇹', n:'Italia'}
+  ];
+  (function fillCountrySelect(){
+    var sel = document.getElementById('ldCountryCode');
+    if (!sel) return;
+    sel.innerHTML = LD_COUNTRIES.map(function(c){
+      return '<option value="'+c.c+'">'+c.f+' +'+c.c+'</option>';
+    }).join('');
+  })();
+
   function ldPlaceholderBg(l){
     var c = (l.g && l.g[0]) ? l.g[0] : '#1078D6';
     return 'background:linear-gradient(135deg,' + c + ',#0F1B2E 70%);';
@@ -2783,11 +2815,14 @@
     if (!ldCurrent) return;
     var btn = e.currentTarget;
     var whatsInput = document.getElementById('ldBuyerWhatsapp');
-    if (!whatsInput.value.trim()){
+    var countrySel = document.getElementById('ldCountryCode');
+    var localNumber = whatsInput.value.replace(/[^\d]/g, '');
+    if (!localNumber){
       whatsInput.focus();
       alert('Dejanos tu WhatsApp para poder avisarte cuando se confirme.');
       return;
     }
+    var fullWhatsapp = '+' + countrySel.value + localNumber;
     var original = btn.textContent;
     btn.textContent = 'Generando pago...';
     btn.style.pointerEvents = 'none';
@@ -2795,7 +2830,7 @@
       var res = await fetch('/.netlify/functions/create-preference', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ listingId: ldCurrent.id, buyerWhatsapp: whatsInput.value.trim() })
+        body: JSON.stringify({ listingId: ldCurrent.id, buyerWhatsapp: fullWhatsapp })
       });
       var data = await res.json();
       if (!res.ok) throw new Error(data.error || 'No se pudo generar el pago');
