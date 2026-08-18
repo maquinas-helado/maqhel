@@ -279,12 +279,27 @@
         + '</dl>'
         + (r.comentarios ? '<p class="desc">'+esc(r.comentarios)+'</p>' : '')
         + '<div class="actions">'
+        + waButtonHtml(r)
         + (r.status === 'new'
             ? '<button class="btn btn-primary btn-small" data-action="contacted" data-id="'+r.id+'" data-table="price_requests">Marcar como contactada</button>'
             : '<button class="btn btn-ghost btn-small" data-action="new" data-id="'+r.id+'" data-table="price_requests">Marcar como nueva</button>')
         + '</div></div>';
     }).join('');
     bindStatusToggle();
+  }
+
+  // arma el link de WhatsApp con el mensaje ya redactado, listo para que
+  // el admin solo tenga que revisar y apretar enviar (y adjuntar la cotización)
+  function waButtonHtml(r){
+    var tel = (r.whatsapp || '').replace(/[^\d+]/g, '').replace(/^\+/, '');
+    if (!tel || tel.length < 8) return '';
+    var maquina = [r.marca, r.maquina].filter(Boolean).join(' ');
+    var nombre = (r.contacto || '').split(' ')[0] || '';
+    var msg = 'Hola' + (nombre ? ' ' + nombre : '') + '! Somos de MAQ.HEL / Technogel. '
+      + 'Recibimos tu consulta por ' + (maquina || 'la máquina') + '. '
+      + 'En breve te va a estar llegando la cotización solicitada. ¡Gracias por escribirnos!';
+    var url = 'https://wa.me/' + tel + '?text=' + encodeURIComponent(msg);
+    return '<a href="'+url+'" target="_blank" rel="noopener" class="btn btn-small" style="background:#25D366;color:#04140b;">Enviar cotización por WhatsApp →</a>';
   }
 
   function renderBrandRequests(){

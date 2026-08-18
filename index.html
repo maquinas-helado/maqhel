@@ -6,7 +6,7 @@
 <title>MAQ.HEL — El marketplace de máquinas de helado</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Poppins:wght@700;800&family=Baloo+2:wght@700;800&family=Zilla+Slab:ital,wght@1,700&family=Orbitron:wght@700;800&display=swap" rel="stylesheet">
 <style>
   :root{
     --noche:#0A0B0D;
@@ -424,6 +424,13 @@
   .brand-card:hover{transform:translateY(-6px);border-color:rgba(16,120,214,.4);}
   .brand-card .glow{position:absolute;width:200px;height:200px;border-radius:50%;filter:blur(60px);opacity:.28;top:-60px;right:-60px;}
   .brand-card h3{font-size:1.4rem;margin-bottom:8px;}
+  /* "logos" tipográficos de marca: grises por defecto, cobran su color propio al hover */
+  .brand-logo{margin-bottom:14px;line-height:1;transition:filter .35s var(--ease), opacity .35s var(--ease);}
+  .brand-logo-dualmet{font-family:'Orbitron',sans-serif;font-weight:800;font-size:1.5rem;color:#CDD5DF;letter-spacing:.02em;text-transform:uppercase;filter:grayscale(1) brightness(1.6);opacity:.85;background:linear-gradient(90deg,#EC4878,#F5A623,#2FA8DA);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  .brand-card:hover .brand-logo-dualmet{filter:grayscale(0) brightness(1);opacity:1;}
+  .brand-logo-img{height:32px;width:auto;display:block;filter:grayscale(1) opacity(.5);}
+  .brand-card:hover .brand-logo-img{filter:grayscale(0) opacity(1);}
+  .brand-card[data-marca="jit"] .brand-logo-img{height:44px;}
   .brand-card p{color:var(--muted);font-size:.92rem;line-height:1.55;margin-bottom:18px;}
   .brand-card .tags{display:flex;gap:8px;flex-wrap:wrap;}
   .brand-card .tags span{font-family:'IBM Plex Mono';font-size:.72rem;color:var(--muted-2);border:1px solid var(--line);padding:4px 10px;border-radius:100px;}
@@ -1012,21 +1019,21 @@
       <div class="brands-grid">
         <div class="brand-card" data-reveal data-marca="technogel" role="button" tabindex="0">
           <div class="glow" style="background:var(--frio-2)"></div>
-          <h3>Technogel</h3>
+          <img class="brand-logo brand-logo-img" src="assets/img/technogel-logo.svg" alt="Technogel">
           <p>Línea artesanal e industrial completa: fabricadoras, pasteurizadores, maduradores, túneles y líneas llave en mano.</p>
           <div class="tags"><span>Artesanal</span><span>Industrial</span><span>Italia</span></div>
           <div class="arrow">Ver catálogo →</div>
         </div>
         <div class="brand-card" data-reveal data-marca="dualmet" role="button" tabindex="0">
           <div class="glow" style="background:var(--calor-2)"></div>
-          <h3>Dualmet</h3>
+          <div class="brand-logo brand-logo-dualmet">Dualmet</div>
           <p>Equipamiento robusto para producción intensiva, pensado para heladerías que escalan sin perder calidad.</p>
           <div class="tags"><span>Artesanal</span><span>Industrial</span></div>
           <div class="arrow">Ver catálogo →</div>
         </div>
         <div class="brand-card" data-reveal data-marca="jit" role="button" tabindex="0">
           <div class="glow" style="background:var(--frio-1)"></div>
-          <h3>JIT</h3>
+          <img class="brand-logo brand-logo-img" src="assets/img/jit-logo.png" alt="JIT Calderas">
           <p>Calderas y generación térmica para líneas de producción, el soporte silencioso de toda la operación.</p>
           <div class="tags"><span>Calderas</span></div>
           <div class="arrow">Ver catálogo →</div>
@@ -1685,7 +1692,7 @@
       </div>
       <div>
         <h5>Contacto</h5>
-        <ul><li><a href="#">WhatsApp</a></li><li><a href="https://www.instagram.com/maquinas.helado/" target="_blank" rel="noopener">Instagram</a></li><li><a href="https://www.facebook.com/Maq.hel" target="_blank" rel="noopener">Facebook</a></li><li><a href="https://www.tiktok.com/@maquinas.helados?_r=1&amp;_t=ZS-98sP2YVmC72" target="_blank" rel="noopener">TikTok</a></li></ul>
+        <ul><li><a href="https://wa.me/5491149988903" target="_blank" rel="noopener">WhatsApp</a></li><li><a href="https://www.instagram.com/maquinas.helado/" target="_blank" rel="noopener">Instagram</a></li><li><a href="https://www.facebook.com/Maq.hel" target="_blank" rel="noopener">Facebook</a></li><li><a href="https://www.tiktok.com/@maquinas.helados?_r=1&amp;_t=ZS-98sP2YVmC72" target="_blank" rel="noopener">TikTok</a></li></ul>
       </div>
     </div>
 
@@ -1709,7 +1716,7 @@
     <span class="f-ic"><svg viewBox="0 0 24 24" fill="none"><path d="M16.6 5.82c-.9-.9-1.44-2.03-1.55-3.32h-3.1v13.6c0 1.4-1.14 2.54-2.54 2.54a2.54 2.54 0 0 1 0-5.08c.24 0 .48.03.7.1V10.5a5.72 5.72 0 0 0-.7-.04A5.72 5.72 0 0 0 3.7 16.18a5.72 5.72 0 0 0 5.71 5.72c3.16 0 5.72-2.56 5.72-5.72V8.86a8.9 8.9 0 0 0 5.15 1.64V7.4a5.6 5.6 0 0 1-3.68-1.58z" fill="currentColor"/></svg></span>
     <span class="f-label">TikTok</span>
   </a>
-  <a href="#" class="float-pill wa" aria-label="WhatsApp">
+  <a href="https://wa.me/5491149988903" target="_blank" rel="noopener" class="float-pill wa" aria-label="WhatsApp">
     <span class="f-ic"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.336-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/></svg></span>
     <span class="f-label">WhatsApp</span>
   </a>
@@ -2807,8 +2814,7 @@
   // TODO: reemplazar brandsData y catalogoNuevo por el catálogo oficial cuando esté
   // disponible (Technogel, Dualmet, JIT). Todo lo marcado abajo es contenido de
   // ejemplo para poder diseñar y probar el flujo completo.
-  // TODO: reemplazar por el WhatsApp real de MAQ.HEL para consultas de máquinas nuevas.
-  var MAQHEL_WHATSAPP = '5491100000000';
+  var MAQHEL_WHATSAPP = '5491149988903';
 
   var brandsData = {
     technogel: {
