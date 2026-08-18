@@ -366,11 +366,13 @@
   }
 
   /* ===== OPINIONES ===== */
-  .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
-  @media(max-width:900px){.testi-grid{grid-template-columns:1fr;}}
+  .testi-track-mask{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);}
+  .testi-track-mask::-webkit-scrollbar{display:none;}
+  .testi-grid{display:flex;gap:22px;width:max-content;}
   .testi-card{
     background:var(--panel);border:1px solid var(--line);border-radius:20px;
     padding:28px 26px;display:flex;flex-direction:column;gap:16px;
+    width:340px;flex-shrink:0;
   }
   .testi-stars{display:flex;gap:3px;color:#F5B942;}
   .testi-stars svg{width:16px;height:16px;}
@@ -431,10 +433,12 @@
   /* placa clara detrás de los logos con imagen: así siempre hay contraste,
      sea cual sea el color original del logo (JIT es azul oscuro, se perdía
      contra el fondo oscuro de la card sin esto) */
-  .brand-logo-plate{display:inline-flex;align-items:center;justify-content:center;background:var(--plata-1);border-radius:12px;padding:12px 18px;filter:grayscale(1) opacity(.65);transition:filter .35s var(--ease);}
-  .brand-card:hover .brand-logo-plate{filter:grayscale(0) opacity(1);}
-  .brand-logo-img{height:26px;width:auto;display:block;}
-  .brand-card[data-marca="jit"] .brand-logo-img{height:36px;}
+  /* logo siempre visible sobre fondo oscuro sin caja: brightness(0)+invert(1)
+     convierte CUALQUIER color de logo (claro u oscuro) en blanco parejo, y al
+     hacer hover se saca el filtro y aparece el color real del logo */
+  .brand-logo-img{height:30px;width:auto;display:block;filter:brightness(0) saturate(0) invert(1) opacity(.55);transition:filter .35s var(--ease);}
+  .brand-card:hover .brand-logo-img{filter:none;}
+  .brand-card[data-marca="jit"] .brand-logo-img{height:40px;}
   .brand-card p{color:var(--muted);font-size:.92rem;line-height:1.55;margin-bottom:18px;}
   .brand-card .tags{display:flex;gap:8px;flex-wrap:wrap;}
   .brand-card .tags span{font-family:'IBM Plex Mono';font-size:.72rem;color:var(--muted-2);border:1px solid var(--line);padding:4px 10px;border-radius:100px;}
@@ -788,6 +792,7 @@
   .mk-demo-flag{display:inline-block;font-family:'IBM Plex Mono';font-size:.68rem;padding:6px 12px;border-radius:100px;background:rgba(236,72,120,.12);color:var(--calor-1);border:1px solid rgba(236,72,120,.3);margin-bottom:18px;letter-spacing:.02em;}
   .mk-hero{padding-top:10px;padding-bottom:20px;}
   .mk-title{font-size:clamp(2.4rem,6vw,4rem);font-weight:800;font-family:'Space Grotesk';margin:6px 0 10px;}
+  .mk-logo-img{height:clamp(48px,8vw,84px);width:auto;margin:10px 0 6px;}
   .mk-tagline{font-size:1.15rem;color:var(--frio-1);font-weight:600;margin-bottom:16px;}
   .mk-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;}
   .mk-tags span{font-family:'IBM Plex Mono';font-size:.76rem;color:var(--muted);border:1px solid var(--line);padding:6px 14px;border-radius:100px;}
@@ -976,7 +981,8 @@
         <h2>Lo que dicen quienes ya compraron o vendieron</h2>
         <p>Heladeros reales, máquinas reales, sin intermediarios.</p>
       </div>
-      <div class="testi-grid">
+      <div class="testi-track-mask" id="testiTrackMask">
+      <div class="testi-grid" id="testiTrack">
         <div class="testi-card" data-reveal>
           <div class="testi-stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg></div>
           <p class="testi-quote">&ldquo;Hace más de 15 años le venimos comprando: el vendedor siempre está muy presente y nos sigue acompañando en nuestro crecimiento.&rdquo;</p>
@@ -1055,6 +1061,7 @@
           </div>
         </div>
       </div>
+      </div>
     </div>
   </section>
 
@@ -1071,7 +1078,7 @@
       <div class="brands-grid">
         <div class="brand-card" data-reveal data-marca="technogel" role="button" tabindex="0">
           <div class="glow" style="background:var(--frio-2)"></div>
-          <div class="brand-logo brand-logo-plate"><img class="brand-logo-img" src="assets/img/technogel-logo.svg" alt="Technogel"></div>
+          <img class="brand-logo brand-logo-img" src="assets/img/technogel-logo.svg" alt="Technogel">
           <p>Línea artesanal e industrial completa: fabricadoras, pasteurizadores, maduradores, túneles y líneas llave en mano.</p>
           <div class="tags"><span>Artesanal</span><span>Industrial</span><span>Italia</span></div>
           <div class="arrow">Ver catálogo →</div>
@@ -1085,7 +1092,7 @@
         </div>
         <div class="brand-card" data-reveal data-marca="jit" role="button" tabindex="0">
           <div class="glow" style="background:var(--frio-1)"></div>
-          <div class="brand-logo brand-logo-plate"><img class="brand-logo-img" src="assets/img/jit-logo.png" alt="JIT Calderas"></div>
+          <img class="brand-logo brand-logo-img" src="assets/img/jit-logo.png" alt="JIT Calderas">
           <p>Calderas y generación térmica para líneas de producción, el soporte silencioso de toda la operación.</p>
           <div class="tags"><span>Calderas</span></div>
           <div class="arrow">Ver catálogo →</div>
@@ -1623,6 +1630,7 @@
         </div>
         <span class="mk-demo-flag" id="mkDemoFlag">Contenido de ejemplo — a reemplazar por el catálogo oficial</span>
         <span class="eyebrow" id="mkEyebrow">Marca representada por MAQ.HEL</span>
+        <img class="mk-logo-img" id="mkLogoImg" alt="" hidden>
         <h1 class="mk-title" id="mkTitle">Technogel</h1>
         <p class="mk-tagline" id="mkTagline">Tecnología italiana para la industria del helado.</p>
         <p class="lead" id="mkDesc" style="max-width:640px;"></p>
@@ -2866,6 +2874,7 @@
   var brandsData = {
     technogel: {
       nombre: 'Technogel',
+      logo: 'assets/img/technogel-logo.svg',
       tagline: 'Tecnología italiana para la industria del helado.',
       desc: 'Representamos oficialmente a Technogel en Argentina, Uruguay, Paraguay y Bolivia: línea artesanal e industrial completa, desde fabricadoras discontinuas hasta líneas llave en mano.',
       tags: ['Italia','Representación oficial','Artesanal','Industrial']
@@ -2878,6 +2887,7 @@
     },
     jit: {
       nombre: 'JIT',
+      logo: 'assets/img/jit-logo.png',
       tagline: 'Calderas y generación térmica para tu planta.',
       desc: 'JIT provee la generación térmica que sostiene silenciosamente toda tu línea de producción.',
       tags: ['Calderas','Generación térmica']
@@ -2999,7 +3009,26 @@
 
   function renderMarcaLanding(key){
     var brand = brandsData[key] || brandsData.technogel;
-    document.getElementById('mkTitle').textContent = brand.nombre;
+    var mkTitleEl = document.getElementById('mkTitle');
+    var mkLogoImg = document.getElementById('mkLogoImg');
+    if (brand.logo){
+      mkLogoImg.src = brand.logo;
+      mkLogoImg.alt = brand.nombre;
+      mkLogoImg.hidden = false;
+      mkTitleEl.style.position = 'absolute';
+      mkTitleEl.style.width = '1px';
+      mkTitleEl.style.height = '1px';
+      mkTitleEl.style.overflow = 'hidden';
+      mkTitleEl.style.clip = 'rect(0,0,0,0)';
+    } else {
+      mkLogoImg.hidden = true;
+      mkTitleEl.style.position = '';
+      mkTitleEl.style.width = '';
+      mkTitleEl.style.height = '';
+      mkTitleEl.style.overflow = '';
+      mkTitleEl.style.clip = '';
+    }
+    mkTitleEl.textContent = brand.nombre;
     document.getElementById('mkTagline').textContent = brand.tagline;
     document.getElementById('mkDesc').textContent = brand.desc;
     document.getElementById('mkTags').innerHTML = brand.tags.map(function(t){ return '<span>'+t+'</span>'; }).join('');
@@ -3221,14 +3250,19 @@
   });
 
   // ---- vidriera en vivo: auto-scroll + flechas manuales ----
-  (function initLiveBandScroll(){
-    var mask = document.getElementById('liveTrackMask');
-    var track = document.getElementById('liveTrack');
-    var prevBtn = document.getElementById('liveArrowPrev');
-    var nextBtn = document.getElementById('liveArrowNext');
-    if (!mask || !track || !prevBtn || !nextBtn) return;
+  // cinta horizontal que se desplaza sola (se usa para "Publicadas
+  // recientemente" y para los testimonios) — duplica el contenido del track
+  // una vez para poder loopear sin corte, y se puede navegar con flechas
+  // opcionales o simplemente pasando el mouse por arriba para pausar.
+  function initAutoScrollTrack(opts){
+    var mask = document.getElementById(opts.maskId);
+    var track = document.getElementById(opts.trackId);
+    if (!mask || !track) return;
+    if (opts.duplicate) track.innerHTML += track.innerHTML;
 
-    var SPEED = 32; // px por segundo
+    var prevBtn = opts.prevId ? document.getElementById(opts.prevId) : null;
+    var nextBtn = opts.nextId ? document.getElementById(opts.nextId) : null;
+    var SPEED = opts.speed || 32;
     var hovering = false;
     var pausedUntil = 0;
     var lastTs = null;
@@ -3252,8 +3286,8 @@
     mask.addEventListener('mouseleave', function(){ hovering = false; });
 
     function step(dir){
-      var cardEl = track.querySelector('.live-card');
-      var cardWidth = cardEl ? (cardEl.offsetWidth + 16) : 246;
+      var cardEl = track.querySelector(opts.cardSelector);
+      var cardWidth = cardEl ? (cardEl.offsetWidth + opts.gap) : 246;
       pausedUntil = Date.now() + 2500;
       var half = halfWidth();
       var target = mask.scrollLeft + dir * cardWidth;
@@ -3261,9 +3295,12 @@
       if (target >= half) target -= half;
       mask.scrollTo({left: target, behavior:'smooth'});
     }
-    prevBtn.addEventListener('click', function(){ step(-1); });
-    nextBtn.addEventListener('click', function(){ step(1); });
-  })();
+    if (prevBtn) prevBtn.addEventListener('click', function(){ step(-1); });
+    if (nextBtn) nextBtn.addEventListener('click', function(){ step(1); });
+  }
+
+  initAutoScrollTrack({maskId:'liveTrackMask', trackId:'liveTrack', prevId:'liveArrowPrev', nextId:'liveArrowNext', cardSelector:'.live-card', gap:16, speed:32});
+  initAutoScrollTrack({maskId:'testiTrackMask', trackId:'testiTrack', cardSelector:'.testi-card', gap:22, speed:26, duplicate:true});
 
   // ---- reveal on scroll ----
   function observeReveal(){
