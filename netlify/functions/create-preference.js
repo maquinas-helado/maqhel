@@ -78,6 +78,7 @@ exports.handler = async function (event) {
       unit_price: monto
     }],
     external_reference: listing.id,
+    statement_descriptor: 'MAQHEL',
     metadata: { reservation_id: reservation.id, listing_id: listing.id },
     back_urls: {
       success: siteUrl + '/#usada',

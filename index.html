@@ -428,9 +428,13 @@
   .brand-logo{margin-bottom:14px;line-height:1;transition:filter .35s var(--ease), opacity .35s var(--ease);}
   .brand-logo-dualmet{font-family:'Orbitron',sans-serif;font-weight:800;font-size:1.5rem;color:#CDD5DF;letter-spacing:.02em;text-transform:uppercase;filter:grayscale(1) brightness(1.6);opacity:.85;background:linear-gradient(90deg,#EC4878,#F5A623,#2FA8DA);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
   .brand-card:hover .brand-logo-dualmet{filter:grayscale(0) brightness(1);opacity:1;}
-  .brand-logo-img{height:32px;width:auto;display:block;filter:grayscale(1) opacity(.5);}
-  .brand-card:hover .brand-logo-img{filter:grayscale(0) opacity(1);}
-  .brand-card[data-marca="jit"] .brand-logo-img{height:44px;}
+  /* placa clara detrás de los logos con imagen: así siempre hay contraste,
+     sea cual sea el color original del logo (JIT es azul oscuro, se perdía
+     contra el fondo oscuro de la card sin esto) */
+  .brand-logo-plate{display:inline-flex;align-items:center;justify-content:center;background:var(--plata-1);border-radius:12px;padding:12px 18px;filter:grayscale(1) opacity(.65);transition:filter .35s var(--ease);}
+  .brand-card:hover .brand-logo-plate{filter:grayscale(0) opacity(1);}
+  .brand-logo-img{height:26px;width:auto;display:block;}
+  .brand-card[data-marca="jit"] .brand-logo-img{height:36px;}
   .brand-card p{color:var(--muted);font-size:.92rem;line-height:1.55;margin-bottom:18px;}
   .brand-card .tags{display:flex;gap:8px;flex-wrap:wrap;}
   .brand-card .tags span{font-family:'IBM Plex Mono';font-size:.72rem;color:var(--muted-2);border:1px solid var(--line);padding:4px 10px;border-radius:100px;}
@@ -975,34 +979,78 @@
       <div class="testi-grid">
         <div class="testi-card" data-reveal>
           <div class="testi-stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg></div>
-          <p class="testi-quote">&ldquo;Compramos una productora Technogel usada y todo el proceso fue clarísimo: hablamos con el vendedor, coordinamos el envío y llegó en perfecto estado. Ahorramos meses de búsqueda.&rdquo;</p>
+          <p class="testi-quote">&ldquo;Hace más de 15 años le venimos comprando: el vendedor siempre está muy presente y nos sigue acompañando en nuestro crecimiento.&rdquo;</p>
           <div class="testi-who">
-            <div class="testi-avatar">MB</div>
+            <div class="testi-avatar">JV</div>
             <div>
-              <div class="testi-name">Heladería Don Cono</div>
-              <div class="testi-role">Buenos Aires, AR</div>
+              <div class="testi-name">Vanshelato</div>
+              <div class="testi-role">Javi Vangeli · Buenos Aires, Argentina</div>
             </div>
           </div>
         </div>
         <div class="testi-card" data-reveal>
           <div class="testi-stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg></div>
-          <p class="testi-quote">&ldquo;Publicamos nuestra pasteurizadora en cinco minutos y la vendimos en dos semanas. Cero intermediarios, cero comisiones ocultas. Repetimos sin dudarlo.&rdquo;</p>
+          <p class="testi-quote">&ldquo;Hace muchísimos años compramos la primera Technogel, ya tenemos más de 4 máquinas de la marca, y el representante se convirtió en nuestro amigo.&rdquo;</p>
           <div class="testi-who">
-            <div class="testi-avatar">RF</div>
+            <div class="testi-avatar">LE</div>
             <div>
-              <div class="testi-name">Gelato del Sur</div>
-              <div class="testi-role">Montevideo, UY</div>
+              <div class="testi-name">Ladobueno</div>
+              <div class="testi-role">Leonardo · CABA, Argentina</div>
             </div>
           </div>
         </div>
         <div class="testi-card" data-reveal>
           <div class="testi-stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg></div>
-          <p class="testi-quote">&ldquo;Necesitábamos una máquina nueva rápido para abrir el local. El equipo de MAQ.HEL nos asesoró en la elección y hoy funciona perfecto todos los días.&rdquo;</p>
+          <p class="testi-quote">&ldquo;Con la marca estamos súper felices, la máquina un encanto.&rdquo;</p>
           <div class="testi-who">
-            <div class="testi-avatar">SV</div>
+            <div class="testi-avatar">ES</div>
             <div>
-              <div class="testi-name">Heladería La Cremosa</div>
-              <div class="testi-role">Asunción, PY</div>
+              <div class="testi-name">Perlatto</div>
+              <div class="testi-role">Estani · Villa Ballester, Argentina</div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card" data-reveal>
+          <div class="testi-stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg></div>
+          <p class="testi-quote">&ldquo;Más de 10 años compartiendo buenos momentos y crecimiento.&rdquo;</p>
+          <div class="testi-who">
+            <div class="testi-avatar">MA</div>
+            <div>
+              <div class="testi-name">La Cigale</div>
+              <div class="testi-role">Magda · Montevideo, Uruguay</div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card" data-reveal>
+          <div class="testi-stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg></div>
+          <p class="testi-quote">&ldquo;Más que un proveedor, un amigo.&rdquo;</p>
+          <div class="testi-who">
+            <div class="testi-avatar">FE</div>
+            <div>
+              <div class="testi-name">Nueva Roma</div>
+              <div class="testi-role">Fede · Montevideo, Uruguay</div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card" data-reveal>
+          <div class="testi-stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg></div>
+          <p class="testi-quote">&ldquo;Compramos, cumplieron y la máquina impecable. Tal cual lo publicado.&rdquo;</p>
+          <div class="testi-who">
+            <div class="testi-avatar">JO</div>
+            <div>
+              <div class="testi-name">Snow Cream</div>
+              <div class="testi-role">José · Argentina</div>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card" data-reveal>
+          <div class="testi-stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z"/></svg></div>
+          <p class="testi-quote">&ldquo;Empezando en un proyecto nuevo, siempre presente en cada paso. Nos sentimos muy apoyados y acompañados.&rdquo;</p>
+          <div class="testi-who">
+            <div class="testi-avatar">FR</div>
+            <div>
+              <div class="testi-name">Pai Helados</div>
+              <div class="testi-role">Fran · CABA, Argentina</div>
             </div>
           </div>
         </div>
@@ -1023,7 +1071,7 @@
       <div class="brands-grid">
         <div class="brand-card" data-reveal data-marca="technogel" role="button" tabindex="0">
           <div class="glow" style="background:var(--frio-2)"></div>
-          <img class="brand-logo brand-logo-img" src="assets/img/technogel-logo.svg" alt="Technogel">
+          <div class="brand-logo brand-logo-plate"><img class="brand-logo-img" src="assets/img/technogel-logo.svg" alt="Technogel"></div>
           <p>Línea artesanal e industrial completa: fabricadoras, pasteurizadores, maduradores, túneles y líneas llave en mano.</p>
           <div class="tags"><span>Artesanal</span><span>Industrial</span><span>Italia</span></div>
           <div class="arrow">Ver catálogo →</div>
@@ -1037,33 +1085,11 @@
         </div>
         <div class="brand-card" data-reveal data-marca="jit" role="button" tabindex="0">
           <div class="glow" style="background:var(--frio-1)"></div>
-          <img class="brand-logo brand-logo-img" src="assets/img/jit-logo.png" alt="JIT Calderas">
+          <div class="brand-logo brand-logo-plate"><img class="brand-logo-img" src="assets/img/jit-logo.png" alt="JIT Calderas"></div>
           <p>Calderas y generación térmica para líneas de producción, el soporte silencioso de toda la operación.</p>
           <div class="tags"><span>Calderas</span></div>
           <div class="arrow">Ver catálogo →</div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CATEGORIES -->
-  <section class="sec">
-    <div class="wrap">
-      <div class="sec-head" data-reveal>
-        <span class="kicker">Explorar por categoría</span>
-        <h2>Del gramaje artesanal a la línea industrial completa.</h2>
-        <p>Pasá el cursor sobre cada categoría: los íconos se funden, como el helado, para revelar lo que hay dentro.</p>
-      </div>
-
-      <div class="tabs" role="tablist">
-        <button class="tab-btn active" data-tab="artesanal">Artesanal</button>
-        <button class="tab-btn" data-tab="industrial">Industrial</button>
-      </div>
-
-      <div class="cat-grid" data-panel="artesanal">
-        <!-- cards generated below via loop markup -->
-      </div>
-      <div class="cat-grid" data-panel="industrial" style="display:none;">
       </div>
     </div>
   </section>
@@ -1536,7 +1562,7 @@
                 <div class="vd-field"><label>Nombre de la empresa *</label><input type="text" name="empresa" required></div>
                 <div class="vd-field"><label>Nombre de la marca *</label><input type="text" name="marca" required></div>
                 <div class="vd-field"><label>Persona de contacto *</label><input type="text" name="contacto_nombre" required></div>
-                <div class="vd-field"><label>WhatsApp *</label><input type="text" name="whatsapp" required></div>
+                <div class="vd-field"><label>WhatsApp *</label><div class="ld-phone-row"><select id="smCountryCode" class="ld-country-select"></select><input type="text" name="whatsapp_local" required placeholder="Ej: 11 5555-5555"></div></div>
                 <div class="vd-field"><label>Email *</label><input type="email" name="email" required></div>
                 <div class="vd-field"><label>País / Provincia *</label><input type="text" name="pais_provincia" required></div>
                 <div class="vd-field"><label>Sitio web / Instagram <span class="vd-optional-tag">(opcional)</span></label><input type="text" name="sitio" placeholder="https://..."></div>
@@ -1744,7 +1770,7 @@
             <div class="vd-field"><label>País *</label><input type="text" name="pais" value="Argentina" required></div>
             <div class="vd-field"><label>Localidad / Provincia *</label><input type="text" name="localidad" required></div>
             <div class="vd-field"><label>Ubicación <span class="vd-optional-tag">(opcional)</span></label><input type="text" name="ubicacion"></div>
-            <div class="vd-field"><label>WhatsApp *</label><input type="text" name="whatsapp" required></div>
+            <div class="vd-field"><label>WhatsApp *</label><div class="ld-phone-row"><select id="spCountryCode" class="ld-country-select"></select><input type="text" name="whatsapp_local" required placeholder="Ej: 11 5555-5555"></div></div>
             <div class="vd-field"><label>Contacto *</label><input type="text" name="contacto" required></div>
             <div class="vd-field"><label>Email <span class="vd-optional-tag">(opcional)</span></label><input type="email" name="email"></div>
           </div>
@@ -2326,7 +2352,7 @@
       card.querySelectorAll('.vd-field-error').forEach(function(f){ f.classList.remove('vd-field-error'); });
 
       var invalid = [];
-      ['empresa','marca','contacto_nombre','whatsapp','email','pais_provincia'].forEach(function(name){
+      ['empresa','marca','contacto_nombre','whatsapp_local','email','pais_provincia'].forEach(function(name){
         var el = form.querySelector('[name="'+name+'"]');
         if (el && !el.value.trim()) invalid.push(el);
       });
@@ -2366,7 +2392,7 @@
             empresa: fd.get('empresa') || '',
             marca: fd.get('marca') || '',
             contacto_nombre: fd.get('contacto_nombre') || '',
-            whatsapp: fd.get('whatsapp') || '',
+            whatsapp: '+' + document.getElementById('smCountryCode').value + (fd.get('whatsapp_local') || '').replace(/[^\d]/g,''),
             email: fd.get('email') || '',
             pais_provincia: fd.get('pais_provincia') || '',
             sitio: fd.get('sitio') || '',
@@ -2444,21 +2470,6 @@
       '</div>';
     }).join('');
   }
-  renderGrid(document.querySelector('[data-panel="artesanal"]'), artesanal);
-  renderGrid(document.querySelector('[data-panel="industrial"]'), industrial);
-
-  document.querySelectorAll('.tab-btn').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
-      btn.classList.add('active');
-      var target = btn.getAttribute('data-tab');
-      document.querySelectorAll('[data-panel]').forEach(function(p){
-        p.style.display = (p.getAttribute('data-panel') === target) ? 'grid' : 'none';
-      });
-      observeReveal();
-    });
-  });
-
   // ---- listings (ilustrados + publicados por usuarios vía el formulario "Vender") ----
   var listingsBase = [
     {id:'demo-1', t:'Fabricadora Technogel B75', p:'USD 8.900', loc:'Córdoba, AR', cond:'Usada · Excelente', g:['#1078D6','#0C3FA0'], cat:'Fabricadoras', tag:'Hace 3 h', img:null,
@@ -2630,13 +2641,14 @@
     {c:'34', f:'🇪🇸', n:'España'},
     {c:'39', f:'🇮🇹', n:'Italia'}
   ];
-  (function fillCountrySelect(){
-    var sel = document.getElementById('ldCountryCode');
+  function fillCountrySelect(id){
+    var sel = document.getElementById(id);
     if (!sel) return;
     sel.innerHTML = LD_COUNTRIES.map(function(c){
       return '<option value="'+c.c+'">'+c.f+' +'+c.c+'</option>';
     }).join('');
-  })();
+  }
+  ['ldCountryCode','smCountryCode','spCountryCode'].forEach(fillCountrySelect);
 
   function ldPlaceholderBg(l){
     var c = (l.g && l.g[0]) ? l.g[0] : '#1078D6';
@@ -3102,7 +3114,7 @@
   spForm.addEventListener('submit', function(e){
     e.preventDefault();
     var invalid = [];
-    ['empresa','pais','localidad','whatsapp','contacto'].forEach(function(name){
+    ['empresa','pais','localidad','whatsapp_local','contacto'].forEach(function(name){
       var el = spForm.querySelector('[name="'+name+'"]');
       if (el && !el.value.trim()) invalid.push(el);
     });
@@ -3115,7 +3127,7 @@
     var lead = {
       status: 'new',
       empresa: fd.get('empresa') || '', pais: fd.get('pais') || '', localidad: fd.get('localidad') || '',
-      ubicacion: fd.get('ubicacion') || '', whatsapp: fd.get('whatsapp') || '', contacto: fd.get('contacto') || '',
+      ubicacion: fd.get('ubicacion') || '', whatsapp: '+' + document.getElementById('spCountryCode').value + (fd.get('whatsapp_local') || '').replace(/[^\d]/g,''), contacto: fd.get('contacto') || '',
       email: fd.get('email') || '', comentarios: fd.get('comentarios') || '',
       maquina: spCurrent ? spCurrent.producto.titulo : '', marca: spCurrent ? spCurrent.brand.nombre : ''
     };
