@@ -1424,7 +1424,7 @@
         <div class="about-photo-stack">
           <div class="row">
             <span class="dot-ic"><svg viewBox="0 0 24 24" fill="none"><path d="M4 20V10M10 20V4M16 20V13M22 20V7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-            <div><h4>+520 máquinas vendidas</h4><p>Entre representación oficial y marketplace de usadas.</p></div>
+            <div><h4>+780 máquinas vendidas</h4><p>Entre representación oficial y marketplace de usadas.</p></div>
           </div>
           <div class="row">
             <span class="dot-ic"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M3 12h18M12 3c2.5 2.6 4 6 4 9s-1.5 6.4-4 9c-2.5-2.6-4-6-4-9s1.5-6.4 4-9z" stroke="currentColor" stroke-width="1.6"/></svg></span>
@@ -1821,7 +1821,7 @@
 
         <!-- VISTA 2: seña confirmada -> contacto directo por WhatsApp (no mostramos -->
     <!-- los datos del vendedor como texto en la página, solo se comparten vía chat) -->
-    <div class="ld-view ld-view-single" id="ldViewSeller" hidden>
+    <div class="ld-view ld-view-single" id="ldViewSeller" hidden style="display:none">
       <div class="ld-seller-box">
         <span class="ld-badge" style="background:linear-gradient(135deg,#1078D6,#0C3FA0);color:var(--noche);">✓ Seña recibida</span>
         <h3>¡Listo! Ya podés contactar al vendedor</h3>
@@ -2692,8 +2692,8 @@
       // no podemos armar un link de WhatsApp automático en ese caso.
       waBtn.style.display = 'none';
     }
-    ldViewInfo.hidden = true;
-    ldViewSeller.hidden = false;
+    ldViewInfo.style.display = 'none';
+    ldViewSeller.style.display = 'block';
   }
 
   function openListingDetail(l){
@@ -2740,8 +2740,8 @@
       payLink.classList.remove('btn-ghost');
     }
 
-    ldViewInfo.hidden = false;
-    ldViewSeller.hidden = true;
+    ldViewInfo.style.display = '';
+    ldViewSeller.style.display = 'none';
     ldOverlay.classList.add('is-open');
     ldOverlay.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -3266,7 +3266,17 @@
   observeReveal();
 
   // ---- count up stats ----
-  var targets = [520, 1300, 20, 4];
+  // base fijo (historial previo a la página) + lo que se suma solo desde
+  // Supabase a medida que se reservan máquinas y llegan consultas de precio
+  var STATS_BASE_VENDIDAS = 780;
+  var STATS_BASE_ASESORADOS = 2430;
+  var targets = [STATS_BASE_VENDIDAS, STATS_BASE_ASESORADOS, 20, 4];
+  window.mhSupabase.from('public_stats').select('*').single().then(function(res){
+    if (res.data){
+      targets[0] = STATS_BASE_VENDIDAS + (res.data.machines_sold || 0);
+      targets[1] = STATS_BASE_ASESORADOS + (res.data.clients_advised || 0);
+    }
+  });
   var nums = document.querySelectorAll('.stat .num');
   var counted = false;
   var statsIO = new IntersectionObserver(function(entries){
