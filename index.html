@@ -260,13 +260,14 @@
   @media(max-width:980px){.hero-blob-wrap{width:360px;height:360px;left:-22%;opacity:.6;}}
   @media(max-width:680px){.hero-blob-wrap{width:260px;height:260px;left:-28%;top:-6%;}}
 
-  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:32px;align-items:stretch;position:relative;z-index:3;min-height:0;}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;grid-template-rows:auto auto;gap:8px 32px;align-items:stretch;position:relative;z-index:3;min-height:0;}
   @media(max-width:980px){.hero-grid{grid-template-columns:1fr;}}
-  .hero-text{max-width:680px;position:relative;z-index:2;padding-right:10px;display:flex;flex-direction:column;justify-content:center;}
-  .hero-actions{position:relative;z-index:4;}
+  .hero-text{grid-column:1;grid-row:1;max-width:680px;position:relative;z-index:2;padding-right:10px;display:flex;flex-direction:column;justify-content:center;}
+  .hero-actions{grid-column:1 / -1;grid-row:2;position:relative;z-index:4;align-self:start;margin-top:10px;}
+  @media(max-width:980px){.hero-text,.hero-actions{grid-column:1;}}
 
-  .hero-media{position:relative;overflow:visible;aspect-ratio:512/807;max-height:640px;padding:28px 22px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;margin:0 auto;}
-  @media(max-width:980px){.hero-media{order:-1;max-height:420px;padding:20px 46px;}}
+  .hero-media{grid-column:2;grid-row:1;position:relative;overflow:visible;aspect-ratio:512/807;max-height:520px;padding:20px 22px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;margin:0 auto;}
+  @media(max-width:980px){.hero-media{grid-column:1;order:-1;max-height:420px;padding:20px 46px;}}
   @media(max-width:560px){.hero-media{max-height:340px;padding:14px 40px;}}
   .hero-media img{position:relative;width:100%;height:100%;object-fit:contain;display:block;z-index:2;
     filter:drop-shadow(0 30px 34px rgba(0,0,0,.55)) drop-shadow(0 6px 10px rgba(0,0,0,.4));}
@@ -901,23 +902,6 @@
       <div class="hero-text">
         <span class="eyebrow"><b>Marketplace en vivo</b> · Argentina / Uruguay · próximamente Paraguay y Bolivia</span>
         <h1>Comprá.<br>Vendé.<br><span class="grad">Crecé.</span></h1>
-        <div class="hero-actions">
-          <a href="#nueva" class="action-card nueva">
-            <span class="a-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 9l8-5 8 5v10a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1V9z" fill="currentColor"/></svg></span>
-            <span class="a-text"><strong>Máquinas nuevas</strong><small>Technogel · Dualmet · JIT</small></span>
-            <span class="a-arrow">→</span>
-          </a>
-          <a href="#usada" class="action-card usada">
-            <span class="a-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="18" cy="20" r="1.4" fill="currentColor"/><path d="M2 3h2l2.6 12.4a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></span>
-            <span class="a-text"><strong>Máquinas usadas</strong><small>Publicadas por heladeros</small></span>
-            <span class="a-arrow">→</span>
-          </a>
-          <a href="#vender" class="action-card publicar">
-            <span class="a-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4M7 9l5-5 5 5M5 20h14" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            <span class="a-text"><strong>Publicar mi máquina</strong><small>Gratis, en minutos</small></span>
-            <span class="a-arrow">→</span>
-          </a>
-        </div>
         <p class="sub sub-repeat">El marketplace de máquinas de helado.<br>Publicá la tuya o encontrá la próxima, sin intermediarios<br>Con veinte años de trayectoria en el mercado</p>
         <div class="trust-row">
           <span>Representantes oficiales TECHNOGEL · DUALMET · JIT · ARTUROS</span>
@@ -926,6 +910,23 @@
       </div>
       <div class="hero-media">
         <img src="assets/img/catalogo/nobg/explorer-hero.png" alt="Fabricadora continua Technogel Explorer">
+      </div>
+      <div class="hero-actions">
+        <a href="#nueva" class="action-card nueva">
+          <span class="a-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 9l8-5 8 5v10a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1V9z" fill="currentColor"/></svg></span>
+          <span class="a-text"><strong>Máquinas nuevas</strong><small>Technogel · Dualmet · JIT</small></span>
+          <span class="a-arrow">→</span>
+        </a>
+        <a href="#usada" class="action-card usada">
+          <span class="a-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="20" r="1.4" fill="currentColor"/><circle cx="18" cy="20" r="1.4" fill="currentColor"/><path d="M2 3h2l2.6 12.4a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></span>
+          <span class="a-text"><strong>Máquinas usadas</strong><small>Publicadas por heladeros</small></span>
+          <span class="a-arrow">→</span>
+        </a>
+        <a href="#vender" class="action-card publicar">
+          <span class="a-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4M7 9l5-5 5 5M5 20h14" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="a-text"><strong>Publicar mi máquina</strong><small>Gratis, en minutos</small></span>
+          <span class="a-arrow">→</span>
+        </a>
       </div>
     </div>
   </section>
@@ -3121,7 +3122,7 @@
     } else {
       grid.innerHTML = productos.map(function(p){
         var bg = p.img
-          ? ('background-image:url(' + p.img + ');background-size:contain;background-repeat:no-repeat;background-position:center;')
+          ? ('background-image:url(' + p.img + '), radial-gradient(circle at 42% 38%,' + p.g[0] + '77,' + (p.g[1]||p.g[0]) + '22 55%,transparent 75%);background-size:contain,cover;background-repeat:no-repeat,no-repeat;background-position:center,center;')
           : ('background:linear-gradient(135deg,' + p.g[0] + ',#0F1B2E 75%);');
         return '<div class="mk-product-card" data-id="'+p.id+'">'+
           '<div class="mp-shot" style="'+bg+'"><span class="mp-badge">'+p.catLabel+'</span></div>'+
@@ -3154,7 +3155,7 @@
     if (!productos.length){ track.innerHTML = ''; return; }
     var html = productos.map(function(p){
       var bg = p.img
-        ? ('background-image:url(' + p.img + ');background-size:contain;background-repeat:no-repeat;background-position:center;')
+        ? ('background-image:url(' + p.img + '), radial-gradient(circle at 42% 38%,' + p.g[0] + '77,' + (p.g[1]||p.g[0]) + '22 55%,transparent 75%);background-size:contain,cover;background-repeat:no-repeat,no-repeat;background-position:center,center;')
         : ('background:linear-gradient(135deg,' + p.g[0] + ',#14161A 75%);');
       return '<div class="live-card" data-id="'+p.id+'" role="button" tabindex="0">'+
         '<div class="shot" style="'+bg+'"><span class="tag">'+p.catLabel+'</span></div>'+
@@ -3191,7 +3192,7 @@
 
     var main = document.getElementById('pfMainPhoto');
     if (p.img){
-      main.style.cssText = 'background-image:url(' + p.img + ');background-size:contain;background-repeat:no-repeat;background-position:center;';
+      main.style.cssText = 'background-image:url(' + p.img + '), radial-gradient(circle at 42% 38%,' + p.g[0] + '77,' + (p.g[1]||p.g[0]) + '22 55%,transparent 75%);background-size:contain,cover;background-repeat:no-repeat,no-repeat;background-position:center,center;';
     } else {
       main.style.cssText = 'background:linear-gradient(150deg,' + p.g[0] + ',#0F1B2E 80%);';
     }
