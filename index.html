@@ -260,24 +260,25 @@
   @media(max-width:980px){.hero-blob-wrap{width:360px;height:360px;left:-22%;opacity:.6;}}
   @media(max-width:680px){.hero-blob-wrap{width:260px;height:260px;left:-28%;top:-6%;}}
 
-  .hero-grid{display:grid;grid-template-columns:1fr;gap:32px;align-items:stretch;position:relative;z-index:3;min-height:0;}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:32px;align-items:stretch;position:relative;z-index:3;min-height:0;}
+  @media(max-width:980px){.hero-grid{grid-template-columns:1fr;}}
   .hero-text{max-width:680px;position:relative;z-index:2;padding-right:10px;display:flex;flex-direction:column;justify-content:center;}
   .hero-actions{position:relative;z-index:4;}
 
-  .hero-media{position:relative;border-radius:24px;overflow:hidden;background:transparent;margin:8px -32px 8px 0;filter:brightness(.88) contrast(1.08) saturate(.92);
-  }
-  @media(max-width:1180px){.hero-media{margin:8px -20px 8px 0;}}
-  @media(max-width:980px){.hero-media{margin:0;aspect-ratio:16/9;-webkit-mask-image:none;mask-image:none;filter:brightness(.9) contrast(1.06) saturate(.94);}}
-  .hero-media video,.hero-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
-  .hero-media::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 68% 45%, rgba(16,120,214,.14), transparent 60%);z-index:1;pointer-events:none;mix-blend-mode:screen;}
-  .hero-media::after{content:'';position:absolute;inset:0;
-    background:
-      radial-gradient(ellipse 130% 100% at 50% 50%, transparent 55%, rgba(4,5,7,.4) 100%),
-      linear-gradient(180deg,rgba(4,5,7,0) 55%,rgba(4,5,7,.5) 100%),
-      linear-gradient(90deg,rgba(10,11,13,.96) 0%,rgba(10,11,13,.6) 22%,rgba(10,11,13,.15) 40%,rgba(10,11,13,0) 55%);
-    pointer-events:none;}
-  .hero-media .hm-caption{position:absolute;left:16px;bottom:14px;z-index:2;font-family:'IBM Plex Mono';font-size:.7rem;color:var(--hielo);background:rgba(10,11,13,.55);backdrop-filter:blur(6px);padding:6px 13px;border-radius:100px;border:1px solid rgba(255,255,255,.14);}
-  @media(max-width:980px){.hero-media{aspect-ratio:16/10;order:-1;-webkit-mask-image:none;mask-image:none;}}
+  .hero-media{position:relative;overflow:visible;aspect-ratio:512/807;max-height:640px;padding:28px 22px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;margin:0 auto;}
+  @media(max-width:980px){.hero-media{order:-1;max-height:420px;padding:20px 46px;}}
+  @media(max-width:560px){.hero-media{max-height:340px;padding:14px 40px;}}
+  .hero-media img{position:relative;width:100%;height:100%;object-fit:contain;display:block;z-index:2;
+    filter:drop-shadow(0 30px 34px rgba(0,0,0,.55)) drop-shadow(0 6px 10px rgba(0,0,0,.4));}
+  .hero-media::before{content:'';position:absolute;z-index:0;pointer-events:none;
+    left:8%;top:6%;width:84%;height:88%;border-radius:50%;
+    background:radial-gradient(circle at 42% 36%, rgba(16,120,214,.4), rgba(236,72,120,.22) 52%, transparent 72%);
+    filter:blur(46px);}
+  .hero-media::after{content:'';position:absolute;z-index:1;pointer-events:none;
+    left:50%;bottom:6%;width:58%;height:30px;transform:translateX(-50%);
+    background:radial-gradient(ellipse at center, rgba(0,0,0,.5), transparent 72%);
+    filter:blur(4px);}
+  .hero-media .hm-caption{position:absolute;left:16px;bottom:14px;z-index:3;font-family:'IBM Plex Mono';font-size:.7rem;color:var(--hielo);background:rgba(10,11,13,.55);backdrop-filter:blur(6px);padding:6px 13px;border-radius:100px;border:1px solid rgba(255,255,255,.14);}
 
   .hero .content{position:relative;z-index:3;max-width:900px;}
   .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border:1px solid var(--line);border-radius:100px;color:var(--muted);font-size:.74rem;letter-spacing:.05em;text-transform:uppercase;margin-bottom:30px;white-space:nowrap;background:rgba(10,11,13,.35);backdrop-filter:blur(4px);}
@@ -922,6 +923,9 @@
           <span>Representantes oficiales TECHNOGEL · DUALMET · JIT · ARTUROS</span>
           <span>Operando en AR · UY · PY · BO</span>
         </div>
+      </div>
+      <div class="hero-media">
+        <img src="assets/img/catalogo/nobg/explorer-hero.png" alt="Fabricadora continua Technogel Explorer">
       </div>
     </div>
   </section>
@@ -1677,9 +1681,7 @@
         <div class="pf-layout">
           <!-- galería / visualizador -->
           <div class="pf-gallery">
-            <div class="pf-main-photo" id="pfMainPhoto">
-              <span class="pf-360-hint">↻ Arrastrá para girar (próximamente, visualizador 360°)</span>
-            </div>
+            <div class="pf-main-photo" id="pfMainPhoto"></div>
             <div class="pf-thumbs" id="pfThumbs"></div>
           </div>
 
