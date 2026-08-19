@@ -812,10 +812,10 @@
   /* ===== FICHA DE PRODUCTO ===== */
   .pf-layout{display:grid;grid-template-columns:1.1fr 1fr;gap:52px;align-items:start;margin-top:24px;}
   @media(max-width:880px){.pf-layout{grid-template-columns:1fr;gap:28px;}}
-  .pf-main-photo{width:100%;aspect-ratio:4/3;border-radius:22px;background:linear-gradient(150deg,var(--panel-2),var(--acero));position:relative;display:flex;align-items:flex-end;justify-content:center;padding-bottom:18px;background-size:cover;background-position:center;border:1px solid var(--line);}
+  .pf-main-photo{width:100%;aspect-ratio:4/3;border-radius:22px;background:linear-gradient(150deg,var(--panel-2),var(--acero));position:relative;display:flex;align-items:flex-end;justify-content:center;padding-bottom:18px;background-size:contain;background-repeat:no-repeat;background-position:center;border:1px solid var(--line);}
   .pf-360-hint{font-family:'IBM Plex Mono';font-size:.72rem;color:var(--muted);background:rgba(10,11,13,.55);backdrop-filter:blur(6px);border:1px solid var(--line);padding:7px 14px;border-radius:100px;}
   .pf-thumbs{display:flex;gap:10px;margin-top:14px;overflow-x:auto;}
-  .pf-thumb{flex:0 0 auto;width:76px;height:76px;border-radius:12px;background-size:cover;background-position:center;border:2px solid transparent;cursor:pointer;opacity:.6;transition:opacity .2s,border-color .2s;background-color:var(--panel-2);}
+  .pf-thumb{flex:0 0 auto;width:76px;height:76px;border-radius:12px;background-size:contain;background-repeat:no-repeat;background-position:center;border:2px solid transparent;cursor:pointer;opacity:.6;transition:opacity .2s,border-color .2s;background-color:var(--panel-2);}
   .pf-thumb:hover{opacity:1;}
   .pf-thumb.is-active{opacity:1;border-color:var(--frio-1);}
   .pf-badge{display:inline-block;font-family:'IBM Plex Mono';font-size:.7rem;padding:5px 12px;border-radius:100px;background:rgba(16,120,214,.12);color:var(--frio-1);border:1px solid rgba(16,120,214,.3);margin-bottom:14px;margin-right:8px;}
@@ -2894,6 +2894,16 @@
     }
   };
 
+  // dentro de la página de una marca ya se sabe cuál es, así que sacamos el
+  // nombre de marca repetido al principio del título del producto (ej. el
+  // dato dice "Technogel Mixpasto" y acá se muestra solo "Mixpasto")
+  function stripBrandPrefix(titulo, marca){
+    var brand = brandsData[marca];
+    if (!brand || !titulo) return titulo;
+    var re = new RegExp('^' + brand.nombre + '\\s+', 'i');
+    return titulo.replace(re, '');
+  }
+
   // Datos de ejemplo — características a confirmar con el catálogo oficial Technogel.
   var catalogoNuevo = [
     {id:'mixworking-batch', marca:'technogel', cat:'pasteurizadores', catLabel:'Planta de pasteurización',
@@ -3054,11 +3064,11 @@
     } else {
       grid.innerHTML = productos.map(function(p){
         var bg = p.img
-          ? ('background-image:url(' + p.img + ');background-size:cover;background-position:center;')
+          ? ('background-image:url(' + p.img + ');background-size:contain;background-repeat:no-repeat;background-position:center;')
           : ('background:linear-gradient(135deg,' + p.g[0] + ',#0F1B2E 75%);');
         return '<div class="mk-product-card" data-id="'+p.id+'">'+
           '<div class="mp-shot" style="'+bg+'"><span class="mp-badge">'+p.catLabel+'</span></div>'+
-          '<div class="mp-body"><span>'+brand.nombre+'</span><h4>'+p.titulo+'</h4><p>'+p.subtitulo+'</p><div class="mp-cta">Ver ficha técnica →</div></div>'+
+          '<div class="mp-body"><span>'+brand.nombre+'</span><h4>'+stripBrandPrefix(p.titulo, p.marca)+'</h4><p>'+p.subtitulo+'</p><div class="mp-cta">Ver ficha técnica →</div></div>'+
         '</div>';
       }).join('');
       grid.querySelectorAll('.mk-product-card').forEach(function(card){
@@ -3084,13 +3094,13 @@
 
     document.getElementById('pfCategoria').textContent = p.catLabel;
     document.getElementById('pfMarca').textContent = brand.nombre;
-    document.getElementById('pfTitulo').textContent = p.titulo;
+    document.getElementById('pfTitulo').textContent = stripBrandPrefix(p.titulo, p.marca);
     document.getElementById('pfSubtitulo').textContent = p.subtitulo;
     document.getElementById('pfBackMarca').href = '#marca-' + p.marca;
 
     var main = document.getElementById('pfMainPhoto');
     if (p.img){
-      main.style.cssText = 'background-image:url(' + p.img + ');background-size:cover;background-position:center;';
+      main.style.cssText = 'background-image:url(' + p.img + ');background-size:contain;background-repeat:no-repeat;background-position:center;';
     } else {
       main.style.cssText = 'background:linear-gradient(150deg,' + p.g[0] + ',#0F1B2E 80%);';
     }
