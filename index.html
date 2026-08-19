@@ -1629,20 +1629,20 @@
       </div>
     </section>
 
-    <section class="sec" style="padding-top:10px;">
+    <section class="sec" id="mkCatSection" style="padding-top:10px;">
       <div class="wrap">
         <div class="sec-head" data-reveal>
           <span class="kicker">Explorar por categoría</span>
           <h2>Elegí la línea de producción que necesitás.</h2>
         </div>
-        <div class="tabs" role="tablist" id="mkTabs"></div>
         <div class="cat-grid" id="mkCatGrid"></div>
       </div>
     </section>
 
-    <section class="sec" style="padding-top:0;">
+    <section class="sec" id="mkProductsSection" style="padding-top:0;">
       <div class="wrap">
         <div class="sec-head" data-reveal>
+          <a href="#" id="mkCatBack" class="vd-back" style="display:none;margin-bottom:14px;">← Ver todas las categorías</a>
           <span class="kicker">Modelos destacados</span>
           <h2 id="mkModelosTitle">Algunos de los equipos Technogel disponibles.</h2>
         </div>
@@ -1891,7 +1891,9 @@
       showAppPage('page-sumar-marca', true);
     } else if (h.indexOf('marca-') === 0){
       showAppPage('page-marca', true);
-      renderMarcaLanding(h.replace('marca-', ''));
+      var restoMarca = h.replace('marca-', '');
+      var partesMarca = restoMarca.split('--');
+      renderMarcaLanding(partesMarca[0], partesMarca[1] || null);
     } else if (h.indexOf('producto-') === 0){
       showAppPage('page-producto', true);
       renderProductoFicha(h.replace('producto-', ''));
@@ -2382,28 +2384,27 @@
     tuneles: '<path d="M4 18v-5a8 8 0 0 1 16 0v5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 18h16" stroke="currentColor" stroke-width="2"/>',
     robots: '<rect x="6" y="8" width="12" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9.5" cy="12.5" r="1" fill="currentColor"/><circle cx="14.5" cy="12.5" r="1" fill="currentColor"/><path d="M12 8V5m-3-1h6" stroke="currentColor" stroke-width="2"/>',
     llenadoras: '<path d="M12 3v7M8 10h8l-1.5 9a2 2 0 0 1-2 1.7h-1a2 2 0 0 1-2-1.7L8 10z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
-    lineas: '<circle cx="5" cy="12" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="19" cy="12" r="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 12h3M14 12h3" stroke="currentColor" stroke-width="2"/>'
+    lineas: '<circle cx="5" cy="12" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="19" cy="12" r="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 12h3M14 12h3" stroke="currentColor" stroke-width="2"/>',
+    paletera: '<rect x="10" y="3" width="4" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 13v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'
   };
 
-  var artesanal = [
-    {k:'fabricadoras', t:'Fabricadoras', d:'El corazón de la producción artesanal.', c:['#1078D6','#0C3FA0','#0B4A6B']},
-    {k:'pasteurizadores', t:'Pasteurizadores', d:'Seguridad y textura desde la base.', c:['#7DD3E8','#38BDF8','#1a3040']},
-    {k:'maduradores', t:'Maduradores', d:'Tiempo controlado, sabor consistente.', c:['#1078D6','#38BDF8','#0B4A6B']},
+  // categorías reales del catálogo Technogel — cada una lleva a su propia
+  // vista filtrada dentro de la página de la marca (ver renderMarcaLanding)
+  var technogelCategorias = [
+    {k:'fabricadoras', t:'Fabricadoras', d:'El corazón de la producción artesanal e industrial.', c:['#1078D6','#0C3FA0','#0B4A6B']},
+    {k:'pasteurizadores', t:'Pasteurizador', d:'Seguridad y textura desde la base.', c:['#7DD3E8','#38BDF8','#1a3040']},
+    {k:'pasto-productora', t:'Pasto-productora', d:'Pasteuriza y mantequea en una sola máquina.', c:['#EC4878','#C23361','#3a0e1a']},
+    {k:'cremera', t:'Cremera', d:'Crema batida en acero inoxidable.', c:['#1078D6','#38BDF8','#0B4A6B']},
+    {k:'plantas-pasteurizacion', t:'Plantas de pasteurización', d:'Producción continua a gran escala.', c:['#1078D6','#0C3FA0','#0B4A6B']},
+    {k:'sembradora-fruta', t:'Sembradora de fruta', d:'Dosificación de frutas e ingredientes sólidos.', c:['#EC4878','#C23361','#3a0e1a']},
+    {k:'sembradora-salsa', t:'Sembradora de salsa', d:'Inyección de salsas al flujo de helado.', c:['#EC4878','#F5A9C4','#3a0e1a']},
     {k:'homogeneizadores', t:'Homogeneizadores', d:'Cremosidad pareja en cada litro.', c:['#98A4B4','#5E7188','#1a2433']},
-    {k:'dosificadores', t:'Dosificadores', d:'Precisión al servir, sin desperdicio.', c:['#38BDF8','#1078D6','#0B4A6B']},
-    {k:'accesorios', t:'Accesorios', d:'Los detalles que completan la línea.', c:['#98A4B4','#5E7188','#1a2433']},
-    {k:'repuestos', t:'Repuestos', d:'Tu máquina, siempre en marcha.', c:['#98A4B4','#48505C','#1a2433']},
+    {k:'llenadoras', t:'Llenadoras automáticas', d:'Envasado rápido y exacto, incluso robotizado.', c:['#1078D6','#38BDF8','#0B4A6B']},
+    {k:'paletera', t:'Palitera automática', d:'Helado y ghiaccioli en palito.', c:['#0C3FA0','#1078D6','#0B4A6B']},
+    {k:'tunnel', t:'Túnel de congelamiento', d:'Frío profundo para grandes lotes.', c:['#38BDF8','#1078D6','#0B4A6B']},
+    {k:'otras', t:'Otros equipos', d:'Tinas, torres, bancos de agua y más.', c:['#98A4B4','#5E7188','#1a2433']}
   ];
-  var industrial = [
-    {k:'cocinas', t:'Cocinas', d:'Preparación a escala industrial.', c:['#98A4B4','#5E7188','#1a2433']},
-    {k:'continuas', t:'Continuas', d:'Producción sin pausas, alto volumen.', c:['#1078D6','#0C3FA0','#0B4A6B']},
-    {k:'tuneles', t:'Túneles', d:'Frío profundo para grandes lotes.', c:['#38BDF8','#1078D6','#0B4A6B']},
-    {k:'robots', t:'Robots', d:'Automatización de punta a punta.', c:['#7DD3E8','#38BDF8','#1a3040']},
-    {k:'llenadoras', t:'Llenadoras', d:'Envasado rápido y exacto.', c:['#1078D6','#38BDF8','#0B4A6B']},
-    {k:'dosificadores', t:'Dosificadores', d:'Precisión al servir, sin desperdicio.', c:['#38BDF8','#1078D6','#0B4A6B']},
-    {k:'lineas', t:'Líneas completas', d:'Toda la planta, un solo proveedor.', c:['#98A4B4','#5E7188','#1a2433']},
-    {k:'repuestos', t:'Repuestos', d:'Tu línea, siempre en marcha.', c:['#98A4B4','#48505C','#1a2433']},
-  ];
+
 
   function renderGrid(el, data){
     el.innerHTML = data.map(function(item){
@@ -2889,32 +2890,32 @@
       img: 'assets/img/catalogo/mixcrema.jpg',
       g:['#1078D6','#0C3FA0'],
       specs:[['Capacidad','15–35 / 30–60 l'],['Potencia','6,5 / 7,5 kW'],['Condensación','Agua']]},
-    {id:'mixgel', marca:'technogel', cat:'fabricadoras', catLabel:'Pasto-productora (pasteurizador + mantecadora)',
+    {id:'mixgel', marca:'technogel', cat:'pasto-productora', catLabel:'Pasto-productora (pasteurizador + mantecadora)',
       titulo:'Technogel Mixgel 30E/50E', subtitulo:'Laboratorio completo para pasteurizar y mantecar la mezcla en una única máquina. Ideal para heladerías con espacio reducido que no quieren resignar calidad artesanal.',
       img: 'assets/img/catalogo/mixgel.jpg',
       g:['#EC4878','#C23361'],
       specs:[['Capacidad','2–9 l'],['Producción horaria','22–30 / 38–50 kg'],['Potencia','8,5 / 10,3 kW'],['Cámaras','Dos independientes: pasteurizado o mantecado por separado']]},
-    {id:'technowhip', marca:'technogel', cat:'otras', catLabel:'Cremera (montapanna)',
+    {id:'technowhip', marca:'technogel', cat:'cremera', catLabel:'Cremera (montapanna)',
       titulo:'Technogel Technowhip 2 Eco/2 Star', subtitulo:'Máquina para crema batida en acero inoxidable, con bomba a engranajes y sistema de regulación de aire. El trefilador es una pieza única para nata fresca o de larga conservación.',
       img: 'assets/img/catalogo/technowhip.jpg',
       g:['#1078D6','#38BDF8'],
       specs:[['Capacidad','2 / 3 l'],['Producción de crema','65 / 95 l/h'],['Potencia','0,6 / 0,8 kW']]},
-    {id:'mixworking-batch', marca:'technogel', cat:'pasteurizadores', catLabel:'Planta de pasteurización (batch)',
+    {id:'mixworking-batch', marca:'technogel', cat:'plantas-pasteurizacion', catLabel:'Planta de pasteurización (batch)',
       titulo:'Technogel Mixworking Batch TS', subtitulo:'Planta continua de pasteurización, homogeneización y enfriamiento instantáneo del mix. Disponible en 4 capacidades: 150, 300, 600 y 1200 litros.',
       img: 'assets/img/catalogo/mixworking-batch.jpg',
       g:['#1078D6','#0C3FA0'],
       specs:[['Producción','150 a 1200 l/h según modelo'],['Composición','2 tinas de maduración y pasteurización, bomba de trasbase y filtro, homogeneizador, placa de enfriamiento, cuadro eléctrico'],['Potencia','4,5 a 15,5 kW según modelo'],['Dimensiones','3300×1800×1300 mm (150) a 5600×1900×1600 mm (1200)']]},
-    {id:'mixworking-htst', marca:'technogel', cat:'pasteurizadores', catLabel:'Planta de pasteurización HTST',
+    {id:'mixworking-htst', marca:'technogel', cat:'plantas-pasteurizacion', catLabel:'Planta de pasteurización HTST',
       titulo:'Technogel Mixworking HTST TS', subtitulo:'Planta continua de pasteurización HTST (alta temperatura, corto tiempo) para grandes volúmenes. Disponible de 600 a 6000 litros/hora.',
       img: 'assets/img/catalogo/mixworking-htst.jpg',
       g:['#0C3FA0','#1078D6'],
       specs:[['Producción','600 a 6000 l/h según modelo'],['Composición','Depósito de precalentamiento, bomba centrífuga de doble filtro, intercambiador a placas, sección tubular, homogeneizador'],['Potencia','21,7 a 82 kW según modelo'],['Dimensiones','6500×1800×1800 mm (600) a 13500×2300×4300 mm (6000)']]},
-    {id:'fruit-feeder', marca:'technogel', cat:'otras', catLabel:'Sembradora de fruta',
+    {id:'fruit-feeder', marca:'technogel', cat:'sembradora-fruta', catLabel:'Sembradora de fruta',
       titulo:'Technogel Fruit Feeder FF10E–FF30B', subtitulo:'Dispensador de fruta e ingredientes sólidos, con dosificación mediante rotor de pistón alterno. Reconocido mundialmente por su tecnología y fiabilidad.',
       img: 'assets/img/catalogo/fruit-feeder.jpg',
       g:['#EC4878','#C23361'],
       specs:[['Producción','300 a 5000 l/h según modelo'],['Potencia','2 a 3,9 kW según modelo'],['Modelos','FF10E, FF20E, FF30E, FF20B, FF30B']]},
-    {id:'ripple-pump', marca:'technogel', cat:'otras', catLabel:'Sembradora de salsa',
+    {id:'ripple-pump', marca:'technogel', cat:'sembradora-salsa', catLabel:'Sembradora de salsa',
       titulo:'Technogel Ripple Pump 1L/7L', subtitulo:'Bomba volumétrica neumática para inyectar salsas al flujo de helado, aplicada directamente a la salida del freezer. Densidad de trabajo de 1.000 a 20.000 centipoise.',
       img: 'assets/img/catalogo/ripple-pump.jpg',
       g:['#EC4878','#F5A9C4'],
@@ -2949,17 +2950,17 @@
       img: 'assets/img/catalogo/filler-desk.jpg',
       g:['#0C3FA0','#38BDF8'],
       specs:[['Capacidad','Envases de 0,5 a 5 l'],['Estructura','Acero inoxidable'],['Uso','Dosificación con variegado interno y externo']]},
-    {id:'polostick', marca:'technogel', cat:'otras', catLabel:'Palitera automática',
+    {id:'polostick', marca:'technogel', cat:'paletera', catLabel:'Palitera automática',
       titulo:'Technogel Polostick 500/1000', subtitulo:'Máquina completa para la producción de ghiaccioli y helado en palito, con capacidad de hasta 1000 piezas por hora. Incluye moldes múltiples con extractores y vasqueta de descongelado.',
       img: 'assets/img/catalogo/polostick.jpg',
       g:['#0C3FA0','#1078D6'],
       specs:[['Capacidad','Hasta 1000 piezas/hora'],['Sistema','Refrigeración por líquido refrigerante'],['Incluye','Moldes múltiples con extractores, tapas y tina de descongelado']]},
-    {id:'technostick', marca:'technogel', cat:'otras', catLabel:'Palitera automática',
+    {id:'technostick', marca:'technogel', cat:'paletera', catLabel:'Palitera automática',
       titulo:'Technogel Technostick', subtitulo:'Equipo rotativo automático para producir palitos de crema y de agua, con estaciones de trabajo sincronizadas y movimientos totalmente automáticos. Disponible en 5 versiones según cantidad de filas de moldes.',
       img: 'assets/img/catalogo/technostick.jpg',
       g:['#1078D6','#38BDF8'],
       specs:[['Versiones','5 modelos: moldes de 4, 6, 10, 12 o 14 filas'],['Refrigerante','Compatible con Freón o Amoníaco'],['Productos','Helado de palo, lollypops, con cobertura de chocolate, con crocante de nueces, shell & core']]},
-    {id:'technotunnel', marca:'technogel', cat:'continuas', catLabel:'Túnel de congelamiento',
+    {id:'technotunnel', marca:'technogel', cat:'tunnel', catLabel:'Túnel de congelamiento',
       titulo:'Technogel Technotunnel T600/T800/T1000/T1800', subtitulo:'Línea de extrusión a bandejas para producción, congelamiento y envasado automático de helados: palitos, conos, sándwiches, barras y tortas. El T1800 incorpora doble fila con recolección robotizada.',
       img: 'assets/img/catalogo/technotunnel-web.jpg',
       g:['#38BDF8','#1078D6'],
@@ -2993,7 +2994,7 @@
       specs:[['Potencia útil','15.000 a 80.000 kcal/h según modelo (C15, C20, C30, C40, C50, C70, C80)'],['Dimensiones','330×550×830 mm (C15) a 1130×550×830 mm (C70/C80)'],['Nota','C70 y C80 requieren conexiones de calefacción cruzadas'],['Opcionales','Bomba circuladora, tanque de expansión hermético, termostato de ambiente']]}
   ];
 
-  function renderMarcaLanding(key){
+  function renderMarcaLanding(key, catKey){
     var brand = brandsData[key] || brandsData.technogel;
     var mkTitleEl = document.getElementById('mkTitle');
     var mkLogoImg = document.getElementById('mkLogoImg');
@@ -3021,22 +3022,43 @@
     document.getElementById('mkTagline').textContent = brand.tagline;
     document.getElementById('mkDesc').textContent = brand.desc;
     document.getElementById('mkTags').innerHTML = brand.tags.map(function(t){ return '<span>'+t+'</span>'; }).join('');
-    document.getElementById('mkModelosTitle').textContent = 'Algunos de los equipos ' + brand.nombre + ' disponibles.';
 
-    var tabs = document.getElementById('mkTabs');
-    tabs.innerHTML = '<button class="tab-btn active" data-tab="artesanal">Artesanal</button><button class="tab-btn" data-tab="industrial">Industrial</button>';
+    var todosLosProductos = catalogoNuevo.filter(function(p){ return p.marca === key; });
+
+    // solo mostramos como "tile" las categorías que esta marca realmente tiene cargadas
+    var categoriasDisponibles = technogelCategorias.filter(function(c){
+      return todosLosProductos.some(function(p){ return p.cat === c.k; });
+    });
+    var catActual = catKey && categoriasDisponibles.some(function(c){ return c.k === catKey; }) ? catKey : null;
+
+    var catSection = document.getElementById('mkCatSection');
+    var backLink = document.getElementById('mkCatBack');
     var catGrid = document.getElementById('mkCatGrid');
-    renderGrid(catGrid, artesanal);
-    tabs.querySelectorAll('.tab-btn').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        tabs.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
-        btn.classList.add('active');
-        renderGrid(catGrid, btn.getAttribute('data-tab') === 'industrial' ? industrial : artesanal);
-        observeReveal();
-      });
+
+    if (catActual){
+      // vista filtrada por categoría: ocultamos la grilla de categorías y mostramos el link de volver
+      catSection.style.display = 'none';
+      backLink.style.display = 'inline-block';
+      backLink.href = '#marca-' + key;
+      var catInfo = categoriasDisponibles.filter(function(c){ return c.k === catActual; })[0];
+      document.getElementById('mkModelosTitle').textContent = catInfo.t + ' ' + brand.nombre + ' disponibles.';
+    } else {
+      catSection.style.display = '';
+      backLink.style.display = 'none';
+      document.getElementById('mkModelosTitle').textContent = 'Algunos de los equipos ' + brand.nombre + ' disponibles.';
+    }
+
+    renderGrid(catGrid, categoriasDisponibles);
+    catGrid.querySelectorAll('.cat-card').forEach(function(card, i){
+      card.style.cursor = 'pointer';
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      var goHere = function(){ location.hash = 'marca-' + key + '--' + categoriasDisponibles[i].k; };
+      card.addEventListener('click', goHere);
+      card.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); goHere(); } });
     });
 
-    var productos = catalogoNuevo.filter(function(p){ return p.marca === key; });
+    var productos = catActual ? todosLosProductos.filter(function(p){ return p.cat === catActual; }) : todosLosProductos;
     var grid = document.getElementById('mkProductsGrid');
     if (!productos.length){
       grid.innerHTML = '<p style="color:var(--muted);">Todavía no cargamos el catálogo completo de ' + brand.nombre + '. Escribinos y te contamos qué tenemos disponible.</p>';
