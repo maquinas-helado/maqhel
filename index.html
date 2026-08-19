@@ -1792,7 +1792,7 @@
     </div>
 
     <!-- VISTA 2: confirmación -->
-    <div class="ld-view ld-view-single" id="spViewDone" hidden>
+    <div class="ld-view ld-view-single" id="spViewDone" hidden style="display:none">
       <div class="ld-seller-box">
         <span class="ld-badge" style="background:linear-gradient(135deg,#1078D6,#0C3FA0);color:var(--noche);">✓ Solicitud enviada</span>
         <h3>¡Listo! Ya recibimos tu consulta</h3>
@@ -3121,8 +3121,8 @@
   function openSolicitarPrecio(p, brand){
     spCurrent = {producto: p, brand: brand};
     document.getElementById('spMaquinaNombre').textContent = brand.nombre + ' ' + p.titulo;
-    spViewForm.hidden = false;
-    spViewDone.hidden = true;
+    spViewForm.style.display = '';
+    spViewDone.style.display = 'none';
     spOverlay.classList.add('is-open');
     spOverlay.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -3174,8 +3174,8 @@
         alert('No pudimos enviar tu solicitud. Revisá tu conexión e intentá de nuevo.');
         return;
       }
-      spViewForm.hidden = true;
-      spViewDone.hidden = false;
+      spViewForm.style.display = 'none';
+      spViewDone.style.display = 'block';
       spForm.reset();
     });
   });
