@@ -247,6 +247,8 @@
 
   /* ===== HERO (tipografía grande + escultura de gotas) ===== */
   .hero{position:relative;padding:70px 0 90px;overflow:hidden;}
+  .hero::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(ellipse 90% 70% at 68% 55%, transparent 45%, rgba(4,5,7,.55) 100%);}
   .hero-blob-wrap{position:absolute;top:2%;left:-14%;width:560px;height:560px;z-index:1;filter:url(#goo);animation:heroFloat 8s ease-in-out infinite;pointer-events:none;opacity:.85;}
   @keyframes heroFloat{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-16px) rotate(3deg);}}
   .hero-blob-wrap .hb{position:absolute;border-radius:50%;}
@@ -261,24 +263,32 @@
   @media(max-width:680px){.hero-blob-wrap{width:260px;height:260px;left:-28%;top:-6%;}}
 
   .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;grid-template-rows:auto auto;gap:8px 32px;align-items:stretch;position:relative;z-index:3;min-height:0;}
-  @media(max-width:980px){.hero-grid{grid-template-columns:1fr;}}
+  @media(max-width:980px){.hero-grid{grid-template-columns:1fr;grid-template-rows:auto;gap:22px;}}
   .hero-text{grid-column:1;grid-row:1;max-width:680px;position:relative;z-index:2;padding-right:10px;display:flex;flex-direction:column;justify-content:center;}
   .hero-actions{grid-column:1 / -1;grid-row:2;position:relative;z-index:4;align-self:start;margin-top:10px;}
-  @media(max-width:980px){.hero-text,.hero-actions{grid-column:1;}}
+  @media(max-width:980px){.hero-text,.hero-actions{grid-column:1;grid-row:auto;}}
 
   .hero-media{grid-column:2;grid-row:1;position:relative;overflow:visible;aspect-ratio:512/807;max-height:520px;padding:20px 22px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;margin:0 auto;}
-  @media(max-width:980px){.hero-media{grid-column:1;order:-1;max-height:420px;padding:20px 46px;}}
+  @media(max-width:980px){.hero-media{grid-column:1;grid-row:auto;order:-1;max-height:420px;padding:20px 46px;}}
   @media(max-width:560px){.hero-media{max-height:340px;padding:14px 40px;}}
   .hero-media img{position:relative;width:100%;height:100%;object-fit:contain;display:block;z-index:2;
-    filter:drop-shadow(0 30px 34px rgba(0,0,0,.55)) drop-shadow(0 6px 10px rgba(0,0,0,.4));}
+    filter:brightness(1.04) contrast(1.1) drop-shadow(0 30px 34px rgba(0,0,0,.6)) drop-shadow(0 6px 10px rgba(0,0,0,.45));}
   .hero-media::before{content:'';position:absolute;z-index:0;pointer-events:none;
     left:8%;top:6%;width:84%;height:88%;border-radius:50%;
     background:radial-gradient(circle at 42% 36%, rgba(16,120,214,.4), rgba(236,72,120,.22) 52%, transparent 72%);
     filter:blur(46px);}
   .hero-media::after{content:'';position:absolute;z-index:1;pointer-events:none;
-    left:50%;bottom:6%;width:58%;height:30px;transform:translateX(-50%);
-    background:radial-gradient(ellipse at center, rgba(0,0,0,.5), transparent 72%);
-    filter:blur(4px);}
+    left:50%;bottom:5%;width:72%;height:64px;transform:translateX(-50%);
+    background:
+      radial-gradient(ellipse at center, rgba(130,190,255,.4), transparent 62%),
+      radial-gradient(ellipse at center, rgba(0,0,0,.6), transparent 74%);
+    filter:blur(5px);}
+  .hero-media .hm-reflection{position:absolute;z-index:1;pointer-events:none;
+    left:20px;right:20px;bottom:18px;top:52%;
+    background-repeat:no-repeat;background-position:center bottom;background-size:contain;
+    transform:scaleY(-1);opacity:.2;
+    -webkit-mask-image:linear-gradient(to bottom, rgba(0,0,0,.7), transparent 60%);
+    mask-image:linear-gradient(to bottom, rgba(0,0,0,.7), transparent 60%);}
   .hero-media .hm-caption{position:absolute;left:16px;bottom:14px;z-index:3;font-family:'IBM Plex Mono';font-size:.7rem;color:var(--hielo);background:rgba(10,11,13,.55);backdrop-filter:blur(6px);padding:6px 13px;border-radius:100px;border:1px solid rgba(255,255,255,.14);}
 
   .hero .content{position:relative;z-index:3;max-width:900px;}
@@ -910,6 +920,7 @@
       </div>
       <div class="hero-media">
         <img src="assets/img/catalogo/nobg/explorer-hero.png" alt="Fabricadora continua Technogel Explorer">
+        <div class="hm-reflection" style="background-image:url(assets/img/catalogo/nobg/explorer-hero.png)"></div>
       </div>
       <div class="hero-actions">
         <a href="#nueva" class="action-card nueva">
