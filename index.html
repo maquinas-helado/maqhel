@@ -2395,7 +2395,10 @@
     robots: '<rect x="6" y="8" width="12" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9.5" cy="12.5" r="1" fill="currentColor"/><circle cx="14.5" cy="12.5" r="1" fill="currentColor"/><path d="M12 8V5m-3-1h6" stroke="currentColor" stroke-width="2"/>',
     llenadoras: '<path d="M12 3v7M8 10h8l-1.5 9a2 2 0 0 1-2 1.7h-1a2 2 0 0 1-2-1.7L8 10z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
     lineas: '<circle cx="5" cy="12" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="19" cy="12" r="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 12h3M14 12h3" stroke="currentColor" stroke-width="2"/>',
-    paletera: '<rect x="10" y="3" width="4" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 13v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'
+    paletera: '<rect x="10" y="3" width="4" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 13v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+    'tinas-maduracion': '<rect x="5" y="4" width="14" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 10h14M5 15h14" stroke="currentColor" stroke-width="2"/>',
+    'torre-enfriamiento': '<path d="M7 21l1-13h8l1 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M6 8h12l-1.5-5h-9L6 8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+    'banco-agua-helada': '<path d="M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'
   };
 
   // categorías reales del catálogo Technogel — cada una lleva a su propia
@@ -2412,6 +2415,10 @@
     {k:'llenadoras', t:'Llenadoras automáticas', d:'Envasado rápido y exacto, incluso robotizado.', c:['#1078D6','#38BDF8','#0B4A6B']},
     {k:'paletera', t:'Palitera automática', d:'Helado y ghiaccioli en palito.', c:['#0C3FA0','#1078D6','#0B4A6B']},
     {k:'tunnel', t:'Túnel de congelamiento', d:'Frío profundo para grandes lotes.', c:['#38BDF8','#1078D6','#0B4A6B']},
+    {k:'tinas-maduracion', t:'Tinas de maduración', d:'Fabricación artesanal con equipo incorporado.', c:['#1078D6','#38BDF8','#0B4A6B']},
+    {k:'torre-enfriamiento', t:'Torres de enfriamiento', d:'Circuito cerrado para condensadores por agua.', c:['#38BDF8','#0C3FA0','#0B4A6B']},
+    {k:'banco-agua-helada', t:'Banco de agua helada', d:'Unidad autónoma de enfriado por placa.', c:['#7DD3E8','#1078D6','#0B4A6B']},
+    {k:'cocinas', t:'Cocinas industriales', d:'Baño maría con canalización de circulación.', c:['#98A4B4','#5E7188','#1a2433']},
     {k:'otras', t:'Otros equipos', d:'Tinas, torres, bancos de agua y más.', c:['#98A4B4','#5E7188','#1a2433']}
   ];
 
@@ -3001,7 +3008,29 @@
     {id:'jit-modelo-c', marca:'jit', cat:'otras', catLabel:'Caldera de pie a gas',
       titulo:'JIT Modelo C (C15 a C80)', subtitulo:'Caldera de pie a gas con cuerpo de acero y quemador inoxidable tipo Polidoro, apta para radiadores, piso radiante y fan coil. Opcional con bomba circuladora y/o tanque de expansión hermético. Ideal para calentar el agua que recircula en las cocinas de producción de helado.',
       g:['#1078D6','#0C3FA0'],
-      specs:[['Potencia útil','15.000 a 80.000 kcal/h según modelo (C15, C20, C30, C40, C50, C70, C80)'],['Dimensiones','330×550×830 mm (C15) a 1130×550×830 mm (C70/C80)'],['Nota','C70 y C80 requieren conexiones de calefacción cruzadas'],['Opcionales','Bomba circuladora, tanque de expansión hermético, termostato de ambiente']]}
+      specs:[['Potencia útil','15.000 a 80.000 kcal/h según modelo (C15, C20, C30, C40, C50, C70, C80)'],['Dimensiones','330×550×830 mm (C15) a 1130×550×830 mm (C70/C80)'],['Nota','C70 y C80 requieren conexiones de calefacción cruzadas'],['Opcionales','Bomba circuladora, tanque de expansión hermético, termostato de ambiente']]},
+
+    // ---- DUALMET ----
+    {id:'dualmet-pasteurizador', marca:'dualmet', cat:'pasteurizadores', catLabel:'Pasteurizador',
+      titulo:'Dualmet Pasteurizador a gas o eléctrico', subtitulo:'Pasteurizador construido en su totalidad en acero inoxidable 304, con encendido electrónico sin piloto y control digital de temperatura con aviso de fin de cocción.',
+      g:['#EC4878','#C23361'],
+      specs:[['Encendido','Electrónico con sensor de llama sin piloto, instantáneo'],['Control','Digital de temperatura, con aviso de fin de cocción'],['Construcción','Acero inoxidable 304, tacho interior con excelente acabado'],['Extras','Solenoide de agua para llenado e intercambio de baño, tapa dividida removible'],['Quemador','Fundición de hierro, 30 a 50 Kcal/h'],['Presentaciones','A gas y eléctricos: 10, 70, 100 y 150 litros']]},
+    {id:'dualmet-tinas-maduracion', marca:'dualmet', cat:'tinas-maduracion', catLabel:'Tinas de maduración',
+      titulo:'Dualmet Tinas de Maduración', subtitulo:'Tinas para fabricación artesanal con equipo incorporado, bomba de recirculación y enfriado por serpentina de cobre. Marcha continua o ciclado individual por agitador.',
+      g:['#1078D6','#38BDF8'],
+      specs:[['Enfriado','Bomba de recirculación, serpentina interna de cobre 5/8, condensación tubo en tubo (rulo)'],['Cañerías','Recirculación en termofusión'],['Agitadores','Tiempo de marcha/parada ajustable, marcha continua o ciclado individual'],['Construcción','Acero inoxidable 304, tapas individuales divididas removibles'],['Modelos artesanales','2×70/100/150 L, 3×70/100/150 L, 4×70/100/150 L']]},
+    {id:'dualmet-torre-enfriamiento', marca:'dualmet', cat:'torre-enfriamiento', catLabel:'Torre de enfriamiento',
+      titulo:'Dualmet Torre de Enfriamiento', subtitulo:'Equipo diseñado para condensadores por agua, con circuito cerrado. El enfriamiento se logra por evaporación parcial del agua esparcida en forma de lluvia, con electroventilador incorporado. Desarmable en tres módulos.',
+      g:['#38BDF8','#0C3FA0'],
+      specs:[['Construcción','Acero resistente a la corrosión'],['Ventilación','Electroventilador de 1 HP'],['Armado','Desarmable en tres módulos'],['Presentaciones','12,5 Ton / 37 Kcal · 25 Ton / 75 Kcal · 50 Ton / 150 Kcal (aprox. 1 HP instalado)']]},
+    {id:'dualmet-banco-agua-helada', marca:'dualmet', cat:'banco-agua-helada', catLabel:'Banco de agua helada',
+      titulo:'Dualmet Banco de Agua Helada', subtitulo:'Unidad autónoma con enfriado por placa evaporadora, compresor semi hermético Dorin/Bitzer y doble bomba de recirculación (interna y externa). Tanque reservorio de 400 litros.',
+      g:['#7DD3E8','#1078D6'],
+      specs:[['Compresor','Semi hermético Dorin / Bitzer'],['Bombas','Recirculación interna y externa Zcerweny, 1,5 HP cada una'],['Condensación','Por aire o placa, según zona/región'],['Construcción','Acero inoxidable 304, cañerías internas en termofusión'],['Reservorio','400 litros'],['Modelos','5, 10, 15, 20 y 25 HP']]},
+    {id:'dualmet-cocinas-industriales', marca:'dualmet', cat:'cocinas', catLabel:'Cocina industrial',
+      titulo:'Dualmet Cocinas Industriales', subtitulo:'Cocinas con baño maría en pared y fondo del tacho, con canalización de la circulación de agua que mejora el intercambio térmico y reduce el tiempo de cocción.',
+      g:['#98A4B4','#5E7188'],
+      specs:[['Baño maría','En pared y fondo del tacho'],['Circulación','Canalizada, mejora el intercambio térmico y reduce el tiempo de cocción'],['Agitador','De 1 a 3 HP, 1400 rpm según litros'],['Control','Termómetro digital']]}
   ];
 
   function renderMarcaLanding(key, catKey){
@@ -3010,7 +3039,7 @@
     var mkLogoImg = document.getElementById('mkLogoImg');
     var mkDemoFlag = document.getElementById('mkDemoFlag');
     // Technogel ya tiene catálogo real cargado; Dualmet y JIT todavía no
-    if (mkDemoFlag) mkDemoFlag.style.display = (key === 'technogel') ? 'none' : '';
+    if (mkDemoFlag) mkDemoFlag.style.display = (key === 'technogel' || key === 'dualmet') ? 'none' : '';
     if (brand.logo){
       mkLogoImg.src = brand.logo;
       mkLogoImg.alt = brand.nombre;
