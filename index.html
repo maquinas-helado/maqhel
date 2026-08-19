@@ -293,15 +293,11 @@
   /* siempre en fila de 3, aunque queden ajustadas: nunca se apilan verticalmente */
   @media(max-width:760px){
     .hero-actions{gap:8px;max-width:100%;}
-    .action-card{padding:12px 8px;gap:0;flex-direction:column;text-align:center;border-radius:12px;}
+    .action-card{padding:12px 6px;gap:0;flex-direction:column;text-align:center;border-radius:12px;}
+    .action-card .a-text{width:100%;}
     .action-card .a-icon{width:32px;height:32px;border-radius:9px;margin-bottom:6px;}
     .action-card .a-icon svg{width:16px;height:16px;}
-    .action-card .a-text strong{font-size:.68rem;line-height:1.2;display:block;}
-    .action-card .a-text small{display:none;}
     .action-card .a-arrow{display:none;}
-  }
-  @media(max-width:400px){
-    .action-card .a-text strong{font-size:.6rem;}
   }
   .action-card{
     position:relative;display:flex;align-items:center;gap:14px;padding:20px 20px;
@@ -317,8 +313,8 @@
   }
   .action-card .a-icon svg{width:22px;height:22px;}
   .action-card .a-text{flex:1;min-width:0;}
-  .action-card .a-text small{display:block;color:var(--muted-2);font-size:.72rem;margin-top:2px;}
-  .action-card .a-text strong{font-size:.94rem;letter-spacing:.02em;}
+  .action-card .a-text small{display:block;color:var(--muted-2);font-size:clamp(.52rem,1.7vw,.72rem);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .action-card .a-text strong{font-size:clamp(.6rem,2.5vw,.94rem);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;}
   .action-card .a-arrow{flex-shrink:0;font-size:1.1rem;color:var(--muted-2);transition:transform .3s var(--ease), color .3s;}
   .action-card:hover .a-arrow{transform:translateX(4px);}
   .action-card.nueva{--edge: rgba(6,90,110,.7);}
@@ -390,6 +386,7 @@
   .sec-head{max-width:640px;margin:0 0 52px;}
   .sec-head .kicker{color:var(--frio-1);font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;font-family:'IBM Plex Mono';margin-bottom:14px;display:block;}
   .sec-head h2{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;line-height:1.15;}
+  .mk-cat-heading{white-space:nowrap;font-size:clamp(.9rem,4.6vw,2.6rem)!important;}
   .sec-head p{color:var(--muted);margin-top:16px;font-size:1.02rem;line-height:1.6;}
 
   /* ===== LIVE TICKER (vidriera en vivo) ===== */
@@ -453,9 +450,12 @@
   @media(max-width:520px){.cat-grid{grid-template-columns:1fr;}}
   .cat-card{
     position:relative;background:var(--panel);border:1px solid var(--line);border-radius:20px;
-    padding:26px 22px;transition:transform .4s var(--ease), border-color .4s;overflow:visible;
+    padding:26px 22px;transition:transform .18s var(--ease), box-shadow .18s var(--ease), border-color .4s;overflow:visible;
+    --edge: rgba(0,0,0,.5);
+    box-shadow:0 5px 0 var(--edge), 0 14px 26px -14px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.07);
   }
-  .cat-card:hover{transform:translateY(-5px);border-color:rgba(255,255,255,.18);}
+  .cat-card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.18);box-shadow:0 7px 0 var(--edge), 0 20px 34px -14px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.09);}
+  .cat-card:active{transform:translateY(4px);box-shadow:0 1px 0 var(--edge), 0 6px 14px -10px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.06);}
   .goo-wrap{filter:url(#goo);width:78px;height:78px;position:relative;margin-bottom:18px;}
   .blob{position:absolute;border-radius:50%;top:0;left:0;width:52px;height:52px;transition:transform .6s var(--ease);}
   .blob-a{background:radial-gradient(circle at 32% 30%, var(--c1), var(--c2) 65%, var(--c3) 100%);}
@@ -1633,7 +1633,7 @@
       <div class="wrap">
         <div class="sec-head" data-reveal>
           <span class="kicker">Explorar por categoría</span>
-          <h2>Elegí la línea de producción que necesitás.</h2>
+          <h2 class="mk-cat-heading">Elegí la línea de producción que necesitás.</h2>
         </div>
         <div class="cat-grid" id="mkCatGrid"></div>
       </div>
@@ -1647,6 +1647,16 @@
           <h2 id="mkModelosTitle">Algunos de los equipos Technogel disponibles.</h2>
         </div>
         <div class="mk-products-grid" id="mkProductsGrid"></div>
+      </div>
+
+      <!-- cinta de otras máquinas de la misma marca, mientras se mira una categoría puntual -->
+      <div class="live-band" id="mkOtherWrap" style="display:none;padding-top:56px;">
+        <div class="live-head wrap"><span class="live-dot"></span><span>También disponibles — se actualiza solo</span></div>
+        <div class="live-band-wrap">
+          <div class="live-track-mask" id="mkOtherTrackMask">
+            <div class="live-track" id="mkOtherTrack"></div>
+          </div>
+        </div>
       </div>
     </section>
   </div>
@@ -3034,6 +3044,9 @@
     var catSection = document.getElementById('mkCatSection');
     var backLink = document.getElementById('mkCatBack');
     var catGrid = document.getElementById('mkCatGrid');
+    var productsSection = document.getElementById('mkProductsSection');
+    // hasta que no se elige una categoría puntual, no mostramos ningún listado de máquinas
+    productsSection.style.display = catActual ? '' : 'none';
 
     if (catActual){
       // vista filtrada por categoría: ocultamos la grilla de categorías y mostramos el link de volver
@@ -3077,8 +3090,42 @@
       });
     }
 
+    // cinta de "también disponibles": el resto de los productos de la marca,
+    // para que mientras se mira una categoría se puedan ver otras máquinas
+    var otherWrap = document.getElementById('mkOtherWrap');
+    if (catActual){
+      var otros = todosLosProductos.filter(function(p){ return p.cat !== catActual; });
+      renderMkOtherTrack(otros, brand);
+      otherWrap.style.display = otros.length ? 'block' : 'none';
+    } else {
+      otherWrap.style.display = 'none';
+    }
+
     observeReveal();
     window.scrollTo(0,0);
+  }
+
+  var mkOtherScrollStarted = false;
+  function renderMkOtherTrack(productos, brand){
+    var track = document.getElementById('mkOtherTrack');
+    if (!productos.length){ track.innerHTML = ''; return; }
+    var html = productos.map(function(p){
+      var bg = p.img
+        ? ('background-image:url(' + p.img + ');background-size:contain;background-repeat:no-repeat;background-position:center;')
+        : ('background:linear-gradient(135deg,' + p.g[0] + ',#14161A 75%);');
+      return '<div class="live-card" data-id="'+p.id+'" role="button" tabindex="0">'+
+        '<div class="shot" style="'+bg+'"><span class="tag">'+p.catLabel+'</span></div>'+
+        '<div class="body"><h5>'+stripBrandPrefix(p.titulo, p.marca)+'</h5></div>'+
+      '</div>';
+    }).join('');
+    track.innerHTML = html + html;
+    track.querySelectorAll('.live-card').forEach(function(card){
+      card.addEventListener('click', function(){ location.hash = 'producto-' + card.getAttribute('data-id'); });
+    });
+    if (!mkOtherScrollStarted){
+      mkOtherScrollStarted = true;
+      initAutoScrollTrack({maskId:'mkOtherTrackMask', trackId:'mkOtherTrack', cardSelector:'.live-card', gap:16, speed:26});
+    }
   }
 
   document.querySelectorAll('.brand-card[data-marca]').forEach(function(card){
