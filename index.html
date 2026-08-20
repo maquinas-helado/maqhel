@@ -384,6 +384,7 @@
   .sec-head{max-width:640px;margin:0 0 52px;}
   .sec-head .kicker{color:var(--frio-1);font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;font-family:'IBM Plex Mono';margin-bottom:14px;display:block;}
   .sec-head h2{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;line-height:1.15;}
+  #mkModelosTitle{white-space:nowrap;max-width:none;font-size:clamp(1.2rem,2.6vw,2.6rem);}
   .mk-cat-heading{white-space:nowrap;font-size:clamp(.9rem,4.6vw,2.6rem)!important;}
   .sec-head p{color:var(--muted);margin-top:16px;font-size:1.02rem;line-height:1.6;}
 
@@ -2830,8 +2831,8 @@
       nombre: 'Technogel',
       logo: 'assets/img/technogel-logo.svg',
       tagline: 'Tecnología italiana para la industria del helado.',
-      desc: 'Representamos oficialmente a Technogel en Argentina, Uruguay, Paraguay y Bolivia: línea artesanal e industrial completa, desde fabricadoras discontinuas hasta líneas llave en mano.',
-      tags: ['Italia','Representación oficial','Artesanal','Industrial']
+      desc: 'Representamos oficialmente a Technogel en Argentina, Uruguay, Paraguay y Bolivia.',
+      tags: []
     },
     dualmet: {
       nombre: 'Dualmet',
@@ -2866,15 +2867,10 @@
       g:['#1078D6','#0C3FA0'],
       specs:[['Mezcla por ciclo','1–4 a 5–17 kg según modelo'],['Producción horaria','10–30 a 30–100 l según modelo'],['Potencia','4 a 12,5 kW según modelo'],['Panel','Touch-screen última generación, LAN/WiFi opcional']]},
     {id:'explorer-400-750', marca:'technogel', cat:'fabricadoras', catLabel:'Fabricadora continua — bomba de pistones',
-      titulo:'Technogel Explorer 400/600/750', subtitulo:'Freezer continuo con incorporación de aire variable del 30% al 120%, ideal para helados artesanales e industriales. Disponible en 400, 600 y 750 litros/hora.',
+      titulo:'Technogel Explorer 200/400/600/750', subtitulo:'Freezer continuo con incorporación de aire variable del 30% al 120%, ideal para helados artesanales e industriales. Disponible en 200, 400, 600 y 750 litros/hora.',
       img: 'assets/img/nuevas-ia/explorer.jpg',
       g:['#1078D6','#0C3FA0'],
-      specs:[['Producción','400 / 600 / 750 l/h'],['Potencia','10 / 15 / 20 kW'],['Dimensiones','720×1670×1400(+350) mm'],['Control','Display touch-screen, autodiagnóstico, predisposición lavado CIP']]},
-    {id:'explorer-100-200', marca:'technogel', cat:'fabricadoras', catLabel:'Fabricadora continua compacta',
-      titulo:'Technogel Explorer 100/200', subtitulo:'Versión compacta de la línea Explorer, pensada para producciones menores sin resignar el control electrónico de fabricadoras continuas Technogel.',
-      img: 'assets/img/nuevas-ia/explorer.jpg',
-      g:['#0C3FA0','#38BDF8'],
-      specs:[['Producción','100 / 200 l/h'],['Potencia','5,2 / 7 kW'],['Dimensiones','700×1050×1480 mm']]},
+      specs:[['Producción','200 / 400 / 600 / 750 l/h'],['Potencia','7 / 10 / 15 / 20 kW'],['Dimensiones','700×1050×1480 mm (200) — 720×1670×1400(+350) mm (400/600/750)'],['Control','Display touch-screen, autodiagnóstico, predisposición lavado CIP']]},
     {id:'explorer-750-lp', marca:'technogel', cat:'fabricadoras', catLabel:'Fabricadora continua — bomba de lóbulos',
       titulo:'Technogel Explorer 750 LP', subtitulo:'Fabricadora continua con bombas a lóbulo y batidor hueco con cuchillas raspadoras, diseñada para una textura de helado incomparable. Overrun controlado del 30% al 140%.',
       img: 'assets/img/nuevas-ia/explorer.jpg',
@@ -2885,16 +2881,11 @@
       img: 'assets/img/nuevas-ia/space-700-1500.jpg',
       g:['#1078D6','#0C3FA0'],
       specs:[['Producción','700 / 1000 / 1500 l/h'],['Potencia','20,5 / 32 / 45 kW'],['Dimensiones','1000×2100×2000 mm (700) — 1000×2600×2000 mm (1000/1500)'],['Control','Panel táctil multilingüe, autodiagnóstico, lavado CIP']]},
-    {id:'black-magic', marca:'technogel', cat:'fabricadoras', catLabel:'Fabricadora soft-serve (gama alta)',
-      titulo:'Technogel Black Magic', subtitulo:'Máquina de alta capacidad para helado soft, con turbinas de nueva concepción y carga automática de mezcla en los cilindros. Solo disponible con bombas a engranajes.',
+    {id:'soft-candy', marca:'technogel', cat:'fabricadoras', catLabel:'Soft/Candy',
+      titulo:'Technogel Soft/Candy', subtitulo:'Línea de máquinas para helado soft: el Black Magic, de alta capacidad con turbinas de nueva concepción y carga automática de mezcla en los cilindros; y el Euro 3/3P, con display de parámetros siempre visibles y programas de mantecación personalizables.',
       img: 'assets/img/nuevas-ia/black-magic.jpg',
       g:['#EC4878','#C23361'],
-      specs:[['Capacidad','15+15 l'],['Producción','41 kg/h (69 l/h)'],['Conos de 75g por hora','550'],['Potencia','3,5 kW']]},
-    {id:'euro-3', marca:'technogel', cat:'fabricadoras', catLabel:'Fabricadora soft-serve',
-      titulo:'Technogel Euro 3 / 3P', subtitulo:'Máquina de helado soft disponible con y sin bomba, con display de parámetros de producción siempre visibles y programas de mantecación personalizables.',
-      img: 'assets/img/nuevas-ia/euro-3.jpg',
-      g:['#38BDF8','#0C3FA0'],
-      specs:[['Capacidad','15+15 l'],['Producción','27/37 kg (3) — 27/45 kg (3P)'],['Conos de 75g por hora','360'],['Potencia','3,3 kW']]},
+      specs:[['Modelos','Black Magic (alta capacidad) y Euro 3 / 3P'],['Capacidad','15+15 l en ambos modelos'],['Producción','69 l/h (Black Magic) — 27/37 kg (Euro 3), 27/45 kg (Euro 3P)'],['Conos de 75g por hora','550 (Black Magic) — 360 (Euro 3/3P)'],['Potencia','3,5 kW (Black Magic) — 3,3 kW (Euro 3/3P)']]},
     {id:'mixpasto', marca:'technogel', cat:'pasteurizadores', catLabel:'Pasteurizador',
       titulo:'Technogel Mixpasto 60TS/120TS/200TS', subtitulo:'Pasteurizador con emulsor incorporado y motor agitador por inverter, panel táctil de última generación y programas totalmente personalizables. Interconexión 4.0 opcional.',
       img: 'assets/img/nuevas-ia/mixpasto.jpg',
