@@ -411,7 +411,7 @@
   .live-card .tag{position:absolute;top:9px;left:9px;font-family:'IBM Plex Mono';font-size:.64rem;padding:4px 9px;border-radius:100px;background:rgba(10,11,13,.65);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.14);}
   .live-card .body{padding:12px 14px 14px;}
   .live-card .price{font-family:'IBM Plex Mono';color:var(--frio-1);font-weight:600;font-size:.92rem;}
-  .live-card h5{font-size:.84rem;margin:5px 0 3px;font-weight:600;}
+  .live-card h5{font-size:.84rem;margin:5px 0 3px;font-weight:600;text-transform:uppercase;}
   .live-card .mo-label{display:block;color:var(--muted-2);font-size:.62rem;font-family:'IBM Plex Mono';text-transform:uppercase;letter-spacing:.05em;}
   .live-card .meta{font-size:.7rem;color:var(--muted-2);display:flex;justify-content:space-between;}
   .live-card.is-reserved .shot{filter:grayscale(.5) brightness(.55);}
@@ -804,27 +804,19 @@
   .mk-product-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer;transition:transform .35s var(--ease),border-color .35s;}
   .mk-product-card:hover{transform:translateY(-4px);border-color:rgba(16,120,214,.4);}
   .mk-product-card .mp-shot{height:160px;position:relative;}
-  .mp-shot[style*="contain"], .shot[style*="contain"], .pf-main-photo[style*="contain"], .pf-thumb[style*="contain"]{
-    filter:drop-shadow(0 14px 18px rgba(0,0,0,.5)) drop-shadow(0 2px 5px rgba(0,0,0,.35));
-    -webkit-mask-image:radial-gradient(ellipse 88% 88% at center, black 55%, transparent 100%);
-    mask-image:radial-gradient(ellipse 88% 88% at center, black 55%, transparent 100%);
-  }
-  /* fotos ya recortadas a mano (transparencia real, sin fondo horneado): no necesitan
-     ni deben llevar el mask-image de arriba, que fue justo lo que recortaba de más. */
-  .mp-shot[style*="/cutouts/"], .shot[style*="/cutouts/"], .pf-main-photo[style*="/cutouts/"], .pf-thumb[style*="/cutouts/"]{
-    -webkit-mask-image:none;
-    mask-image:none;
-  }
+  /* las fotos de catálogo (nuevas) llenan todo el recuadro con su propio fondo negro
+     de estudio a modo de marco -- así el borde de la foto nunca choca con el fondo de
+     la página, porque no hay fondo de página visible alrededor, es todo la misma foto. */
   .mk-product-card .mp-body{padding:16px 18px 20px;}
   .mk-product-card .mp-body span{color:var(--muted-2);font-size:.72rem;font-family:'IBM Plex Mono';text-transform:uppercase;letter-spacing:.05em;}
-  .mk-product-card .mp-body h4{font-size:1.02rem;font-weight:700;margin:6px 0 4px;}
+  .mk-product-card .mp-body h4{font-size:1.02rem;font-weight:700;margin:6px 0 4px;text-transform:uppercase;}
   .mk-product-card .mp-body p{color:var(--muted);font-size:.84rem;line-height:1.4;}
   .mk-product-card .mp-cta{margin-top:12px;color:var(--frio-1);font-size:.85rem;font-weight:600;}
 
   /* ===== FICHA DE PRODUCTO ===== */
   .pf-layout{display:grid;grid-template-columns:1.45fr 1fr;gap:52px;align-items:start;margin-top:24px;}
   @media(max-width:880px){.pf-layout{grid-template-columns:1fr;gap:28px;}}
-  .pf-main-photo{width:100%;aspect-ratio:4/3;border-radius:22px;background:linear-gradient(150deg,var(--panel-2),var(--acero));position:relative;background-size:contain;background-repeat:no-repeat;background-position:center;}
+  .pf-main-photo{width:100%;aspect-ratio:4/3;border-radius:22px;background:linear-gradient(150deg,var(--panel-2),var(--acero));position:relative;background-size:cover;background-repeat:no-repeat;background-position:center;}
   .pf-360-hint{font-family:'IBM Plex Mono';font-size:.72rem;color:var(--muted);background:rgba(10,11,13,.55);backdrop-filter:blur(6px);border:1px solid var(--line);padding:7px 14px;border-radius:100px;}
   .pf-thumbs{display:flex;gap:10px;margin-top:14px;overflow-x:auto;}
   .pf-thumb{flex:0 0 auto;width:76px;height:76px;border-radius:12px;background-size:contain;background-repeat:no-repeat;background-position:center;border:2px solid transparent;cursor:pointer;opacity:.6;transition:opacity .2s,border-color .2s;background-color:var(--panel-2);}
@@ -832,7 +824,7 @@
   .pf-thumb.is-active{opacity:1;border-color:var(--frio-1);}
   .pf-badge{display:inline-block;font-family:'IBM Plex Mono';font-size:.7rem;padding:5px 12px;border-radius:100px;background:rgba(16,120,214,.12);color:var(--frio-1);border:1px solid rgba(16,120,214,.3);margin-bottom:14px;margin-right:8px;}
   .pf-brand{display:inline-block;color:var(--muted-2);font-family:'IBM Plex Mono';font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;margin-bottom:14px;}
-  .pf-info h1{font-size:clamp(1.7rem,3.6vw,2.4rem);font-weight:700;line-height:1.15;margin-bottom:10px;}
+  .pf-info h1{font-size:clamp(1.7rem,3.6vw,2.4rem);font-weight:700;line-height:1.15;margin-bottom:10px;text-transform:uppercase;}
   .pf-sub{color:var(--muted);font-size:1rem;line-height:1.6;margin-bottom:26px;}
   .pf-actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:28px;}
   .pf-actions .btn{flex:1;min-width:200px;}
@@ -2936,7 +2928,7 @@
       specs:[['Capacidad','2–9 l'],['Producción horaria','22–30 / 38–50 kg'],['Potencia','8,5 / 10,3 kW'],['Cámaras','Dos independientes: pasteurizado o mantecado por separado']]},
     {id:'technowhip', marca:'technogel', cat:'cremera', catLabel:'Cremera (montapanna)',
       titulo:'Technogel Technowhip 2 Eco/2 Star', subtitulo:'Máquina para crema batida en acero inoxidable, con bomba a engranajes y sistema de regulación de aire. El trefilador es una pieza única para nata fresca o de larga conservación.',
-      img: 'assets/img/nuevas-ia/cutouts/technowhip.png',
+      img: 'assets/img/nuevas-ia/technowhip.jpg',
       g:['#1078D6','#38BDF8'],
       specs:[['Capacidad','2 / 3 l'],['Producción de crema','65 / 95 l/h'],['Potencia','0,6 / 0,8 kW']]},
     {id:'mixworking-htst', marca:'technogel', cat:'plantas-pasteurizacion', catLabel:'Planta de pasteurización HTST',
@@ -3158,7 +3150,7 @@
     } else {
       grid.innerHTML = productos.map(function(p){
         var bg = p.img
-          ? ('background-image:url(' + p.img + ');background-size:contain;background-repeat:no-repeat;background-position:center;')
+          ? ('background-image:url(' + p.img + ');background-size:cover;background-repeat:no-repeat;background-position:center;')
           : ('background:linear-gradient(135deg,' + p.g[0] + ',#0F1B2E 75%);');
         return '<div class="mk-product-card" data-id="'+p.id+'">'+
           '<div class="mp-shot" style="'+bg+'"></div>'+
@@ -3191,7 +3183,7 @@
     if (!productos.length){ track.innerHTML = ''; return; }
     var html = productos.map(function(p){
       var bg = p.img
-        ? ('background-image:url(' + p.img + ');background-size:contain;background-repeat:no-repeat;background-position:center;')
+        ? ('background-image:url(' + p.img + ');background-size:cover;background-repeat:no-repeat;background-position:center;')
         : ('background:linear-gradient(135deg,' + p.g[0] + ',#14161A 75%);');
       return '<div class="live-card" data-id="'+p.id+'" role="button" tabindex="0">'+
         '<div class="shot" style="'+bg+'"></div>'+
@@ -3228,7 +3220,7 @@
 
     var main = document.getElementById('pfMainPhoto');
     if (p.img){
-      main.style.cssText = 'background-image:url(' + p.img + '), radial-gradient(circle at 42% 38%,' + p.g[0] + '77,' + (p.g[1]||p.g[0]) + '22 55%,transparent 75%);background-size:contain,cover;background-repeat:no-repeat,no-repeat;background-position:center,center;';
+      main.style.cssText = 'background-image:url(' + p.img + '), radial-gradient(circle at 42% 38%,' + p.g[0] + '77,' + (p.g[1]||p.g[0]) + '22 55%,transparent 75%);background-size:cover,cover;background-repeat:no-repeat,no-repeat;background-position:center,center;';
     } else {
       main.style.cssText = 'background:linear-gradient(150deg,' + p.g[0] + ',#0F1B2E 80%);';
     }
