@@ -263,11 +263,14 @@
 
   .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;grid-template-rows:auto auto;gap:8px 32px;align-items:stretch;position:relative;z-index:3;min-height:0;}
   @media(max-width:980px){.hero-grid{grid-template-columns:1fr;grid-template-rows:auto;gap:22px;}}
-  .hero-text{grid-column:1;grid-row:1;max-width:680px;position:relative;z-index:2;padding-right:10px;display:flex;flex-direction:column;justify-content:flex-end;}
+  .hero-text{grid-column:1/-1;grid-row:1;max-width:680px;position:relative;z-index:2;padding-right:10px;display:flex;flex-direction:column;justify-content:flex-end;}
   .hero-actions{grid-column:1 / -1;grid-row:2;position:relative;z-index:4;align-self:start;margin-top:0;}
   @media(max-width:980px){.hero-text,.hero-actions{grid-column:1;grid-row:auto;}}
 
-  .hero-media{grid-column:2;grid-row:1;position:relative;overflow:visible;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto;max-width:420px;width:100%;}
+  /* apagada por ahora: las fotos de máquina en el hero no quedaban bien (recortadas o
+     con un recuadro visible). La reactivamos cuando tengamos PNGs con fondo transparente
+     de verdad -- ver hero-media más abajo. */
+  .hero-media{display:none;}
   @media(max-width:980px){.hero-media{grid-column:1;grid-row:auto;order:-1;max-width:320px;}}
   .hero-media .hm-photo{position:relative;width:100%;aspect-ratio:4/5;max-height:420px;}
   @media(max-width:980px){.hero-media .hm-photo{max-height:320px;}}
@@ -803,10 +806,10 @@
   @media(max-width:600px){.mk-products-grid{grid-template-columns:1fr;}}
   .mk-product-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer;transition:transform .35s var(--ease),border-color .35s;}
   .mk-product-card:hover{transform:translateY(-4px);border-color:rgba(16,120,214,.4);}
-  .mk-product-card .mp-shot{height:160px;position:relative;}
-  /* las fotos de catálogo (nuevas) llenan todo el recuadro con su propio fondo negro
-     de estudio a modo de marco -- así el borde de la foto nunca choca con el fondo de
-     la página, porque no hay fondo de página visible alrededor, es todo la misma foto. */
+  .mk-product-card .mp-shot{height:160px;position:relative;background-color:#000;}
+  /* la máquina se ve siempre entera (contain, nunca recortada); el espacio que sobra
+     alrededor se pinta del mismo negro que ya trae la foto de fondo de estudio, así
+     no queda ningún borde/recuadro visible aunque las proporciones no calcen justo. */
   .mk-product-card .mp-body{padding:16px 18px 20px;}
   .mk-product-card .mp-body span{color:var(--muted-2);font-size:.72rem;font-family:'IBM Plex Mono';text-transform:uppercase;letter-spacing:.05em;}
   .mk-product-card .mp-body h4{font-size:1.02rem;font-weight:700;margin:6px 0 4px;text-transform:uppercase;}
@@ -816,7 +819,7 @@
   /* ===== FICHA DE PRODUCTO ===== */
   .pf-layout{display:grid;grid-template-columns:1.45fr 1fr;gap:52px;align-items:start;margin-top:24px;}
   @media(max-width:880px){.pf-layout{grid-template-columns:1fr;gap:28px;}}
-  .pf-main-photo{width:100%;aspect-ratio:4/3;border-radius:22px;background:linear-gradient(150deg,var(--panel-2),var(--acero));position:relative;background-size:cover;background-repeat:no-repeat;background-position:center;}
+  .pf-main-photo{width:100%;aspect-ratio:4/3;border-radius:22px;background:linear-gradient(150deg,var(--panel-2),var(--acero));position:relative;background-size:contain;background-repeat:no-repeat;background-position:center;}
   .pf-360-hint{font-family:'IBM Plex Mono';font-size:.72rem;color:var(--muted);background:rgba(10,11,13,.55);backdrop-filter:blur(6px);border:1px solid var(--line);padding:7px 14px;border-radius:100px;}
   .pf-thumbs{display:flex;gap:10px;margin-top:14px;overflow-x:auto;}
   .pf-thumb{flex:0 0 auto;width:76px;height:76px;border-radius:12px;background-size:contain;background-repeat:no-repeat;background-position:center;border:2px solid transparent;cursor:pointer;opacity:.6;transition:opacity .2s,border-color .2s;background-color:var(--panel-2);}
@@ -3150,7 +3153,7 @@
     } else {
       grid.innerHTML = productos.map(function(p){
         var bg = p.img
-          ? ('background-image:url(' + p.img + ');background-size:cover;background-repeat:no-repeat;background-position:center;')
+          ? ('background-image:url(' + p.img + ');background-color:#000;background-size:contain;background-repeat:no-repeat;background-position:center;')
           : ('background:linear-gradient(135deg,' + p.g[0] + ',#0F1B2E 75%);');
         return '<div class="mk-product-card" data-id="'+p.id+'">'+
           '<div class="mp-shot" style="'+bg+'"></div>'+
@@ -3183,7 +3186,7 @@
     if (!productos.length){ track.innerHTML = ''; return; }
     var html = productos.map(function(p){
       var bg = p.img
-        ? ('background-image:url(' + p.img + ');background-size:cover;background-repeat:no-repeat;background-position:center;')
+        ? ('background-image:url(' + p.img + ');background-color:#000;background-size:contain;background-repeat:no-repeat;background-position:center;')
         : ('background:linear-gradient(135deg,' + p.g[0] + ',#14161A 75%);');
       return '<div class="live-card" data-id="'+p.id+'" role="button" tabindex="0">'+
         '<div class="shot" style="'+bg+'"></div>'+
@@ -3220,7 +3223,7 @@
 
     var main = document.getElementById('pfMainPhoto');
     if (p.img){
-      main.style.cssText = 'background-image:url(' + p.img + '), radial-gradient(circle at 42% 38%,' + p.g[0] + '77,' + (p.g[1]||p.g[0]) + '22 55%,transparent 75%);background-size:cover,cover;background-repeat:no-repeat,no-repeat;background-position:center,center;';
+      main.style.cssText = 'background-color:#000;background-image:url(' + p.img + '), radial-gradient(circle at 42% 38%,' + p.g[0] + '77,' + (p.g[1]||p.g[0]) + '22 55%,transparent 75%);background-size:contain,cover;background-repeat:no-repeat,no-repeat;background-position:center,center;';
     } else {
       main.style.cssText = 'background:linear-gradient(150deg,' + p.g[0] + ',#0F1B2E 80%);';
     }
