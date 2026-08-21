@@ -249,7 +249,7 @@
   .hero{position:relative;padding:70px 0 90px;overflow:hidden;}
   .hero::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
     background:radial-gradient(ellipse 90% 70% at 68% 55%, transparent 45%, rgba(4,5,7,.55) 100%);}
-  .hero-blob-wrap{position:absolute;top:2%;left:-14%;width:560px;height:560px;z-index:1;filter:url(#goo);animation:heroFloat 8s ease-in-out infinite;pointer-events:none;opacity:.85;}
+  .hero-blob-wrap{position:absolute;top:2%;left:52%;width:560px;height:560px;z-index:1;filter:url(#goo);animation:heroFloat 8s ease-in-out infinite;pointer-events:none;opacity:.85;}
   @keyframes heroFloat{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-16px) rotate(3deg);}}
   .hero-blob-wrap .hb{position:absolute;border-radius:50%;}
   .hb1{width:360px;height:360px;top:60px;left:60px;background:radial-gradient(circle at 32% 28%, #5EC2F0, #1078D6 45%, #0B4A6B 100%);animation:hmorph1 10s ease-in-out infinite;}
@@ -259,13 +259,13 @@
   @keyframes hmorph2{0%,100%{border-radius:60% 40% 30% 70% / 60% 50% 50% 40%;}50%{border-radius:35% 65% 60% 40% / 40% 55% 45% 60%;}}
   @keyframes hmorph3{0%,100%{border-radius:50% 50% 35% 65% / 65% 40% 60% 35%;}50%{border-radius:65% 35% 55% 45% / 40% 60% 40% 60%;}}
   .hero-shine{position:absolute;width:70px;height:38px;background:rgba(255,255,255,.5);border-radius:50%;filter:blur(9px);top:100px;left:130px;transform:rotate(-20deg);opacity:.55;z-index:2;pointer-events:none;}
-  @media(max-width:980px){.hero-blob-wrap{width:360px;height:360px;left:-22%;opacity:.6;}}
-  @media(max-width:680px){.hero-blob-wrap{width:260px;height:260px;left:-28%;top:-6%;}}
+  @media(max-width:980px){.hero-blob-wrap{width:360px;height:360px;left:20%;opacity:.6;}}
+  @media(max-width:680px){.hero-blob-wrap{width:260px;height:260px;left:14%;top:2%;}}
 
   .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;grid-template-rows:auto auto;gap:8px 32px;align-items:stretch;position:relative;z-index:3;min-height:0;}
   @media(max-width:980px){.hero-grid{grid-template-columns:1fr;grid-template-rows:auto;gap:22px;}}
-  .hero-text{grid-column:1;grid-row:1;max-width:680px;position:relative;z-index:2;padding-right:10px;display:flex;flex-direction:column;justify-content:center;}
-  .hero-actions{grid-column:1 / -1;grid-row:2;position:relative;z-index:4;align-self:start;margin-top:10px;}
+  .hero-text{grid-column:1;grid-row:1;max-width:680px;position:relative;z-index:2;padding-right:10px;display:flex;flex-direction:column;justify-content:flex-end;}
+  .hero-actions{grid-column:1 / -1;grid-row:2;position:relative;z-index:4;align-self:start;margin-top:0;}
   @media(max-width:980px){.hero-text,.hero-actions{grid-column:1;grid-row:auto;}}
 
   .hero-media{grid-column:2;grid-row:1;position:relative;overflow:visible;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto;max-width:420px;width:100%;}
@@ -274,8 +274,8 @@
   @media(max-width:980px){.hero-media .hm-photo{max-height:320px;}}
   .hero-media .hm-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;
     filter:drop-shadow(0 20px 26px rgba(0,0,0,.55)) drop-shadow(0 4px 8px rgba(0,0,0,.4));
-    opacity:1;transition:opacity .5s ease;}
-  .hero-media .hm-photo img.hm-out{opacity:0;}
+    -webkit-mask-image:radial-gradient(ellipse 88% 88% at center, black 55%, transparent 100%);
+    mask-image:radial-gradient(ellipse 88% 88% at center, black 55%, transparent 100%);}
   .hero-media .hm-caption{margin-top:14px;text-align:center;}
   .hero-media .hm-caption strong{display:block;font-family:'Space Grotesk';font-weight:700;font-size:1.05rem;color:var(--hielo);}
   .hero-media .hm-caption span{display:block;margin-top:3px;font-family:'IBM Plex Mono';font-size:.76rem;color:var(--muted-2);letter-spacing:.03em;}
@@ -804,6 +804,8 @@
   .mk-product-card .mp-shot{height:160px;position:relative;}
   .mp-shot[style*="contain"], .shot[style*="contain"], .pf-main-photo[style*="contain"], .pf-thumb[style*="contain"]{
     filter:drop-shadow(0 14px 18px rgba(0,0,0,.5)) drop-shadow(0 2px 5px rgba(0,0,0,.35));
+    -webkit-mask-image:radial-gradient(ellipse 88% 88% at center, black 55%, transparent 100%);
+    mask-image:radial-gradient(ellipse 88% 88% at center, black 55%, transparent 100%);
   }
   .mk-product-card .mp-body{padding:16px 18px 20px;}
   .mk-product-card .mp-body span{color:var(--muted-2);font-size:.72rem;font-family:'IBM Plex Mono';text-transform:uppercase;letter-spacing:.05em;}
@@ -900,7 +902,7 @@
       </div>
       <div class="hero-media">
         <div class="hm-photo">
-          <img id="heroRotImg" src="assets/img/nuevas-ia/nobg/explorer.png" alt="Technogel Explorer">
+          <img id="heroRotImg" src="assets/img/nuevas-ia/explorer.jpg" alt="Technogel Explorer">
         </div>
         <div class="hm-caption" id="heroRotCaption">
           <strong>Explorer</strong>
@@ -2864,57 +2866,57 @@
   var catalogoNuevo = [
     {id:'mante-ts', marca:'technogel', cat:'fabricadoras', catLabel:'Fabricadora discontinua (mantecadora)',
       titulo:'Technogel Mante TS', subtitulo:'Mantecadora con agitador patentado de tres espátulas en acero inoxidable, extracción total sin ruido ni vibraciones. Disponible en Mantegel 20, Mante 15-45 TS, 20-60 TS y 30-100 TS.',
-      img: 'assets/img/nuevas-ia/nobg/mante-ts.png',
+      img: 'assets/img/nuevas-ia/mante-ts.jpg',
       g:['#1078D6','#0C3FA0'],
       specs:[['Mezcla por ciclo','1–4 a 5–17 kg según modelo'],['Producción horaria','10–30 a 30–100 l según modelo'],['Potencia','4 a 12,5 kW según modelo'],['Panel','Touch-screen última generación, LAN/WiFi opcional']]},
     {id:'explorer-400-750', marca:'technogel', cat:'fabricadoras', catLabel:'Fabricadora continua — bomba de pistones',
       titulo:'Technogel Explorer 200/400/600/750', subtitulo:'Freezer continuo con incorporación de aire variable del 30% al 120%, ideal para helados artesanales e industriales. Disponible en 200, 400, 600 y 750 litros/hora.',
-      img: 'assets/img/nuevas-ia/nobg/explorer.png',
+      img: 'assets/img/nuevas-ia/explorer.jpg',
       g:['#1078D6','#0C3FA0'],
       specs:[['Producción','200 / 400 / 600 / 750 l/h'],['Potencia','7 / 10 / 15 / 20 kW'],['Dimensiones','700×1050×1480 mm (200) — 720×1670×1400(+350) mm (400/600/750)'],['Control','Display touch-screen, autodiagnóstico, predisposición lavado CIP']]},
     {id:'explorer-750-lp', marca:'technogel', cat:'fabricadoras', catLabel:'Fabricadora continua — bomba de lóbulos',
       titulo:'Technogel Explorer 750 LP', subtitulo:'Fabricadora continua con bombas a lóbulo y batidor hueco con cuchillas raspadoras, diseñada para una textura de helado incomparable. Overrun controlado del 30% al 140%.',
-      img: 'assets/img/nuevas-ia/nobg/explorer.png',
+      img: 'assets/img/nuevas-ia/explorer.jpg',
       g:['#1078D6','#38BDF8'],
       specs:[['Producción','750 l/h'],['Potencia','20,5 kW'],['Dimensiones','720×1670×1400 mm'],['Overrun','30% a 140%, control automático por PLC']]},
     {id:'space-700-1500', marca:'technogel', cat:'fabricadoras', catLabel:'Fabricadora continua de alta capacidad',
       titulo:'Technogel Space 700/1000/1500', subtitulo:'Nuevo modelo. Congeladores continuos de engranajes para empresas medianas y grandes, con panel HMI multilingüe y control total de producción. Hasta 1500 litros/hora.',
-      img: 'assets/img/nuevas-ia/nobg/space-700-1500.png',
+      img: 'assets/img/nuevas-ia/space-700-1500.jpg',
       g:['#1078D6','#0C3FA0'],
       specs:[['Producción','700 / 1000 / 1500 l/h'],['Potencia','20,5 / 32 / 45 kW'],['Dimensiones','1000×2100×2000 mm (700) — 1000×2600×2000 mm (1000/1500)'],['Control','Panel táctil multilingüe, autodiagnóstico, lavado CIP']]},
     {id:'soft-candy', marca:'technogel', cat:'fabricadoras', catLabel:'Soft/Candy',
       titulo:'Technogel Soft/Candy', subtitulo:'Línea de máquinas para helado soft: el Black Magic, de alta capacidad con turbinas de nueva concepción y carga automática de mezcla en los cilindros; y el Euro 3/3P, con display de parámetros siempre visibles y programas de mantecación personalizables.',
-      img: 'assets/img/nuevas-ia/nobg/black-magic.png',
+      img: 'assets/img/nuevas-ia/black-magic.jpg',
       g:['#EC4878','#C23361'],
       specs:[['Modelos','Black Magic (alta capacidad) y Euro 3 / 3P'],['Capacidad','15+15 l en ambos modelos'],['Producción','69 l/h (Black Magic) — 27/37 kg (Euro 3), 27/45 kg (Euro 3P)'],['Conos de 75g por hora','550 (Black Magic) — 360 (Euro 3/3P)'],['Potencia','3,5 kW (Black Magic) — 3,3 kW (Euro 3/3P)']]},
     {id:'mixpasto', marca:'technogel', cat:'pasteurizadores', catLabel:'Pasteurizador',
       titulo:'Technogel Mixpasto 60TS/120TS/200TS', subtitulo:'Pasteurizador con emulsor incorporado y motor agitador por inverter, panel táctil de última generación y programas totalmente personalizables. Interconexión 4.0 opcional.',
-      img: 'assets/img/nuevas-ia/nobg/mixpasto.png',
+      img: 'assets/img/nuevas-ia/mixpasto.jpg',
       g:['#EC4878','#C23361'],
       specs:[['Capacidad','15–60 / 20–120 / 30–200 l'],['Potencia','7,2 / 13 / 20 kW'],['Condensación','Agua o aire'],['Dimensiones','400×1000×1050 a 670×1175×1248 mm']]},
     {id:'mixcrema', marca:'technogel', cat:'pasteurizadores', catLabel:'Pasteurizador / cocinador de cremas',
       titulo:'Technogel Mixcrema 35/60', subtitulo:'Máquina completamente automática para crema pastelera, chocolate templado, bases de helado, rellenos, turrón y mermeladas, con calentamiento y enfriamiento a baño maría.',
-      img: 'assets/img/nuevas-ia/nobg/mixcrema.png',
+      img: 'assets/img/nuevas-ia/mixcrema.jpg',
       g:['#1078D6','#0C3FA0'],
       specs:[['Capacidad','15–35 / 30–60 l'],['Potencia','6,5 / 7,5 kW'],['Condensación','Agua']]},
     {id:'mixgel', marca:'technogel', cat:'pasto-productora', catLabel:'Pasto-productora (pasteurizador + mantecadora)',
       titulo:'Technogel Mixgel 30E/50E', subtitulo:'Laboratorio completo para pasteurizar y mantecar la mezcla en una única máquina. Ideal para heladerías con espacio reducido que no quieren resignar calidad artesanal.',
-      img: 'assets/img/nuevas-ia/nobg/mixgel.png',
+      img: 'assets/img/nuevas-ia/mixgel.jpg',
       g:['#EC4878','#C23361'],
       specs:[['Capacidad','2–9 l'],['Producción horaria','22–30 / 38–50 kg'],['Potencia','8,5 / 10,3 kW'],['Cámaras','Dos independientes: pasteurizado o mantecado por separado']]},
     {id:'technowhip', marca:'technogel', cat:'cremera', catLabel:'Cremera (montapanna)',
       titulo:'Technogel Technowhip 2 Eco/2 Star', subtitulo:'Máquina para crema batida en acero inoxidable, con bomba a engranajes y sistema de regulación de aire. El trefilador es una pieza única para nata fresca o de larga conservación.',
-      img: 'assets/img/nuevas-ia/nobg/technowhip.png',
+      img: 'assets/img/nuevas-ia/technowhip.jpg',
       g:['#1078D6','#38BDF8'],
       specs:[['Capacidad','2 / 3 l'],['Producción de crema','65 / 95 l/h'],['Potencia','0,6 / 0,8 kW']]},
     {id:'mixworking-htst', marca:'technogel', cat:'plantas-pasteurizacion', catLabel:'Planta de pasteurización HTST',
       titulo:'Technogel Mixworking HTST TS', subtitulo:'Planta continua de pasteurización HTST (alta temperatura, corto tiempo) para grandes volúmenes. Disponible de 600 a 6000 litros/hora.',
-      img: 'assets/img/nuevas-ia/nobg/mixworking-htst.png',
+      img: 'assets/img/nuevas-ia/mixworking-htst.jpg',
       g:['#0C3FA0','#1078D6'],
       specs:[['Producción','600 a 6000 l/h según modelo'],['Composición','Depósito de precalentamiento, bomba centrífuga de doble filtro, intercambiador a placas, sección tubular, homogeneizador'],['Potencia','21,7 a 82 kW según modelo'],['Dimensiones','6500×1800×1800 mm (600) a 13500×2300×4300 mm (6000)']]},
     {id:'fruit-feeder', marca:'technogel', cat:'sembradora-fruta', catLabel:'Sembradora de fruta',
       titulo:'Technogel Fruit Feeder FF10E–FF30B', subtitulo:'Dispensador de fruta e ingredientes sólidos, con dosificación mediante rotor de pistón alterno. Reconocido mundialmente por su tecnología y fiabilidad.',
-      img: 'assets/img/nuevas-ia/nobg/fruit-feeder.png',
+      img: 'assets/img/nuevas-ia/fruit-feeder.jpg',
       g:['#EC4878','#C23361'],
       specs:[['Producción','300 a 5000 l/h según modelo'],['Potencia','2 a 3,9 kW según modelo'],['Modelos','FF10E, FF20E, FF30E, FF20B, FF30B']]},
     {id:'fruit-feeder-ff10', marca:'technogel', cat:'sembradora-fruta', catLabel:'Sembradora de fruta',
@@ -2923,60 +2925,62 @@
       specs:[['Producción','200 a 900 l/h']]},
     {id:'ripple-pump', marca:'technogel', cat:'sembradora-salsa', catLabel:'Sembradora de salsa',
       titulo:'Technogel Ripple Pump 1L/7L', subtitulo:'Bomba volumétrica neumática para inyectar salsas al flujo de helado, aplicada directamente a la salida del freezer. Densidad de trabajo de 1.000 a 20.000 centipoise.',
-      img: 'assets/img/nuevas-ia/nobg/ripple-pump.png',
+      img: 'assets/img/nuevas-ia/ripple-pump.jpg',
       g:['#EC4878','#F5A9C4'],
       specs:[['Capacidad del tanque','25 l'],['Caudal','1–60 L/H (1L) a 60–420 L/H (7L)'],['Nota','Compresor de aire no incluido']]},
     {id:'omo-homogenizador', marca:'technogel', cat:'homogeneizadores', catLabel:'Homogeneizador',
       titulo:'Technogel OMO 300/600/1200', subtitulo:'Homogeneiza y uniforma la estructura molecular de la mezcla de helado, mejorando la incorporación de aire. Versiones de una y dos fases, hasta 5000 litros por hora.',
-      img: 'assets/img/nuevas-ia/nobg/omo-homogenizador.png',
+      img: 'assets/img/nuevas-ia/omo-homogenizador.jpg',
       g:['#38BDF8','#0C3FA0'],
       specs:[['Capacidad','300 / 600 / 1200 l/h'],['Presión máxima','250 bar'],['Potencia','4,5 / 6,1 / 12 kW']]},
     {id:'gemini', marca:'technogel', cat:'llenadoras', catLabel:'Llenadora automática lineal',
       titulo:'Technogel Gemini STD', subtitulo:'Llenadora lineal automática de 2 a 8 filas, con motor de cadena brushless y panel touch screen de serie. Estaciones opcionales: desapilador, dosificador, cobertura de chocolate, termosellado, impresora de fecha.',
-      img: 'assets/img/nuevas-ia/nobg/gemini.png',
+      img: 'assets/img/nuevas-ia/gemini.jpg',
       g:['#1078D6','#38BDF8'],
       specs:[['Dimensiones','5510×963×2462h mm'],['Producción','30/33 ciclos/min'],['Zona de carga','2550 mm'],['Alimentación','400V - 50Hz, 3ph + neutro']]},
     {id:'dr7', marca:'technogel', cat:'llenadoras', catLabel:'Llenadora automática — robot',
       titulo:'Technogel DR7', subtitulo:'Robot de llenado y dosificado automático para bandejas, en una o dos filas, con hasta 3 sabores y 2 variegados por envase. Opcional: desapilador automático de bandejas.',
-      img: 'assets/img/nuevas-ia/nobg/dr7.png',
+      img: 'assets/img/nuevas-ia/dr7.jpg',
       g:['#0C3FA0','#1078D6'],
       specs:[['Dimensiones','3175×1215×1933h mm'],['Peso','400 kg'],['Potencia eléctrica','2 kW'],['Capacidad','Envases de 1 a 10 litros']]},
     {id:'rotary', marca:'technogel', cat:'llenadoras', catLabel:'Llenadora automática rotativa',
       titulo:'Technogel Rotary 4000/8D PLC', subtitulo:'Llenadora rotativa automática para cucuruchos, vasitos, tarritos, trufas, tiramisú y porciones individuales.',
-      img: 'assets/img/nuevas-ia/nobg/rotary.png',
+      img: 'assets/img/nuevas-ia/rotary.jpg',
       g:['#1078D6','#0C3FA0'],
       specs:[['Dimensiones','1000×1320×2000h mm'],['Producción','Hasta 4000 u/h (4000 PLC) / 2000 u/h (8D PLC)'],['Diámetro máx. de envase','100 mm (4000) / 130 mm (8D)'],['Potencia','1,2 kW']]},
     {id:'filler-desk', marca:'technogel', cat:'llenadoras', catLabel:'Llenadora automática de mesa',
       titulo:'Technogel Filler Desk', subtitulo:'Envasadora semiautomática de mesa, con dos dispensadores de movimiento vertical, estructura íntegramente en acero inoxidable y plataforma de altura ajustable.',
-      img: 'assets/img/nuevas-ia/nobg/filler-desk.png',
+      img: 'assets/img/nuevas-ia/filler-desk.jpg',
       g:['#0C3FA0','#38BDF8'],
       specs:[['Capacidad','Envases de 0,5 a 5 l'],['Estructura','Acero inoxidable'],['Uso','Dosificación con variegado interno y externo']]},
     {id:'polostick', marca:'technogel', cat:'paletera', catLabel:'Palitera semiautomática',
       titulo:'Technogel Polostick 500/1000', subtitulo:'Máquina completa para la producción de ghiaccioli y helado en palito, con capacidad de hasta 1000 piezas por hora. Incluye moldes múltiples con extractores y vasqueta de descongelado.',
-      img: 'assets/img/nuevas-ia/nobg/polostick.png',
+      img: 'assets/img/nuevas-ia/polostick.jpg',
       g:['#0C3FA0','#1078D6'],
       specs:[['Capacidad','Hasta 1000 piezas/hora'],['Sistema','Refrigeración por líquido refrigerante'],['Incluye','Moldes múltiples con extractores, tapas y tina de descongelado']]},
     {id:'technostick', marca:'technogel', cat:'paletera', catLabel:'Palitera automática',
       titulo:'Technogel Technostick', subtitulo:'Equipo rotativo automático para producir palitos de crema y de agua, con estaciones de trabajo sincronizadas y movimientos totalmente automáticos. Disponible en 5 versiones según cantidad de filas de moldes.',
-      img: 'assets/img/nuevas-ia/nobg/technostick.png',
+      img: 'assets/img/nuevas-ia/technostick.jpg',
       g:['#1078D6','#38BDF8'],
       specs:[['Versiones','5 modelos: moldes de 4, 6, 10, 12 o 14 filas'],['Refrigerante','Compatible con Freón o Amoníaco'],['Productos','Helado de palo, lollypops, con cobertura de chocolate, con crocante de nueces, shell & core']]},
     {id:'technotunnel', marca:'technogel', cat:'tunnel', catLabel:'Túnel de congelamiento',
       titulo:'Technogel Technotunnel T600/T800/T1000/T1800', subtitulo:'Línea de extrusión a bandejas para producción, congelamiento y envasado automático de helados: palitos, conos, sándwiches, barras y tortas. El T1800 incorpora doble fila con recolección robotizada.',
-      img: 'assets/img/nuevas-ia/nobg/technotunnel.png',
+      img: 'assets/img/nuevas-ia/technotunnel.jpg',
       g:['#38BDF8','#1078D6'],
       specs:[['Producción','200 a 900 kg/h según modelo'],['Temperatura de cámara','-40°C'],['Potencia eléctrica','65 a 230 kW según modelo'],['Refrigerantes','NH3 / R404 / R507']]},
     {id:'tinas-maduracion', marca:'technogel', cat:'tinas-maduracion', catLabel:'Tinas de maduración',
       titulo:'Technogel Agemix 60/120/200', subtitulo:'Tinas de maduración en acero inoxidable con circuitos estampados para circulación del gas refrigerante. Mantiene el mix a +4°C con agitación lenta para mayor cremosidad.',
-      img: 'assets/img/nuevas-ia/nobg/tinas-maduracion.png',
+      img: 'assets/img/nuevas-ia/tinas-maduracion.jpg',
       g:['#0C3FA0','#1078D6'],
       specs:[['Capacidad','60 / 120 / 200 l'],['Potencia','1,5 / 3 / 5,5 kW'],['Gas refrigerante','Freon R134A'],['Dimensiones','400×1000×1050 a 670×1175×1248 mm']]},
     {id:'technogel-torre-enfriamiento', marca:'technogel', cat:'torre-enfriamiento', catLabel:'Torre de enfriamiento',
       titulo:'Dualmet Torre de Enfriamiento', subtitulo:'Equipo diseñado para condensadores por agua, con circuito cerrado. El enfriamiento se logra por evaporación parcial del agua esparcida en forma de lluvia, con electroventilador incorporado. Desarmable en tres módulos.',
+      img: 'assets/img/nuevas-ia/dualmet-torre.jpg',
       g:['#38BDF8','#0C3FA0'],
       specs:[['Construcción','Acero resistente a la corrosión'],['Ventilación','Electroventilador de 1 HP'],['Armado','Desarmable en tres módulos'],['Presentaciones','12,5 Ton / 37 Kcal · 25 Ton / 75 Kcal · 50 Ton / 150 Kcal (aprox. 1 HP instalado)']]},
     {id:'technogel-banco-agua-helada', marca:'technogel', cat:'banco-agua-helada', catLabel:'Banco de agua helada',
       titulo:'Dualmet Banco de Agua Helada', subtitulo:'Unidad autónoma con enfriado por placa evaporadora, compresor semi hermético Dorin/Bitzer y doble bomba de recirculación (interna y externa). Tanque reservorio de 400 litros.',
+      img: 'assets/img/nuevas-ia/dualmet-banco-agua.jpg',
       g:['#7DD3E8','#1078D6'],
       specs:[['Compresor','Semi hermético Dorin / Bitzer'],['Bombas','Recirculación interna y externa Zcerweny, 1,5 HP cada una'],['Condensación','Por aire o placa, según zona/región'],['Construcción','Acero inoxidable 304, cañerías internas en termofusión'],['Reservorio','400 litros'],['Modelos','5, 10, 15, 20 y 25 HP']]},
     {id:'variegador-electrico', marca:'technogel', cat:'sembradora-salsa', catLabel:'Variegador eléctrico',
@@ -2985,43 +2989,51 @@
       specs:[['Tolva','Acero inoxidable, aprox. 20 l'],['Incluye','Tubo flexible de transferencia y accesorios de inyección'],['Opcional','Cuadro eléctrico con pantalla táctil']]},
     {id:'jit-modelo-c', marca:'jit', cat:'otras', catLabel:'Caldera de pie a gas',
       titulo:'JIT Modelo C (C15 a C80)', subtitulo:'Caldera de pie a gas con cuerpo de acero y quemador inoxidable tipo Polidoro, apta para radiadores, piso radiante y fan coil. Opcional con bomba circuladora y/o tanque de expansión hermético. Ideal para calentar el agua que recircula en las cocinas de producción de helado.',
-      img: 'assets/img/nuevas-ia/nobg/jit-modelo-c.png',
+      img: 'assets/img/nuevas-ia/jit-modelo-c.jpg',
       g:['#1078D6','#0C3FA0'],
       specs:[['Potencia útil','15.000 a 80.000 kcal/h según modelo (C15, C20, C30, C40, C50, C70, C80)'],['Dimensiones','330×550×830 mm (C15) a 1130×550×830 mm (C70/C80)'],['Nota','C70 y C80 requieren conexiones de calefacción cruzadas'],['Opcionales','Bomba circuladora, tanque de expansión hermético, termostato de ambiente']]},
 
     // ---- DUALMET ----
     {id:'dualmet-pasteurizador', marca:'dualmet', cat:'cocinas', catLabel:'Cocinador',
       titulo:'Dualmet Pasteurizador a gas o eléctrico', subtitulo:'Pasteurizador construido en su totalidad en acero inoxidable 304, con encendido electrónico sin piloto y control digital de temperatura con aviso de fin de cocción.',
+      img: 'assets/img/nuevas-ia/dualmet-pasteurizador.jpg',
       g:['#EC4878','#C23361'],
       specs:[['Encendido','Electrónico con sensor de llama sin piloto, instantáneo'],['Control','Digital de temperatura, con aviso de fin de cocción'],['Construcción','Acero inoxidable 304, tacho interior con excelente acabado'],['Extras','Solenoide de agua para llenado e intercambio de baño, tapa dividida removible'],['Quemador','Fundición de hierro, 30 a 50 Kcal/h'],['Presentaciones','A gas y eléctricos: 10, 70, 100 y 150 litros']]},
     {id:'dualmet-tinas-maduracion', marca:'dualmet', cat:'tinas-maduracion', catLabel:'Tinas de maduración',
       titulo:'Dualmet Tinas de Maduración', subtitulo:'Tinas para fabricación artesanal con equipo incorporado, bomba de recirculación y enfriado por serpentina de cobre. Marcha continua o ciclado individual por agitador.',
+      img: 'assets/img/nuevas-ia/dualmet-tina-maduracion.jpg',
       g:['#1078D6','#38BDF8'],
       specs:[['Enfriado','Bomba de recirculación, serpentina interna de cobre 5/8, condensación tubo en tubo (rulo)'],['Cañerías','Recirculación en termofusión'],['Agitadores','Tiempo de marcha/parada ajustable, marcha continua o ciclado individual'],['Construcción','Acero inoxidable 304, tapas individuales divididas removibles'],['Modelos artesanales','2×70/100/150 L, 3×70/100/150 L, 4×70/100/150 L']]},
     {id:'dualmet-torre-enfriamiento', marca:'dualmet', cat:'torre-enfriamiento', catLabel:'Torre de enfriamiento',
       titulo:'Dualmet Torre de Enfriamiento', subtitulo:'Equipo diseñado para condensadores por agua, con circuito cerrado. El enfriamiento se logra por evaporación parcial del agua esparcida en forma de lluvia, con electroventilador incorporado. Desarmable en tres módulos.',
+      img: 'assets/img/nuevas-ia/dualmet-torre.jpg',
       g:['#38BDF8','#0C3FA0'],
       specs:[['Construcción','Acero resistente a la corrosión'],['Ventilación','Electroventilador de 1 HP'],['Armado','Desarmable en tres módulos'],['Presentaciones','12,5 Ton / 37 Kcal · 25 Ton / 75 Kcal · 50 Ton / 150 Kcal (aprox. 1 HP instalado)']]},
     {id:'dualmet-banco-agua-helada', marca:'dualmet', cat:'banco-agua-helada', catLabel:'Banco de agua helada',
       titulo:'Dualmet Banco de Agua Helada', subtitulo:'Unidad autónoma con enfriado por placa evaporadora, compresor semi hermético Dorin/Bitzer y doble bomba de recirculación (interna y externa). Tanque reservorio de 400 litros.',
+      img: 'assets/img/nuevas-ia/dualmet-banco-agua.jpg',
       g:['#7DD3E8','#1078D6'],
       specs:[['Compresor','Semi hermético Dorin / Bitzer'],['Bombas','Recirculación interna y externa Zcerweny, 1,5 HP cada una'],['Condensación','Por aire o placa, según zona/región'],['Construcción','Acero inoxidable 304, cañerías internas en termofusión'],['Reservorio','400 litros'],['Modelos','5, 10, 15, 20 y 25 HP']]},
     {id:'dualmet-cocinas-industriales', marca:'dualmet', cat:'cocinas', catLabel:'Cocinador',
       titulo:'Dualmet Cocinas Industriales', subtitulo:'Cocinas con baño maría en pared y fondo del tacho, con canalización de la circulación de agua que mejora el intercambio térmico y reduce el tiempo de cocción.',
+      img: 'assets/img/nuevas-ia/dualmet-cocina-artesanal.jpg',
       g:['#98A4B4','#5E7188'],
       specs:[['Baño maría','En pared y fondo del tacho'],['Circulación','Canalizada, mejora el intercambio térmico y reduce el tiempo de cocción'],['Agitador','De 1 a 3 HP, 1400 rpm según litros'],['Control','Termómetro digital']]},
     {id:'dualmet-chocolatera', marca:'dualmet', cat:'chocolatera', catLabel:'Chocolatera',
-      titulo:'Dualmet Chocolatera', subtitulo:'Equipo para trabajar chocolate en tu producción de helado. Estamos completando la ficha técnica con las especificaciones y fotos reales — escribinos si la necesitás ya.',
+      titulo:'Dualmet Chocolatera', subtitulo:'Derretidora de chocolate para 25 kg, con control de temperatura regulable, para trabajar chocolate en tu producción de helado.',
+      img: 'assets/img/nuevas-ia/dualmet-chocolatera.jpg',
       g:['#C23361','#EC4878'],
-      specs:[]},
+      specs:[['Capacidad','25 kg'],['Control','Perilla de temperatura regulable con testigo luminoso'],['Construcción','Acero inoxidable']]},
     {id:'dualmet-mesadas', marca:'dualmet', cat:'varios', catLabel:'Mesadas de acero inoxidable',
-      titulo:'Dualmet Mesadas de Acero Inoxidable', subtitulo:'Mesadas de trabajo en acero inoxidable, fabricadas a medida para tu heladería o planta de producción.',
+      titulo:'Dualmet Mesadas de Acero Inoxidable', subtitulo:'Mesadas de trabajo en acero inoxidable, con estante inferior y cajón, fabricadas a medida para tu heladería o planta de producción.',
+      img: 'assets/img/nuevas-ia/dualmet-mesada.jpg',
       g:['#98A4B4','#5E7188'],
-      specs:[]},
+      specs:[['Construcción','Acero inoxidable'],['Incluye','Estante inferior, cajón y ruedas'],['Medidas','A medida según necesidad']]},
     {id:'dualmet-recipientes', marca:'dualmet', cat:'varios', catLabel:'Recipientes de acero inoxidable',
-      titulo:'Dualmet Recipientes de Acero Inoxidable', subtitulo:'Recipientes en acero inoxidable a medida: tachos, bateas y accesorios para producción y almacenamiento.',
+      titulo:'Dualmet Recipientes de Acero Inoxidable', subtitulo:'Recipientes en acero inoxidable a medida, con tapa y manija, para producción y almacenamiento.',
+      img: 'assets/img/nuevas-ia/dualmet-recipientes.jpg',
       g:['#5E7188','#98A4B4'],
-      specs:[]}
+      specs:[['Construcción','Acero inoxidable'],['Incluye','Tapa con manija, ruedas'],['Medidas','A medida según necesidad']]}
   ];
 
   function renderMarcaLanding(key, catKey){
@@ -3401,32 +3413,26 @@
   // ---- hero: rotación de fotos del catálogo con nombre y capacidad ----
   // para sumar una máquina más a la rotación, agregar un objeto acá.
   var heroRotItems = [
-    {img:'assets/img/nuevas-ia/nobg/explorer.png', nombre:'Explorer', cap:'200 – 750 l/h'},
-    {img:'assets/img/nuevas-ia/nobg/space-700-1500.png', nombre:'Space', cap:'700 – 1500 l/h'},
-    {img:'assets/img/nuevas-ia/nobg/mante-ts.png', nombre:'Mante TS', cap:'15 – 100 l/h'},
-    {img:'assets/img/nuevas-ia/nobg/fruit-feeder.png', nombre:'Fruit Feeder', cap:'300 – 5000 l/h'},
-    {img:'assets/img/nuevas-ia/nobg/omo-homogenizador.png', nombre:'OMO', cap:'300 – 5000 l/h'},
-    {img:'assets/img/nuevas-ia/nobg/ripple-pump.png', nombre:'Ripple Pump', cap:'1 – 420 l/h'},
-    {img:'assets/img/nuevas-ia/nobg/tinas-maduracion.png', nombre:'Tinas de maduración', cap:'60 – 200 l'},
-    {img:'assets/img/nuevas-ia/nobg/technotunnel.png', nombre:'Technotunnel', cap:'200 – 900 kg/h'}
+    {img:'assets/img/nuevas-ia/explorer.jpg', nombre:'Explorer', cap:'200 – 750 l/h'},
+    {img:'assets/img/nuevas-ia/space-700-1500.jpg', nombre:'Space', cap:'700 – 1500 l/h'},
+    {img:'assets/img/nuevas-ia/mante-ts.jpg', nombre:'Mante TS', cap:'15 – 100 l/h'},
+    {img:'assets/img/nuevas-ia/fruit-feeder.jpg', nombre:'Fruit Feeder', cap:'300 – 5000 l/h'},
+    {img:'assets/img/nuevas-ia/omo-homogenizador.jpg', nombre:'OMO', cap:'300 – 5000 l/h'},
+    {img:'assets/img/nuevas-ia/ripple-pump.jpg', nombre:'Ripple Pump', cap:'1 – 420 l/h'},
+    {img:'assets/img/nuevas-ia/tinas-maduracion.jpg', nombre:'Tinas de maduración', cap:'60 – 200 l'},
+    {img:'assets/img/nuevas-ia/technotunnel.jpg', nombre:'Technotunnel', cap:'200 – 900 kg/h'}
   ];
   (function initHeroRotator(){
+    // elige una máquina al azar en cada carga/refresco de la página —
+    // no rota sola mientras el visitante está mirando.
     var img = document.getElementById('heroRotImg');
     var caption = document.getElementById('heroRotCaption');
-    if (!img || !caption || heroRotItems.length < 2) return;
-    var i = 0;
-    setInterval(function(){
-      i = (i + 1) % heroRotItems.length;
-      var item = heroRotItems[i];
-      img.classList.add('hm-out');
-      setTimeout(function(){
-        img.src = item.img;
-        img.alt = 'Technogel ' + item.nombre;
-        caption.querySelector('strong').textContent = item.nombre;
-        caption.querySelector('span').textContent = item.cap;
-        img.classList.remove('hm-out');
-      }, 500);
-    }, 4500);
+    if (!img || !caption || !heroRotItems.length) return;
+    var item = heroRotItems[Math.floor(Math.random() * heroRotItems.length)];
+    img.src = item.img;
+    img.alt = 'Technogel ' + item.nombre;
+    caption.querySelector('strong').textContent = item.nombre;
+    caption.querySelector('span').textContent = item.cap;
   })();
 
   // ---- reveal on scroll ----
