@@ -264,7 +264,7 @@
   .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;grid-template-rows:auto auto;gap:8px 32px;align-items:stretch;position:relative;z-index:3;min-height:0;}
   @media(max-width:980px){.hero-grid{grid-template-columns:1fr;grid-template-rows:auto;gap:22px;}}
   .hero-text{grid-column:1/-1;grid-row:1;max-width:680px;position:relative;z-index:2;padding-right:10px;display:flex;flex-direction:column;justify-content:flex-end;}
-  .hero-actions{grid-column:1 / -1;grid-row:2;position:relative;z-index:4;align-self:start;margin-top:0;}
+  .hero-actions{grid-column:1 / -1;grid-row:2;position:relative;z-index:4;align-self:start;margin-top:22px;}
   @media(max-width:980px){.hero-text,.hero-actions{grid-column:1;grid-row:auto;}}
 
   /* apagada por ahora: las fotos de máquina en el hero no quedaban bien (recortadas o
@@ -478,17 +478,17 @@
   .chips{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px;}
   .chip{border:1px solid var(--line);color:var(--muted);padding:8px 16px;border-radius:100px;font-size:.82rem;transition:.3s;}
   .chip.active, .chip:hover{border-color:var(--frio-1);color:var(--frio-1);}
-  .listing-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
-  @media(max-width:640px){.listing-grid{grid-template-columns:1fr;}}
-  .listing{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;transition:transform .4s var(--ease), border-color .4s;cursor:pointer;}
+  .listing-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;align-items:start;}
+  @media(max-width:640px){.listing-grid{grid-template-columns:repeat(2,1fr);gap:10px;}}
+  .listing{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:transform .4s var(--ease), border-color .4s;cursor:pointer;display:flex;flex-direction:column;}
   .listing:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.18);}
-  .listing .shot{height:150px;position:relative;overflow:hidden;}
+  .listing .shot{aspect-ratio:1/1;position:relative;overflow:hidden;}
   .listing .shot .stage{position:absolute;inset:0;}
   .listing .badge{position:absolute;top:10px;left:10px;background:rgba(6,11,20,.7);backdrop-filter:blur(6px);color:var(--hielo);font-size:.68rem;padding:5px 10px;border-radius:100px;font-family:'IBM Plex Mono';border:1px solid var(--line);}
-  .listing .body{padding:16px 18px 18px;}
-  .listing .body .price{font-family:'IBM Plex Mono';color:var(--frio-1);font-size:1.05rem;font-weight:600;}
-  .listing .body h4{font-size:.94rem;margin:6px 0 4px;font-weight:600;}
-  .listing .body .meta{font-size:.76rem;color:var(--muted-2);}
+  .listing .body{padding:12px 14px 14px;}
+  .listing .body .price{font-family:'IBM Plex Mono';color:var(--frio-1);font-size:.96rem;font-weight:600;}
+  .listing .body h4{font-size:.86rem;margin:5px 0 3px;font-weight:600;line-height:1.3;}
+  .listing .body .meta{font-size:.72rem;color:var(--muted-2);}
   .listing.is-reserved .stage{filter:grayscale(.5) brightness(.55);}
   .listing.is-reserved .body{opacity:.6;}
   .reserved-ribbon{
@@ -724,6 +724,11 @@
   .ld-overlay{position:fixed;inset:0;z-index:80;background:rgba(6,7,9,.78);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s var(--ease);}
   .ld-overlay.is-open{opacity:1;pointer-events:auto;}
   .ld-modal{position:relative;width:100%;max-width:920px;max-height:90vh;overflow-y:auto;overflow-x:hidden;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 30px 80px -20px rgba(0,0,0,.6);}
+  /* "Solicitá tu propuesta comercial": pantalla completa siempre (no solo en
+     mobile), para que entre todo el formulario sin tener que scrollear. */
+  #spOverlay{padding:0;}
+  #spOverlay .ld-modal{max-width:100vw;width:100vw;height:100vh;max-height:100vh;border-radius:0;overflow-y:auto;display:flex;flex-direction:column;justify-content:center;}
+  #spOverlay .ld-view{width:100%;max-width:640px;margin:0 auto;}
   .ld-close{position:sticky;float:right;top:14px;right:14px;margin:14px 14px 0 0;width:36px;height:36px;border-radius:50%;background:rgba(10,11,13,.55);border:1px solid var(--line);color:var(--hielo);font-size:1rem;cursor:pointer;z-index:5;}
   .ld-close:hover{border-color:var(--frio-1);color:var(--frio-1);}
   .ld-view{display:grid;grid-template-columns:1.15fr 1fr;gap:0;clear:both;}
@@ -797,6 +802,10 @@
   .mk-demo-flag{display:inline-block;font-family:'IBM Plex Mono';font-size:.68rem;padding:6px 12px;border-radius:100px;background:rgba(236,72,120,.12);color:var(--calor-1);border:1px solid rgba(236,72,120,.3);margin-bottom:18px;letter-spacing:.02em;}
   .mk-hero{padding-top:10px;padding-bottom:20px;}
   .mk-title{font-size:clamp(2.4rem,6vw,4rem);font-weight:800;font-family:'Space Grotesk';margin:6px 0 10px;}
+  /* marcas sin logo-imagen legible en este fondo: mismo tratamiento tipográfico
+     que ya usamos para su nombre en las tarjetas de la home */
+  .mk-title-dualmet{font-family:'Orbitron',sans-serif;text-transform:uppercase;letter-spacing:.02em;background:linear-gradient(90deg,#EC4878,#F5A623,#2FA8DA);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  .mk-title-jit{font-family:'Orbitron',sans-serif;text-transform:uppercase;letter-spacing:.02em;background:linear-gradient(90deg,#38BDF8,#1078D6,#0C3FA0);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
   .mk-logo-img{height:clamp(48px,8vw,84px);width:auto;margin:10px 0 6px;}
   .mk-tagline{font-size:1.15rem;color:var(--frio-1);font-weight:600;margin-bottom:16px;}
   .mk-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;}
@@ -837,6 +846,7 @@
   .pf-thumb:hover{opacity:1;}
   .pf-thumb.is-active{opacity:1;border-color:var(--frio-1);}
   .pf-badge{display:inline-block;font-family:'IBM Plex Mono';font-size:.7rem;padding:5px 12px;border-radius:100px;background:rgba(16,120,214,.12);color:var(--frio-1);border:1px solid rgba(16,120,214,.3);margin-bottom:14px;margin-right:8px;}
+  .badge-nuevo{display:inline-block;font-family:'IBM Plex Mono';font-size:.68rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:3px 9px;border-radius:100px;background:rgba(236,72,120,.15);color:#EC4878;border:1px solid rgba(236,72,120,.35);margin-left:6px;vertical-align:middle;}
   .pf-brand{display:inline-block;color:var(--muted-2);font-family:'IBM Plex Mono';font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;margin-bottom:14px;}
   .pf-info h1{font-size:clamp(1.7rem,3.6vw,2.4rem);font-weight:700;line-height:1.15;margin-bottom:10px;text-transform:uppercase;}
   .pf-sub{color:var(--muted);font-size:1rem;line-height:1.6;margin-bottom:26px;}
@@ -1117,7 +1127,7 @@
     <div class="wrap">
       <div class="sec-head" data-reveal>
         <span class="kicker">Máquinas usadas</span>
-        <h2>Comprá con confianza. Vendé sin intermediarios.</h2>
+        <h2>Comprá con confianza.<br>Vendé sin intermediarios.</h2>
         <p>Cada máquina publicada pasa por una revisión de datos básica antes de salir a la vidriera. Vos fijás el precio, nosotros te conectamos con el comprador correcto.</p>
       </div>
 
@@ -1728,7 +1738,7 @@
 
     <div class="footer-grid">
       <div>
-        <div class="logo" style="margin-bottom:14px;"><img src="assets/img/img-04.png" alt=""><img class="wordmark-inline" src="assets/img/img-05.png" alt="MAQ.HEL"></div>
+        <div class="logo" style="margin-bottom:14px;"><img src="assets/img/img-03.png" alt=""><span class="logo-text-block"><span class="wordmark-text">MAQ<span class="wm-dot">.</span>HEL</span><span class="logo-tagline">MAQUINAS.HELADO</span></span></div>
         <p style="color:var(--muted);font-size:.9rem;line-height:1.6;max-width:280px;">El marketplace de máquinas de helado. Representantes oficiales de Technogel y Dualmet en Argentina, Uruguay, Paraguay y Bolivia.</p>
       </div>
       <div>
@@ -1773,7 +1783,7 @@
 
 <!-- ===== MODAL "SOLICITÁ TU PROPUESTA COMERCIAL" (máquinas nuevas) ===== -->
 <div class="ld-overlay" id="spOverlay" aria-hidden="true">
-  <div class="ld-modal" style="max-width:560px;" role="dialog" aria-modal="true" aria-labelledby="spTitle">
+  <div class="ld-modal" role="dialog" aria-modal="true" aria-labelledby="spTitle">
     <button type="button" class="ld-close" id="spClose" aria-label="Cerrar">✕</button>
 
     <!-- VISTA 1: formulario -->
@@ -2884,13 +2894,8 @@
       img: 'assets/img/nuevas-ia/explorer.jpg',
       g:['#1078D6','#0C3FA0'],
       specs:[['Producción','200 / 400 / 600 / 750 l/h'],['Potencia','7 / 10 / 15 / 20 kW'],['Dimensiones','700×1050×1480 mm (200) — 720×1670×1400(+350) mm (400/600/750)'],['Control','Display touch-screen, autodiagnóstico, predisposición lavado CIP']]},
-    {id:'explorer-750-lp', marca:'technogel', cat:'fabricadoras', catLabel:'Fabricadora continua — bomba de lóbulos',
-      titulo:'Technogel Explorer 750 LP', subtitulo:'Fabricadora continua con bombas a lóbulo y batidor hueco con cuchillas raspadoras, diseñada para una textura de helado incomparable. Overrun controlado del 30% al 140%.',
-      img: 'assets/img/nuevas-ia/explorer.jpg',
-      g:['#1078D6','#38BDF8'],
-      specs:[['Producción','750 l/h'],['Potencia','20,5 kW'],['Dimensiones','720×1670×1400 mm'],['Overrun','30% a 140%, control automático por PLC']]},
-    {id:'space-700-1500', marca:'technogel', cat:'fabricadoras', catLabel:'Fabricadora continua de alta capacidad',
-      titulo:'Technogel Space 700/1000/1500', subtitulo:'Nuevo modelo. Congeladores continuos de engranajes para empresas medianas y grandes, con panel HMI multilingüe y control total de producción. Hasta 1500 litros/hora.',
+    {id:'space-700-1500', marca:'technogel', cat:'fabricadoras', catLabel:'Fabricadora continua de alta capacidad', nuevo:true,
+      titulo:'Technogel Space 700/1000/1500', subtitulo:'Congeladores continuos de engranajes para empresas medianas y grandes, con panel HMI multilingüe y control total de producción. Hasta 1500 litros/hora.',
       img: 'assets/img/nuevas-ia/space-700-1500.jpg',
       g:['#1078D6','#0C3FA0'],
       specs:[['Producción','700 / 1000 / 1500 l/h'],['Potencia','20,5 / 32 / 45 kW'],['Dimensiones','1000×2100×2000 mm (700) — 1000×2600×2000 mm (1000/1500)'],['Control','Panel táctil multilingüe, autodiagnóstico, lavado CIP']]},
@@ -2903,7 +2908,7 @@
       titulo:'Technogel Mixpasto 60TS/120TS/200TS', subtitulo:'Pasteurizador con emulsor incorporado y motor agitador por inverter, panel táctil de última generación y programas totalmente personalizables. Interconexión 4.0 opcional.',
       img: 'assets/img/nuevas-ia/mixpasto.jpg',
       g:['#EC4878','#C23361'],
-      specs:[['Capacidad','15–60 / 20–120 / 30–200 l'],['Potencia','7,2 / 13 / 20 kW'],['Condensación','Agua o aire'],['Dimensiones','400×1000×1050 a 670×1175×1248 mm']]},
+      specs:[['Proceso','Pasteurización completa: cocina hasta 90°C, baja a 4°C y funciona como tina para mantener'],['Capacidad','15–60 / 20–120 / 30–200 l'],['Potencia','7,2 / 13 / 20 kW'],['Condensación','Agua o aire'],['Dimensiones','400×1000×1050 a 670×1175×1248 mm']]},
     {id:'mixcrema', marca:'technogel', cat:'pasteurizadores', catLabel:'Pasteurizador / cocinador de cremas',
       titulo:'Technogel Mixcrema 35/60', subtitulo:'Máquina completamente automática para crema pastelera, chocolate templado, bases de helado, rellenos, turrón y mermeladas, con calentamiento y enfriamiento a baño maría.',
       img: 'assets/img/nuevas-ia/mixcrema.jpg',
@@ -2942,17 +2947,17 @@
       titulo:'Technogel OMO 300/600/1200', subtitulo:'Homogeneiza y uniforma la estructura molecular de la mezcla de helado, mejorando la incorporación de aire. Versiones de una y dos fases, hasta 5000 litros por hora.',
       img: 'assets/img/nuevas-ia/omo-homogenizador.jpg',
       g:['#38BDF8','#0C3FA0'],
-      specs:[['Capacidad','300 / 600 / 1200 l/h'],['Presión máxima','250 bar'],['Potencia','4,5 / 6,1 / 12 kW']]},
+      specs:[['Capacidad','300 / 600 / 1200 l/h, hasta 5000 l/h según versión'],['Presión máxima','250 bar'],['Potencia','4,5 / 6,1 / 12 kW']]},
     {id:'gemini', marca:'technogel', cat:'llenadoras', catLabel:'Llenadora automática lineal',
       titulo:'Technogel Gemini STD', subtitulo:'Llenadora lineal automática de 2 a 8 filas, con motor de cadena brushless y panel touch screen de serie. Estaciones opcionales: desapilador, dosificador, cobertura de chocolate, termosellado, impresora de fecha.',
       img: 'assets/img/nuevas-ia/gemini.jpg',
       g:['#1078D6','#38BDF8'],
-      specs:[['Dimensiones','5510×963×2462h mm'],['Producción','30/33 ciclos/min'],['Zona de carga','2550 mm'],['Alimentación','400V - 50Hz, 3ph + neutro']]},
+      specs:[['Producción','Hasta 14.000 piezas/hora'],['Dimensiones','5510×963×2462h mm'],['Ciclos','30/33 ciclos/min'],['Zona de carga','2550 mm'],['Alimentación','400V - 50Hz, 3ph + neutro']]},
     {id:'dr7', marca:'technogel', cat:'llenadoras', catLabel:'Llenadora automática — robot',
       titulo:'Technogel DR7', subtitulo:'Robot de llenado y dosificado automático para bandejas, en una o dos filas, con hasta 3 sabores y 2 variegados por envase. Opcional: desapilador automático de bandejas.',
       img: 'assets/img/nuevas-ia/dr7.jpg',
       g:['#0C3FA0','#1078D6'],
-      specs:[['Dimensiones','3175×1215×1933h mm'],['Peso','400 kg'],['Potencia eléctrica','2 kW'],['Capacidad','Envases de 1 a 10 litros']]},
+      specs:[['Producción','Hasta 4500 litros/hora de helado'],['Sabores','1, 2 o 3 sabores'],['Dimensiones','3175×1215×1933h mm'],['Peso','400 kg'],['Potencia eléctrica','2 kW'],['Capacidad','Potes de 1/2, 1, 3, 5, 10 litros y más']]},
     {id:'rotary', marca:'technogel', cat:'llenadoras', catLabel:'Llenadora automática rotativa',
       titulo:'Technogel Rotary 4000/8D PLC', subtitulo:'Llenadora rotativa automática para cucuruchos, vasitos, tarritos, trufas, tiramisú y porciones individuales.',
       img: 'assets/img/nuevas-ia/rotary.jpg',
@@ -2962,7 +2967,7 @@
       titulo:'Technogel Filler Desk', subtitulo:'Envasadora semiautomática de mesa, con dos dispensadores de movimiento vertical, estructura íntegramente en acero inoxidable y plataforma de altura ajustable.',
       img: 'assets/img/nuevas-ia/filler-desk.jpg',
       g:['#0C3FA0','#38BDF8'],
-      specs:[['Capacidad','Envases de 0,5 a 5 l'],['Estructura','Acero inoxidable'],['Uso','Dosificación con variegado interno y externo']]},
+      specs:[['Producción','Potes, baldes y tortas de helado'],['Capacidad','Envases de 0,5 a 5 l'],['Estructura','Acero inoxidable'],['Uso','Dosificación con variegado interno y externo']]},
     {id:'polostick', marca:'technogel', cat:'paletera', catLabel:'Palitera semiautomática',
       titulo:'Technogel Polostick 500/1000', subtitulo:'Máquina completa para la producción de ghiaccioli y helado en palito, con capacidad de hasta 1000 piezas por hora. Incluye moldes múltiples con extractores y vasqueta de descongelado.',
       img: 'assets/img/nuevas-ia/polostick.jpg',
@@ -2979,10 +2984,10 @@
       g:['#38BDF8','#1078D6'],
       specs:[['Producción','200 a 900 kg/h según modelo'],['Temperatura de cámara','-40°C'],['Potencia eléctrica','65 a 230 kW según modelo'],['Refrigerantes','NH3 / R404 / R507']]},
     {id:'tinas-maduracion', marca:'technogel', cat:'tinas-maduracion', catLabel:'Tinas de maduración',
-      titulo:'Technogel Agemix 60/120/200', subtitulo:'Tinas de maduración en acero inoxidable con circuitos estampados para circulación del gas refrigerante. Mantiene el mix a +4°C con agitación lenta para mayor cremosidad.',
+      titulo:'Technogel Tinas de Maduración', subtitulo:'Depósito realizado completamente en acero inoxidable, para la maduración y conservación a +4°C del mix de helado. La refrigeración es mediante la circulación de agua a +2°C: el agua helada fluye a través de una serpentina inoxidable en la superficie lateral de la tina, y todos los aislamientos son inyectados mediante poliuretano expandido. La mezcla de helado es madurada para garantizar una perfecta homogeneización y cremosidad del producto.',
       img: 'assets/img/nuevas-ia/tinas-maduracion.jpg',
       g:['#0C3FA0','#1078D6'],
-      specs:[['Capacidad','60 / 120 / 200 l'],['Potencia','1,5 / 3 / 5,5 kW'],['Gas refrigerante','Freon R134A'],['Dimensiones','400×1000×1050 a 670×1175×1248 mm']]},
+      specs:[['Capacidades','150 / 300 / 600 / 1200 / 2400 / 3000 / 5000 l'],['Refrigeración','Circulación de agua a +2°C por serpentina inoxidable'],['Conservación','Mix de helado a +4°C'],['Aislamiento','Poliuretano expandido inyectado']]},
     {id:'technogel-torre-enfriamiento', marca:'technogel', cat:'torre-enfriamiento', catLabel:'Torre de enfriamiento',
       titulo:'Dualmet Torre de Enfriamiento', subtitulo:'Equipo diseñado para condensadores por agua, con circuito cerrado. El enfriamiento se logra por evaporación parcial del agua esparcida en forma de lluvia, con electroventilador incorporado. Desarmable en tres módulos.',
       img: 'assets/img/nuevas-ia/dualmet-torre.jpg',
@@ -3073,6 +3078,9 @@
       mkTitleEl.style.overflow = '';
       mkTitleEl.style.clip = '';
     }
+    // sin logo-imagen usable, el nombre se muestra con el mismo tratamiento de
+    // tipografía de marca que ya usamos en las tarjetas de la home
+    mkTitleEl.className = 'mk-title' + (!brand.logo || key === 'jit' ? ' mk-title-' + key : '');
     mkTitleEl.textContent = brand.nombre;
     var mkTaglineEl = document.getElementById('mkTagline');
     var mkDescEl = document.getElementById('mkDesc');
@@ -3142,7 +3150,7 @@
           : ('background:linear-gradient(135deg,' + p.g[0] + ',#0F1B2E 75%);');
         return '<div class="mk-product-card" data-id="'+p.id+'">'+
           '<div class="mp-shot" style="'+bg+'"></div>'+
-          '<div class="mp-body"><span>'+p.catLabel+'</span><h4>'+stripBrandPrefix(p.titulo, p.marca)+'</h4><p>'+p.subtitulo+'</p><div class="mp-cta">Ver ficha técnica →</div></div>'+
+          '<div class="mp-body"><span>'+p.catLabel+(p.nuevo?' <b class="badge-nuevo">Nuevo modelo</b>':'')+'</span><h4>'+stripBrandPrefix(p.titulo, p.marca)+'</h4><p>'+p.subtitulo+'</p><div class="mp-cta">Ver ficha técnica →</div></div>'+
         '</div>';
       }).join('');
       grid.querySelectorAll('.mk-product-card').forEach(function(card){
@@ -3200,11 +3208,11 @@
     if (!p) { location.hash = 'nueva'; return; }
     var brand = brandsData[p.marca] || {nombre: p.marca};
 
-    document.getElementById('pfCategoria').textContent = p.catLabel;
+    document.getElementById('pfCategoria').innerHTML = p.catLabel + (p.nuevo ? ' <b class="badge-nuevo">Nuevo modelo</b>' : '');
     document.getElementById('pfMarca').textContent = brand.nombre;
     document.getElementById('pfTitulo').textContent = stripBrandPrefix(p.titulo, p.marca);
     document.getElementById('pfSubtitulo').textContent = p.subtitulo;
-    document.getElementById('pfBackMarca').href = '#marca-' + p.marca;
+    document.getElementById('pfBackMarca').href = '#marca-' + p.marca + '--' + p.cat;
 
     var main = document.getElementById('pfMainPhoto');
     var glow = document.getElementById('pfGlow');
@@ -3321,7 +3329,11 @@
         '<div class="body"><div class="price">'+l.p+'</div><h5>'+l.t+'</h5><div class="meta"><span>'+l.loc+'</span></div></div>'+
       '</div>';
     }).join('');
-    document.getElementById('liveTrack').innerHTML = html + html;
+    // repetimos las tarjetas las veces que hagan falta para que el track siempre
+    // tenga contenido de sobra y la cinta se vea en movimiento constante, incluso
+    // cuando hay muy pocas publicaciones reales cargadas.
+    var repeats = Math.max(2, Math.ceil(12 / all.length));
+    document.getElementById('liveTrack').innerHTML = new Array(repeats).fill(html).join('');
   }
   renderLiveBand();
 
