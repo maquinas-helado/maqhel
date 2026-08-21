@@ -802,10 +802,9 @@
   .mk-demo-flag{display:inline-block;font-family:'IBM Plex Mono';font-size:.68rem;padding:6px 12px;border-radius:100px;background:rgba(236,72,120,.12);color:var(--calor-1);border:1px solid rgba(236,72,120,.3);margin-bottom:18px;letter-spacing:.02em;}
   .mk-hero{padding-top:10px;padding-bottom:20px;}
   .mk-title{font-size:clamp(2.4rem,6vw,4rem);font-weight:800;font-family:'Space Grotesk';margin:6px 0 10px;}
-  /* marcas sin logo-imagen legible en este fondo: mismo tratamiento tipográfico
-     que ya usamos para su nombre en las tarjetas de la home */
-  .mk-title-dualmet{font-family:'Orbitron',sans-serif;text-transform:uppercase;letter-spacing:.02em;background:linear-gradient(90deg,#EC4878,#F5A623,#2FA8DA);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
-  .mk-title-jit{font-family:'Orbitron',sans-serif;text-transform:uppercase;letter-spacing:.02em;background:linear-gradient(90deg,#38BDF8,#1078D6,#0C3FA0);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  /* marcas sin logo-imagen legible en este fondo: texto gris liso, igual al
+     que ya se usa para el nombre de marca en el resto del sitio (sin degradé). */
+  .mk-title-dualmet, .mk-title-jit{color:var(--muted);}
   .mk-logo-img{height:clamp(48px,8vw,84px);width:auto;margin:10px 0 6px;}
   .mk-tagline{font-size:1.15rem;color:var(--frio-1);font-weight:600;margin-bottom:16px;}
   .mk-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;}
@@ -2930,14 +2929,10 @@
       g:['#0C3FA0','#1078D6'],
       specs:[['Producción','600 a 6000 l/h según modelo'],['Composición','Depósito de precalentamiento, bomba centrífuga de doble filtro, intercambiador a placas, sección tubular, homogeneizador'],['Potencia','21,7 a 82 kW según modelo'],['Dimensiones','6500×1800×1800 mm (600) a 13500×2300×4300 mm (6000)']]},
     {id:'fruit-feeder', marca:'technogel', cat:'sembradora-fruta', catLabel:'Sembradora de fruta',
-      titulo:'Technogel Fruit Feeder FF10E–FF30B', subtitulo:'Dispensador de fruta e ingredientes sólidos, con dosificación mediante rotor de pistón alterno. Reconocido mundialmente por su tecnología y fiabilidad.',
+      titulo:'Technogel Fruit Feeder FF10/FF20/FF30E', subtitulo:'Dispensador de fruta e ingredientes sólidos, con dosificación mediante rotor de pistón alterno. Reconocido mundialmente por su tecnología y fiabilidad. Tres tamaños según el volumen de producción: FF10, FF20 y FF30E.',
       img: 'assets/img/nuevas-ia/fruit-feeder.jpg',
       g:['#EC4878','#C23361'],
-      specs:[['Producción','300 a 5000 l/h según modelo'],['Potencia','2 a 3,9 kW según modelo'],['Modelos','FF10E, FF20E, FF30E, FF20B, FF30B']]},
-    {id:'fruit-feeder-ff10', marca:'technogel', cat:'sembradora-fruta', catLabel:'Sembradora de fruta',
-      titulo:'Technogel Fruit Feeder FF10', subtitulo:'Dispensador de fruta e ingredientes sólidos, con capacidad desde 200 hasta 900 litros de helado por hora. Estamos completando la foto real — escribinos si la necesitás ya.',
-      g:['#C23361','#EC4878'],
-      specs:[['Producción','200 a 900 l/h']]},
+      specs:[['FF10','Hasta 900 l/h de helado'],['FF20','Hasta 2000 l/h de helado'],['FF30E','Hasta 5000 l/h de helado']]},
     {id:'ripple-pump', marca:'technogel', cat:'sembradora-salsa', catLabel:'Sembradora de salsa',
       titulo:'Technogel Ripple Pump 1L/7L', subtitulo:'Bomba volumétrica neumática para inyectar salsas al flujo de helado, aplicada directamente a la salida del freezer. Densidad de trabajo de 1.000 a 20.000 centipoise.',
       img: 'assets/img/nuevas-ia/ripple-pump.jpg',
@@ -3011,7 +3006,7 @@
     // ---- DUALMET ----
     {id:'dualmet-pasteurizador', marca:'dualmet', cat:'cocinas', catLabel:'Cocinador',
       titulo:'Dualmet Pasteurizador a gas o eléctrico', subtitulo:'Pasteurizador construido en su totalidad en acero inoxidable 304, con encendido electrónico sin piloto y control digital de temperatura con aviso de fin de cocción.',
-      img: 'assets/img/nuevas-ia/dualmet-pasteurizador.jpg',
+      img: 'assets/img/nuevas-ia/dualmet-cocina-artesanal.jpg',
       g:['#EC4878','#C23361'],
       specs:[['Encendido','Electrónico con sensor de llama sin piloto, instantáneo'],['Control','Digital de temperatura, con aviso de fin de cocción'],['Construcción','Acero inoxidable 304, tacho interior con excelente acabado'],['Extras','Solenoide de agua para llenado e intercambio de baño, tapa dividida removible'],['Quemador','Fundición de hierro, 30 a 50 Kcal/h'],['Presentaciones','A gas y eléctricos: 10, 70, 100 y 150 litros']]},
     {id:'dualmet-tinas-maduracion', marca:'dualmet', cat:'tinas-maduracion', catLabel:'Tinas de maduración',
@@ -3031,7 +3026,7 @@
       specs:[['Compresor','Semi hermético Dorin / Bitzer'],['Bombas','Recirculación interna y externa Zcerweny, 1,5 HP cada una'],['Condensación','Por aire o placa, según zona/región'],['Construcción','Acero inoxidable 304, cañerías internas en termofusión'],['Reservorio','400 litros'],['Modelos','5, 10, 15, 20 y 25 HP']]},
     {id:'dualmet-cocinas-industriales', marca:'dualmet', cat:'cocinas', catLabel:'Cocinador',
       titulo:'Dualmet Cocinas Industriales', subtitulo:'Cocinas con baño maría en pared y fondo del tacho, con canalización de la circulación de agua que mejora el intercambio térmico y reduce el tiempo de cocción.',
-      img: 'assets/img/nuevas-ia/dualmet-cocina-artesanal.jpg',
+      img: 'assets/img/nuevas-ia/dualmet-pasteurizador.jpg',
       g:['#98A4B4','#5E7188'],
       specs:[['Baño maría','En pared y fondo del tacho'],['Circulación','Canalizada, mejora el intercambio térmico y reduce el tiempo de cocción'],['Agitador','De 1 a 3 HP, 1400 rpm según litros'],['Control','Termómetro digital']]},
     {id:'dualmet-chocolatera', marca:'dualmet', cat:'chocolatera', catLabel:'Chocolatera',
