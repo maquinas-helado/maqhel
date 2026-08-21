@@ -819,7 +819,18 @@
   /* ===== FICHA DE PRODUCTO ===== */
   .pf-layout{display:grid;grid-template-columns:1.45fr 1fr;gap:52px;align-items:start;margin-top:24px;}
   @media(max-width:880px){.pf-layout{grid-template-columns:1fr;gap:28px;}}
+  .pf-gallery{position:relative;}
   .pf-main-photo{width:100%;aspect-ratio:4/3;border-radius:22px;background:linear-gradient(150deg,var(--panel-2),var(--acero));position:relative;background-size:contain;background-repeat:no-repeat;background-position:center;}
+  /* resplandor de marca detrás del marco: es un elemento HERMANO pintado ANTES que
+     .pf-main-photo en el DOM (no un ::before con z-index negativo -- eso se pintaba
+     encima del fondo propio del elemento, no detrás, y el color se filtraba adentro
+     de la caja). Al ser hermano previo y .pf-main-photo tener fondo opaco, éste lo
+     tapa por completo adentro del recuadro y el resplandor solo asoma por fuera. */
+  .pf-glow{
+    position:absolute;inset:-14%;border-radius:22px;pointer-events:none;
+    background:radial-gradient(ellipse at center, var(--pf-glow,#1078D6) 0%, transparent 70%);
+    opacity:.5;filter:blur(28px);
+  }
   .pf-360-hint{font-family:'IBM Plex Mono';font-size:.72rem;color:var(--muted);background:rgba(10,11,13,.55);backdrop-filter:blur(6px);border:1px solid var(--line);padding:7px 14px;border-radius:100px;}
   .pf-thumbs{display:flex;gap:10px;margin-top:14px;overflow-x:auto;}
   .pf-thumb{flex:0 0 auto;width:76px;height:76px;border-radius:12px;background-size:contain;background-repeat:no-repeat;background-position:center;border:2px solid transparent;cursor:pointer;opacity:.6;transition:opacity .2s,border-color .2s;background-color:var(--panel-2);}
@@ -932,7 +943,7 @@
   </section>
 
   <!-- VIDRIERA EN VIVO -->
-  <section class="live-band">
+  <section class="live-band" id="liveBandHome">
     <div class="live-head"><span class="live-dot"></span><span>Publicadas recientemente — se actualiza solo</span></div>
     <div class="live-band-wrap">
       <div class="live-track-mask" id="liveTrackMask">
@@ -1678,6 +1689,7 @@
         <div class="pf-layout">
           <!-- galería / visualizador -->
           <div class="pf-gallery">
+            <div class="pf-glow" id="pfGlow"></div>
             <div class="pf-main-photo" id="pfMainPhoto"></div>
             <div class="pf-thumbs" id="pfThumbs"></div>
           </div>
@@ -2461,34 +2473,7 @@
       '</div>';
     }).join('');
   }
-  // ---- listings (ilustrados + publicados por usuarios vía el formulario "Vender") ----
-  var listingsBase = [
-    {id:'demo-1', t:'Fabricadora Technogel B75', p:'USD 8.900', loc:'Córdoba, AR', cond:'Usada · Excelente', g:['#1078D6','#0C3FA0'], cat:'Fabricadoras', tag:'Hace 3 h', img:null,
-      desc:'Fabricadora discontinua Technogel B75, uso artesanal en heladería propia. Funciona perfecto, se vende por cierre de una de las dos sucursales. Cilindro y motor sin ruidos raros, gas recargado hace poco.',
-      capacidad:'40 lts/hora', anio:'2019', voltaje:'220V trifásica',
-      garantia:'no', service_cuando:'Hace 4 meses', service_que:'Cambio de gas refrigerante y limpieza general',
-      cuotas:'si', cuotas_como:'Hasta 3 cuotas sin interés con transferencia',
-      seller:{nombre:'Marcelo Ibáñez', contacto:'+54 9 351 555-1234', direccion:'Bv. San Juan 1450, Córdoba Capital'}},
-    {id:'demo-2', t:'Pasteurizador Dualmet 100L', p:'USD 5.400', loc:'Montevideo, UY', cond:'Usada · Buena', g:['#EC4878','#C23361'], cat:'Pasteurizadores', tag:'Hace 1 día', img:null,
-      desc:'Pasteurizador Dualmet de 100 litros, ideal para heladerías medianas o inicio de producción propia. Buen estado general, algunos detalles estéticos de uso. Incluye manual y repuestos de sellos.',
-      capacidad:'100 lts', anio:'2017', voltaje:'220V monofásica',
-      garantia:'no', service_cuando:'Hace 1 año', service_que:'Mantenimiento general y cambio de sellos',
-      cuotas:'no', cuotas_como:'',
-      seller:{nombre:'Lucía Fernández', contacto:'+598 99 555 678', direccion:'Av. 18 de Julio 1234, Montevideo'}},
-    {id:'demo-3', t:'Túnel de frío industrial', p:'USD 21.000', loc:'Buenos Aires, AR', cond:'Usada · Muy buena', g:['#38BDF8','#1078D6'], cat:'Otras', tag:'Bajó de precio', img:null,
-      desc:'Túnel de frío industrial para líneas de producción a gran escala. Muy buen estado, baja de precio por necesidad de espacio en planta. Se puede coordinar visita técnica antes de la compra.',
-      capacidad:'Producción industrial', anio:'2015', voltaje:'380V trifásica',
-      garantia:'si', garantia_tiempo:'3 meses de garantía del vendedor',
-      cuotas:'no', cuotas_como:'',
-      seller:{nombre:'Planta Industrial del Sur SRL', contacto:'+54 9 11 4555-7890', direccion:'Parque Industrial Pilar, Buenos Aires'}},
-    {id:'demo-4', t:'Línea completa artesanal', p:'USD 34.500', loc:'Asunción, PY', cond:'Usada · Excelente', g:['#EC4878','#C23361'], cat:'Líneas completas', tag:'Hace 5 h', img:null,
-      desc:'Línea completa artesanal: fabricadora, pasteurizador y madurador, todo de la misma marca y comprado junto. Ideal para empezar una heladería desde cero con equipamiento probado.',
-      capacidad:'Línea completa', anio:'2020', voltaje:'220V trifásica',
-      garantia:'no', service_cuando:'Hace 6 meses', service_que:'Service completo de toda la línea',
-      cuotas:'si', cuotas_como:'A convenir según forma de pago',
-      seller:{nombre:'Heladería La Cremosa', contacto:'+595 981 555 432', direccion:'Av. Mariscal López 2200, Asunción'}},
-  ];
-
+  // ---- listings (publicados por usuarios vía el formulario "Vender", desde Supabase) ----
   function categorize(modelo){
     var m = (modelo || '').toLowerCase();
     if (m.indexOf('fabricadora') > -1) return 'Fabricadoras';
@@ -2543,7 +2528,7 @@
   }
 
   function getAllListings(){
-    return realListings.concat(listingsBase);
+    return realListings;
   }
 
   var mhListingsById = {};
@@ -2563,7 +2548,7 @@
       return;
     }
     grid.innerHTML = filtered.map(function(l){
-      var bg = l.img ? ('background-image:url(' + l.img + ');background-size:cover;background-position:center;')
+      var bg = l.img ? ('background-image:url(' + l.img + ');background-color:var(--panel-2);background-size:contain;background-repeat:no-repeat;background-position:center;')
                       : ('background:linear-gradient(135deg,' + l.g[0] + ',#0F1B2E 70%);');
       var reservada = isReserved(l);
       return '<div class="listing'+(reservada?' is-reserved':'')+'" data-reveal data-id="'+l.id+'" role="button" tabindex="0">'+
@@ -3222,10 +3207,14 @@
     document.getElementById('pfBackMarca').href = '#marca-' + p.marca;
 
     var main = document.getElementById('pfMainPhoto');
+    var glow = document.getElementById('pfGlow');
     if (p.img){
-      main.style.cssText = 'background-color:#000;background-image:url(' + p.img + '), radial-gradient(circle at 42% 38%,' + p.g[0] + '77,' + (p.g[1]||p.g[0]) + '22 55%,transparent 75%);background-size:contain,cover;background-repeat:no-repeat,no-repeat;background-position:center,center;';
+      main.style.cssText = 'background-color:#000;background-image:url(' + p.img + ');background-size:contain;background-repeat:no-repeat;background-position:center;';
+      glow.style.setProperty('--pf-glow', p.g[0]);
+      glow.style.display = '';
     } else {
       main.style.cssText = 'background:linear-gradient(150deg,' + p.g[0] + ',#0F1B2E 80%);';
+      glow.style.display = 'none';
     }
     var thumbs = document.getElementById('pfThumbs');
     thumbs.innerHTML = '';
@@ -3313,47 +3302,16 @@
     });
   });
 
-  // ---- live band (vidriera en vivo, estilo Bring a Trailer) ----
-  var liveItemsBase = [
-    {id:'live-1', t:'Fabricadora Technogel B75', p:'USD 8.900', loc:'Córdoba, AR', cond:'Usada · Excelente', tag:'Publicada hoy', g:['#1078D6','#0C3FA0'],
-      desc:'Fabricadora discontinua Technogel B75, uso artesanal en heladería propia. Funciona perfecto, se vende por cierre de una de las dos sucursales.',
-      capacidad:'40 lts/hora', anio:'2019', voltaje:'220V trifásica', garantia:'no', service_cuando:'Hace 4 meses', service_que:'Cambio de gas refrigerante y limpieza general', cuotas:'si', cuotas_como:'Hasta 3 cuotas sin interés',
-      seller:{nombre:'Marcelo Ibáñez', contacto:'+54 9 351 555-1234', direccion:'Bv. San Juan 1450, Córdoba Capital'}},
-    {id:'live-2', t:'Pasteurizador Dualmet 100L', p:'USD 5.400', loc:'Montevideo, UY', cond:'Usada · Buena', tag:'Hace 3 h', g:['#EC4878','#C23361'],
-      desc:'Pasteurizador Dualmet de 100 litros, ideal para heladerías medianas. Buen estado general, algunos detalles estéticos de uso.',
-      capacidad:'100 lts', anio:'2017', voltaje:'220V monofásica', garantia:'no', service_cuando:'Hace 1 año', service_que:'Mantenimiento general y cambio de sellos', cuotas:'no', cuotas_como:'',
-      seller:{nombre:'Lucía Fernández', contacto:'+598 99 555 678', direccion:'Av. 18 de Julio 1234, Montevideo'}},
-    {id:'live-3', t:'Túnel de frío industrial', p:'USD 21.000', loc:'Buenos Aires, AR', cond:'Usada · Muy buena', tag:'Hace 1 día', g:['#38BDF8','#1078D6'],
-      desc:'Túnel de frío industrial para líneas de producción a gran escala. Muy buen estado, baja de precio por necesidad de espacio en planta.',
-      capacidad:'Producción industrial', anio:'2015', voltaje:'380V trifásica', garantia:'si', garantia_tiempo:'3 meses de garantía del vendedor', cuotas:'no', cuotas_como:'',
-      seller:{nombre:'Planta Industrial del Sur SRL', contacto:'+54 9 11 4555-7890', direccion:'Parque Industrial Pilar, Buenos Aires'}},
-    {id:'live-4', t:'Homogeneizador Technogel', p:'USD 3.200', loc:'La Plata, AR', cond:'Usada · Buena', tag:'Bajó de precio', g:['#1078D6','#0C3FA0'],
-      desc:'Homogeneizador Technogel en buen estado de uso. Ideal para complementar una línea de producción artesanal ya instalada.',
-      capacidad:'Uso artesanal', anio:'2016', voltaje:'220V monofásica', garantia:'no', service_cuando:'Hace 8 meses', service_que:'Revisión general', cuotas:'no', cuotas_como:'',
-      seller:{nombre:'Heladería Don Pipo', contacto:'+54 9 221 555-4321', direccion:'Calle 7 n° 850, La Plata'}},
-    {id:'live-5', t:'Línea completa artesanal', p:'USD 34.500', loc:'Asunción, PY', cond:'Usada · Excelente', tag:'Publicada hoy', g:['#EC4878','#C23361'],
-      desc:'Línea completa artesanal: fabricadora, pasteurizador y madurador, todo de la misma marca y comprado junto. Ideal para empezar desde cero.',
-      capacidad:'Línea completa', anio:'2020', voltaje:'220V trifásica', garantia:'no', service_cuando:'Hace 6 meses', service_que:'Service completo de toda la línea', cuotas:'si', cuotas_como:'A convenir según forma de pago',
-      seller:{nombre:'Heladería La Cremosa', contacto:'+595 981 555 432', direccion:'Av. Mariscal López 2200, Asunción'}},
-    {id:'live-6', t:'Madurador Dualmet 200L', p:'USD 2.750', loc:'Rosario, AR', cond:'Usada · Buena', tag:'Hace 5 h', g:['#38BDF8','#1078D6'],
-      desc:'Tina de maduración Dualmet de 200 litros, funcionamiento correcto. Ideal como complemento de producción para heladerías en crecimiento.',
-      capacidad:'200 lts', anio:'2018', voltaje:'220V monofásica', garantia:'no', service_cuando:'Hace 1 año', service_que:'Limpieza y mantenimiento preventivo', cuotas:'no', cuotas_como:'',
-      seller:{nombre:'Gelato Rosario', contacto:'+54 9 341 555-6789', direccion:'Bv. Oroño 1120, Rosario'}},
-    {id:'live-7', t:'Dosificadora industrial', p:'USD 6.100', loc:'Santa Cruz, BO', cond:'Usada · Muy buena', tag:'Hace 2 días', g:['#1078D6','#0C3FA0'],
-      desc:'Dosificadora industrial de sólidos, muy poco uso. Se vende por cambio de línea de producción en la planta.',
-      capacidad:'Producción media', anio:'2021', voltaje:'380V trifásica', garantia:'si', garantia_tiempo:'2 meses de garantía del vendedor', cuotas:'no', cuotas_como:'',
-      seller:{nombre:'Helados del Oriente SRL', contacto:'+591 700 55 432', direccion:'Zona Industrial, Santa Cruz de la Sierra'}},
-    {id:'live-8', t:'Robot paletizador', p:'USD 18.900', loc:'Mendoza, AR', cond:'Usada · Excelente', tag:'Publicada hoy', g:['#EC4878','#C23361'],
-      desc:'Robot paletizador para líneas industriales de gran volumen. Excelente estado, con manual y soporte técnico del fabricante original.',
-      capacidad:'Línea industrial', anio:'2022', voltaje:'380V trifásica', garantia:'si', garantia_tiempo:'6 meses de garantía del vendedor', cuotas:'si', cuotas_como:'Financiación a convenir',
-      seller:{nombre:'Industrias Cuyo SA', contacto:'+54 9 261 555-9876', direccion:'Parque Industrial Mendoza'}},
-  ];
+  // ---- live band (vidriera en vivo, estilo Bring a Trailer) — solo publicaciones reales ----
   function renderLiveBand(){
-    var all = realListings.concat(liveItemsBase);
+    var all = realListings;
+    var sec = document.getElementById('liveBandHome');
+    if (!all.length){ if (sec) sec.style.display = 'none'; return; }
+    if (sec) sec.style.display = '';
     all.forEach(function(l){ mhListingsById[l.id] = l; });
     var html = all.map(function(l){
       var bg = l.img
-        ? ('background-image:url(' + l.img + ');background-size:cover;background-position:center;')
+        ? ('background-image:url(' + l.img + ');background-color:var(--panel-2);background-size:contain;background-repeat:no-repeat;background-position:center;')
         : ('background:linear-gradient(135deg,' + l.g[0] + ',#14161A 75%);');
       var reservada = isReserved(l);
       return '<div class="live-card'+(reservada?' is-reserved':'')+'" data-id="'+l.id+'" role="button" tabindex="0">'+
