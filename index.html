@@ -601,7 +601,7 @@
   .vd-card h3{margin:0 0 22px;font-size:1.2rem;}
   .vd-grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
   @media(max-width:640px){.vd-grid2{grid-template-columns:1fr;}}
-  .vd-field{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;}
+  .vd-field{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;min-width:0;}
   .vd-field label{font-size:.82rem;color:var(--muted);font-weight:600;}
   .vd-field input[type="text"],.vd-field input[type="number"],.vd-field select,.vd-field textarea{
     background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;
@@ -626,7 +626,7 @@
   .vd-photo-slot{
     position:relative;aspect-ratio:1;border:1.5px dashed var(--line);border-radius:14px;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
-    cursor:pointer;background:var(--panel-2);background-size:cover;background-position:center;
+    cursor:pointer;background:var(--panel-2);background-size:contain;background-repeat:no-repeat;background-position:center;
     transition:border-color .25s;text-align:center;padding:8px;
   }
   .vd-photo-slot:hover{border-color:var(--frio-1);}
@@ -718,14 +718,14 @@
   /* ===== MODAL DETALLE DE PUBLICACIÓN (comprar máquina usada) ===== */
   .ld-overlay{position:fixed;inset:0;z-index:80;background:rgba(6,7,9,.78);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s var(--ease);}
   .ld-overlay.is-open{opacity:1;pointer-events:auto;}
-  .ld-modal{position:relative;width:100%;max-width:920px;max-height:90vh;overflow-y:auto;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 30px 80px -20px rgba(0,0,0,.6);}
+  .ld-modal{position:relative;width:100%;max-width:920px;max-height:90vh;overflow-y:auto;overflow-x:hidden;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 30px 80px -20px rgba(0,0,0,.6);}
   .ld-close{position:sticky;float:right;top:14px;right:14px;margin:14px 14px 0 0;width:36px;height:36px;border-radius:50%;background:rgba(10,11,13,.55);border:1px solid var(--line);color:var(--hielo);font-size:1rem;cursor:pointer;z-index:5;}
   .ld-close:hover{border-color:var(--frio-1);color:var(--frio-1);}
   .ld-view{display:grid;grid-template-columns:1.15fr 1fr;gap:0;clear:both;}
   @media(max-width:760px){.ld-view{grid-template-columns:1fr;}}
   .ld-view.ld-view-single{display:block;}
   .ld-gallery{padding:20px;}
-  .ld-main-photo{width:100%;aspect-ratio:4/3;border-radius:16px;background:linear-gradient(135deg,var(--panel-2),var(--acero));background-size:cover;background-position:center;position:relative;}
+  .ld-main-photo{width:100%;aspect-ratio:4/3;border-radius:16px;background:linear-gradient(135deg,var(--panel-2),var(--acero));background-size:contain;background-repeat:no-repeat;background-position:center;position:relative;}
   .ld-arrows{display:flex;justify-content:space-between;margin-top:-52px;padding:0 10px;position:relative;pointer-events:none;}
   .ld-arrow{pointer-events:auto;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(10,11,13,.55);backdrop-filter:blur(6px);color:#fff;font-size:1.3rem;line-height:1;cursor:pointer;}
   .ld-arrow:hover{border-color:var(--frio-1);color:var(--frio-1);}
@@ -1198,12 +1198,8 @@
                   <input type="text" name="capacidad" placeholder="Ej: 40 lts/hora">
                 </div>
                 <div class="vd-field">
-                  <label>Año</label>
+                  <label>Año <span class="vd-optional-tag">(opcional)</span></label>
                   <input type="number" name="anio" placeholder="Ej: 2018" min="1970" max="2026">
-                </div>
-                <div class="vd-field">
-                  <label>Voltaje</label>
-                  <input type="text" name="voltaje" placeholder="Ej: 220V monofásica">
                 </div>
               </div>
             </div>
@@ -1323,9 +1319,10 @@
           <div class="vd-step" data-step="6">
             <div class="vd-card vd-done">
               <div class="vd-done-icon">✓</div>
-              <h3>¡Tu máquina ya está publicada!</h3>
-              <p>La revisamos y en breve empieza a recibir consultas de compradores reales. Te avisamos por el contacto que nos dejaste.</p>
+              <h3>¡Recibimos tu máquina!</h3>
+              <p>La estamos revisando y en breve sale a la vidriera para empezar a recibir consultas de compradores reales. Te avisamos por el contacto que nos dejaste.</p>
               <a href="#usada" class="btn btn-primary">Ver la vidriera →</a>
+              <a href="#vender" id="vdPublishAnother" class="btn btn-ghost" style="margin-top:10px;">Publicar otra máquina →</a>
             </div>
           </div>
 
@@ -1892,6 +1889,7 @@
       showAppPage('page-usada', true);
     } else if (h === 'vender'){
       showAppPage('page-vender', true);
+      if (window.mhResetVenderWizard) window.mhResetVenderWizard();
     } else if (h === 'terminos'){
       showAppPage('page-terminos', true);
     } else if (h === 'nosotros'){
@@ -1996,6 +1994,34 @@
       if (wrap) wrap.scrollIntoView({behavior:'smooth', block:'start'});
     }
 
+    // deja el wizard listo para publicar otra máquina: sin esto, después de un envío
+    // exitoso "current" quedaba en 6 para siempre y quien volvía a entrar a #vender
+    // (por ej. un vendedor con varias máquinas para publicar) se encontraba con la
+    // pantalla de "ya publicada" en vez de un formulario en blanco.
+    function resetWizard(){
+      form.reset();
+      photoDataURLs = {};
+      form.querySelectorAll('.vd-photo-slot').forEach(function(slot){
+        slot.classList.remove('has-file');
+        slot.style.backgroundImage = '';
+        slot.style.background = '';
+        var badge = slot.querySelector('.vd-check-badge');
+        if (badge) badge.remove();
+      });
+      form.querySelectorAll('.vd-conditional').forEach(function(el){ el.hidden = true; el.value = ''; });
+      form.querySelectorAll('.vd-cur').forEach(function(b){ b.classList.remove('is-active'); });
+      var usdBtn = form.querySelector('.vd-cur[data-cur="USD"]');
+      if (usdBtn) usdBtn.classList.add('is-active');
+      steps.forEach(function(s){ clearStepErrors(s); });
+      var submitBtn = document.getElementById('vdSubmit');
+      if (submitBtn){ submitBtn.disabled = false; submitBtn.textContent = 'Publicar máquina →'; }
+      current = 1;
+      renderStep();
+    }
+    window.mhResetVenderWizard = resetWizard;
+    var publishAnotherBtn = document.getElementById('vdPublishAnother');
+    if (publishAnotherBtn) publishAnotherBtn.addEventListener('click', resetWizard);
+
     // ---- validación por paso: no deja avanzar si faltan campos obligatorios ----
     // Excepciones (no bloquean el avance): fotos (regla propia: mínimo 3, con la
     // frontal incluida como portada), descripción y modelo (ambos opcionales).
@@ -2036,8 +2062,6 @@
         checkSelectOtras(invalid, document.getElementById('vdMarca'), document.getElementById('vdMarcaOtra'));
         checkSelectOtras(invalid, document.getElementById('vdTipo'), document.getElementById('vdTipoOtra'));
         checkText(invalid, form.querySelector('[name="capacidad"]'));
-        checkText(invalid, form.querySelector('[name="anio"]'));
-        checkText(invalid, form.querySelector('[name="voltaje"]'));
       } else if (n === 2){
         var photoKeys = Object.keys(photoDataURLs).filter(function(k){ return k !== '7'; }); // el 7 es el video
         var tieneFrontal = !!photoDataURLs['1'];
@@ -2211,7 +2235,6 @@
             modelo: fd.get('modelo') || '',
             capacidad: fd.get('capacidad') || '',
             anio: fd.get('anio') ? parseInt(fd.get('anio'), 10) : null,
-            voltaje: fd.get('voltaje') || '',
             descripcion: fd.get('descripcion') || '',
             precio: fd.get('precio') ? Number(fd.get('precio')) : null,
             moneda: monedaBtn ? monedaBtn.getAttribute('data-cur') : 'USD',
@@ -2625,7 +2648,7 @@
     var photos = (ldCurrent.imgs && ldCurrent.imgs.length) ? ldCurrent.imgs : [];
     var main = document.getElementById('ldMainPhoto');
     if (photos.length){
-      main.style.cssText = 'background-image:url(' + photos[ldPhotoIdx] + ');background-size:cover;background-position:center;';
+      main.style.cssText = 'background-image:url(' + photos[ldPhotoIdx] + ');background-size:contain;background-repeat:no-repeat;background-position:center;background-color:var(--panel-2);';
     } else {
       main.style.cssText = ldPlaceholderBg(ldCurrent);
     }
@@ -3213,7 +3236,7 @@
 
     document.getElementById('pfSolicitarBtn').onclick = function(){ openSolicitarPrecio(p, brand); };
 
-    var msg = 'Hola! Quiero consultar por la ' + brand.nombre + ' ' + p.titulo + ' que vi en MAQ.HEL.';
+    var msg = 'Hola! Quiero consultar por la ' + p.titulo + ' que vi en MAQ.HEL.';
     document.getElementById('pfWhatsBtn').href = 'https://wa.me/' + MAQHEL_WHATSAPP + '?text=' + encodeURIComponent(msg);
 
     observeReveal();
@@ -3228,7 +3251,7 @@
 
   function openSolicitarPrecio(p, brand){
     spCurrent = {producto: p, brand: brand};
-    document.getElementById('spMaquinaNombre').textContent = brand.nombre + ' ' + p.titulo;
+    document.getElementById('spMaquinaNombre').textContent = p.titulo;
     spViewForm.style.display = '';
     spViewDone.style.display = 'none';
     spOverlay.classList.add('is-open');
