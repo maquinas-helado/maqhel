@@ -809,6 +809,12 @@
     -webkit-mask-image:radial-gradient(ellipse 88% 88% at center, black 55%, transparent 100%);
     mask-image:radial-gradient(ellipse 88% 88% at center, black 55%, transparent 100%);
   }
+  /* fotos ya recortadas a mano (transparencia real, sin fondo horneado): no necesitan
+     ni deben llevar el mask-image de arriba, que fue justo lo que recortaba de más. */
+  .mp-shot[style*="/cutouts/"], .shot[style*="/cutouts/"], .pf-main-photo[style*="/cutouts/"], .pf-thumb[style*="/cutouts/"]{
+    -webkit-mask-image:none;
+    mask-image:none;
+  }
   .mk-product-card .mp-body{padding:16px 18px 20px;}
   .mk-product-card .mp-body span{color:var(--muted-2);font-size:.72rem;font-family:'IBM Plex Mono';text-transform:uppercase;letter-spacing:.05em;}
   .mk-product-card .mp-body h4{font-size:1.02rem;font-weight:700;margin:6px 0 4px;}
@@ -2930,7 +2936,7 @@
       specs:[['Capacidad','2–9 l'],['Producción horaria','22–30 / 38–50 kg'],['Potencia','8,5 / 10,3 kW'],['Cámaras','Dos independientes: pasteurizado o mantecado por separado']]},
     {id:'technowhip', marca:'technogel', cat:'cremera', catLabel:'Cremera (montapanna)',
       titulo:'Technogel Technowhip 2 Eco/2 Star', subtitulo:'Máquina para crema batida en acero inoxidable, con bomba a engranajes y sistema de regulación de aire. El trefilador es una pieza única para nata fresca o de larga conservación.',
-      img: 'assets/img/nuevas-ia/technowhip.jpg',
+      img: 'assets/img/nuevas-ia/cutouts/technowhip.png',
       g:['#1078D6','#38BDF8'],
       specs:[['Capacidad','2 / 3 l'],['Producción de crema','65 / 95 l/h'],['Potencia','0,6 / 0,8 kW']]},
     {id:'mixworking-htst', marca:'technogel', cat:'plantas-pasteurizacion', catLabel:'Planta de pasteurización HTST',
