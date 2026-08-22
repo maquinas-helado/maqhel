@@ -216,7 +216,7 @@
     background:rgba(6,11,20,.72);backdrop-filter:blur(14px);
     border-bottom:1px solid var(--line);
   }
-  header.site .inner{display:flex;align-items:center;justify-content:flex-start;gap:22px;padding:16px 32px;max-width:1240px;margin:0 auto;}
+  header.site .inner{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:12px 22px;padding:16px 32px;max-width:1240px;margin:0 auto;}
   .logo{font-family:'Space Grotesk';font-weight:700;font-size:1.3rem;display:flex;align-items:center;gap:9px;}
   .logo img{width:34px;height:34px;object-fit:contain;}
   .logo .wordmark-inline{width:auto;height:34px;object-fit:contain;margin-left:4px;}
@@ -243,6 +243,17 @@
   @media(max-width:880px){
     nav.main{display:none;}
     .burger{display:block;}
+    /* header angosto: reducir logo y CTA para que nunca les falte lugar y
+       terminen superponiéndose (visto en un celular real con letra grande) */
+    .logo{gap:7px;}
+    .logo img{width:28px;height:28px;}
+    .logo .wordmark-text{font-size:16px;}
+    .logo-tagline{font-size:7px;}
+    .cta-mini{padding:8px 14px;font-size:.76rem;white-space:nowrap;}
+    .cta-mini::before{inset:-4px;}
+  }
+  @media(max-width:480px){
+    header.site .inner{padding:14px 16px;gap:8px 14px;}
   }
 
   /* ===== HERO (tipografía grande + escultura de gotas) ===== */
@@ -804,9 +815,11 @@
   .mk-demo-flag{display:inline-block;font-family:'IBM Plex Mono';font-size:.68rem;padding:6px 12px;border-radius:100px;background:rgba(236,72,120,.12);color:var(--calor-1);border:1px solid rgba(236,72,120,.3);margin-bottom:18px;letter-spacing:.02em;}
   .mk-hero{padding-top:10px;padding-bottom:20px;}
   .mk-title{font-size:clamp(2.4rem,6vw,4rem);font-weight:800;font-family:'Space Grotesk';margin:6px 0 10px;}
-  /* marcas sin logo-imagen legible en este fondo: texto gris liso, igual al
-     que ya se usa para el nombre de marca en el resto del sitio (sin degradé). */
-  .mk-title-dualmet, .mk-title-jit{color:var(--muted);}
+  /* marcas sin archivo de logo utilizable en este fondo: mismo tratamiento
+     tipográfico que su logo de marca (el que ya se ve en las tarjetas de la
+     home), para que acá también se lea como su logo y no como texto plano. */
+  .mk-title-dualmet{font-family:'Orbitron',sans-serif;text-transform:uppercase;letter-spacing:.02em;background:linear-gradient(90deg,#EC4878,#F5A623,#2FA8DA);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  .mk-title-jit{font-family:'Orbitron',sans-serif;text-transform:uppercase;letter-spacing:.02em;background:linear-gradient(90deg,#38BDF8,#1078D6,#0C3FA0);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
   .mk-logo-img{height:clamp(48px,8vw,84px);width:auto;margin:10px 0 6px;}
   .mk-tagline{font-size:1.15rem;color:var(--frio-1);font-weight:600;margin-bottom:16px;}
   .mk-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;}
