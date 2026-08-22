@@ -833,8 +833,10 @@
   /* marcas sin archivo de logo utilizable en este fondo: mismo tratamiento
      tipográfico que su logo de marca (el que ya se ve en las tarjetas de la
      home), para que acá también se lea como su logo y no como texto plano. */
-  .mk-title-dualmet{font-family:'Orbitron',sans-serif;text-transform:uppercase;letter-spacing:.02em;background:linear-gradient(90deg,#EC4878,#F5A623,#2FA8DA);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
-  .mk-title-jit{font-family:'Orbitron',sans-serif;text-transform:uppercase;letter-spacing:.02em;background:linear-gradient(90deg,#38BDF8,#1078D6,#0C3FA0);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  .mk-title-dualmet{color:var(--muted);}
+  /* JIT sí tiene archivo de logo (texto oscuro sobre fondo transparente):
+     se invierte para que se lea sobre este fondo oscuro, no se reemplaza. */
+  .mk-logo-invert{filter:invert(1);}
   .mk-logo-img{height:clamp(48px,8vw,84px);width:auto;margin:10px 0 6px;}
   .mk-tagline{font-size:1.15rem;color:var(--frio-1);font-weight:600;margin-bottom:16px;}
   .mk-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;}
@@ -3123,13 +3125,13 @@
     var mkDemoFlag = document.getElementById('mkDemoFlag');
     // Technogel ya tiene catálogo real cargado; Dualmet y JIT todavía no
     if (mkDemoFlag) mkDemoFlag.style.display = (key === 'technogel' || key === 'dualmet') ? 'none' : '';
-    // el logo de JIT es oscuro y no se lee bien sobre el fondo oscuro de esta
-    // sección — en su propia página mostramos el nombre como tipografía clara,
-    // igual que hacemos con Dualmet (que no tiene un archivo de logo utilizable)
-    if (brand.logo && key !== 'jit'){
+    // el logo de JIT es texto oscuro sobre fondo transparente -- se invierte
+    // para que se lea sobre este fondo oscuro, en vez de reemplazarlo por texto
+    if (brand.logo){
       mkLogoImg.src = brand.logo;
       mkLogoImg.alt = brand.nombre;
       mkLogoImg.hidden = false;
+      mkLogoImg.classList.toggle('mk-logo-invert', key === 'jit');
       mkTitleEl.style.position = 'absolute';
       mkTitleEl.style.width = '1px';
       mkTitleEl.style.height = '1px';
@@ -3143,9 +3145,9 @@
       mkTitleEl.style.overflow = '';
       mkTitleEl.style.clip = '';
     }
-    // sin logo-imagen usable, el nombre se muestra con el mismo tratamiento de
-    // tipografía de marca que ya usamos en las tarjetas de la home
-    mkTitleEl.className = 'mk-title' + (!brand.logo || key === 'jit' ? ' mk-title-' + key : '');
+    // Dualmet no tiene un archivo de logo utilizable: el nombre se muestra
+    // como texto gris liso (no hay degradé "inventado" que lo reemplace)
+    mkTitleEl.className = 'mk-title' + (!brand.logo ? ' mk-title-' + key : '');
     mkTitleEl.textContent = brand.nombre;
     var mkTaglineEl = document.getElementById('mkTagline');
     var mkDescEl = document.getElementById('mkDesc');
