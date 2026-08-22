@@ -741,6 +741,8 @@
   .ld-arrow:hover{border-color:var(--frio-1);color:var(--frio-1);}
   .ld-thumbs{display:flex;gap:8px;margin-top:14px;overflow-x:auto;padding-bottom:2px;}
   .ld-thumb{flex:0 0 auto;width:64px;height:64px;border-radius:10px;background-size:cover;background-position:center;border:2px solid transparent;cursor:pointer;opacity:.65;transition:opacity .2s, border-color .2s;}
+  .ld-thumb-video{position:relative;background:#000;display:flex;align-items:center;justify-content:center;}
+  .ld-thumb-video::after{content:'▶';color:#fff;font-size:1.1rem;}
   .ld-thumb:hover{opacity:1;}
   .ld-thumb.is-active{opacity:1;border-color:var(--frio-1);}
   .ld-info{padding:26px 26px 30px 8px;}
@@ -1679,6 +1681,8 @@
           <div class="live-track-mask" id="mkOtherTrackMask">
             <div class="live-track" id="mkOtherTrack"></div>
           </div>
+          <button type="button" class="live-arrow live-arrow-prev" id="mkOtherArrowPrev" aria-label="Ver anteriores">‹</button>
+          <button type="button" class="live-arrow live-arrow-next" id="mkOtherArrowNext" aria-label="Ver siguientes">›</button>
         </div>
       </div>
     </section>
@@ -1832,7 +1836,9 @@
     <!-- VISTA 1: fotos + descripción + reserva (todo en una sola pantalla) -->
     <div class="ld-view" id="ldViewInfo">
       <div class="ld-gallery">
-        <div class="ld-main-photo" id="ldMainPhoto"></div>
+        <div class="ld-main-photo" id="ldMainPhoto">
+          <video id="ldVideoPlayer" controls playsinline style="display:none;position:absolute;inset:0;width:100%;height:100%;border-radius:16px;background:#000;"></video>
+        </div>
         <div class="ld-arrows">
           <button type="button" class="ld-arrow ld-prev" id="ldPrev" aria-label="Foto anterior">‹</button>
           <button type="button" class="ld-arrow ld-next" id="ldNext" aria-label="Foto siguiente">›</button>
@@ -2515,6 +2521,7 @@
           tag: 'Publicada',
           img: (u.fotos && u.fotos[0]) || null,
           imgs: u.fotos || [],
+          video: u.video_url || null,
           desc: u.descripcion || '',
           capacidad: u.capacidad || '',
           anio: u.anio || '',
@@ -2608,6 +2615,7 @@
   var ldViewSeller = document.getElementById('ldViewSeller');
   var ldCurrent = null;
   var ldPhotoIdx = 0;
+  var ldShowingVideo = false;
 
   // países más consultados primero; banderas emoji (siempre nítidas, cada
   // sistema operativo las dibuja con su propio set moderno, sin necesidad
@@ -2642,27 +2650,41 @@
 
   function ldRenderGallery(){
     var photos = (ldCurrent.imgs && ldCurrent.imgs.length) ? ldCurrent.imgs : [];
+    var hasVideo = !!ldCurrent.video;
     var main = document.getElementById('ldMainPhoto');
-    if (photos.length){
-      main.style.cssText = 'background-image:url(' + photos[ldPhotoIdx] + ');background-size:contain;background-repeat:no-repeat;background-position:center;background-color:var(--panel-2);';
+    var video = document.getElementById('ldVideoPlayer');
+    if (ldShowingVideo && hasVideo){
+      main.style.cssText = 'background:#000;';
+      video.src = ldCurrent.video;
+      video.style.display = '';
     } else {
-      main.style.cssText = ldPlaceholderBg(ldCurrent);
+      video.pause();
+      video.style.display = 'none';
+      video.removeAttribute('src');
+      video.load();
+      if (photos.length){
+        main.style.cssText = 'background-image:url(' + photos[ldPhotoIdx] + ');background-size:contain;background-repeat:no-repeat;background-position:center;background-color:var(--panel-2);';
+      } else {
+        main.style.cssText = ldPlaceholderBg(ldCurrent);
+      }
     }
     var thumbs = document.getElementById('ldThumbs');
-    if (photos.length > 1){
+    if (photos.length > 1 || hasVideo){
       thumbs.style.display = 'flex';
       thumbs.innerHTML = photos.map(function(src, i){
-        return '<div class="ld-thumb'+(i===ldPhotoIdx?' is-active':'')+'" data-i="'+i+'" style="background-image:url('+src+')"></div>';
-      }).join('');
-      thumbs.querySelectorAll('.ld-thumb').forEach(function(th){
-        th.addEventListener('click', function(){ ldPhotoIdx = parseInt(th.getAttribute('data-i'), 10); ldRenderGallery(); });
+        return '<div class="ld-thumb'+((!ldShowingVideo && i===ldPhotoIdx)?' is-active':'')+'" data-i="'+i+'" style="background-image:url('+src+')"></div>';
+      }).join('') + (hasVideo ? '<div class="ld-thumb ld-thumb-video'+(ldShowingVideo?' is-active':'')+'" data-video="1"></div>' : '');
+      thumbs.querySelectorAll('.ld-thumb:not(.ld-thumb-video)').forEach(function(th){
+        th.addEventListener('click', function(){ ldShowingVideo = false; ldPhotoIdx = parseInt(th.getAttribute('data-i'), 10); ldRenderGallery(); });
       });
+      var videoThumb = thumbs.querySelector('.ld-thumb-video');
+      if (videoThumb) videoThumb.addEventListener('click', function(){ ldShowingVideo = true; ldRenderGallery(); });
     } else {
       thumbs.style.display = 'none';
       thumbs.innerHTML = '';
     }
     var arrows = document.querySelector('.ld-arrows');
-    arrows.style.display = photos.length > 1 ? 'flex' : 'none';
+    arrows.style.display = (!ldShowingVideo && photos.length > 1) ? 'flex' : 'none';
   }
 
   // calcula el 10% de seña a partir del precio publicado (texto tipo "USD 8.900")
@@ -2696,6 +2718,7 @@
   function openListingDetail(l){
     ldCurrent = l;
     ldPhotoIdx = 0;
+    ldShowingVideo = false;
     document.getElementById('ldTitle').textContent = l.t;
     document.getElementById('ldPrice').textContent = l.p;
     document.getElementById('ldCond').textContent = l.cond;
@@ -2749,6 +2772,8 @@
     ldOverlay.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
     stopLdPolling();
+    var video = document.getElementById('ldVideoPlayer');
+    if (video){ video.pause(); }
   }
 
   document.getElementById('ldClose').addEventListener('click', closeListingDetail);
@@ -2929,14 +2954,10 @@
       g:['#0C3FA0','#1078D6'],
       specs:[['Producción','600 a 6000 l/h según modelo'],['Composición','Depósito de precalentamiento, bomba centrífuga de doble filtro, intercambiador a placas, sección tubular, homogeneizador'],['Potencia','21,7 a 82 kW según modelo'],['Dimensiones','6500×1800×1800 mm (600) a 13500×2300×4300 mm (6000)']]},
     {id:'fruit-feeder-ff10', marca:'technogel', cat:'sembradora-fruta', catLabel:'Sembradora de fruta',
-      titulo:'Technogel Fruit Feeder FF10', subtitulo:'Dispensador de fruta e ingredientes sólidos, con dosificación mediante rotor de pistón alterno. Reconocido mundialmente por su tecnología y fiabilidad.',
-      g:['#EC4878','#C23361'],
-      specs:[['Producción','Hasta 900 l/h de helado']]},
-    {id:'fruit-feeder-ff20', marca:'technogel', cat:'sembradora-fruta', catLabel:'Sembradora de fruta',
-      titulo:'Technogel Fruit Feeder FF20', subtitulo:'Dispensador de fruta e ingredientes sólidos, con dosificación mediante rotor de pistón alterno. Reconocido mundialmente por su tecnología y fiabilidad.',
+      titulo:'Technogel Fruit Feeder FF10/FF20', subtitulo:'Dispensador de fruta e ingredientes sólidos, con dosificación mediante rotor de pistón alterno. Reconocido mundialmente por su tecnología y fiabilidad.',
       img: 'assets/img/nuevas-ia/fruit-feeder-ff20.jpg',
       g:['#EC4878','#C23361'],
-      specs:[['Producción','Hasta 2000 l/h de helado']]},
+      specs:[['Producción','300 a 2000 l/h de helado']]},
     {id:'fruit-feeder-ff30e', marca:'technogel', cat:'sembradora-fruta', catLabel:'Sembradora de fruta',
       titulo:'Technogel Fruit Feeder FF30E', subtitulo:'Dispensador de fruta e ingredientes sólidos, con dosificación mediante rotor de pistón alterno. Reconocido mundialmente por su tecnología y fiabilidad.',
       img: 'assets/img/nuevas-ia/fruit-feeder.jpg',
@@ -3004,6 +3025,7 @@
       specs:[['Compresor','Semi hermético Dorin / Bitzer'],['Bombas','Recirculación interna y externa Zcerweny, 1,5 HP cada una'],['Condensación','Por aire o placa, según zona/región'],['Construcción','Acero inoxidable 304, cañerías internas en termofusión'],['Reservorio','400 litros'],['Modelos','5, 10, 15, 20 y 25 HP']]},
     {id:'variegador-electrico', marca:'technogel', cat:'sembradora-salsa', catLabel:'Variegador eléctrico',
       titulo:'Technogel Variegador Eléctrico', subtitulo:'Bomba dosificadora para variegatos, con y sin depósito calentado, construida íntegramente en acero inoxidable.',
+      img: 'assets/img/nuevas-ia/variegador-electrico.jpg',
       g:['#F5A9C4','#EC4878'],
       specs:[['Tolva','Acero inoxidable, aprox. 20 l'],['Incluye','Tubo flexible de transferencia y accesorios de inyección'],['Opcional','Cuadro eléctrico con pantalla táctil']]},
     {id:'jit-modelo-c', marca:'jit', cat:'otras', catLabel:'Caldera de pie a gas',
@@ -3201,7 +3223,7 @@
     });
     if (!mkOtherScrollStarted){
       mkOtherScrollStarted = true;
-      initAutoScrollTrack({maskId:'mkOtherTrackMask', trackId:'mkOtherTrack', cardSelector:'.live-card', gap:16, speed:26});
+      initAutoScrollTrack({maskId:'mkOtherTrackMask', trackId:'mkOtherTrack', prevId:'mkOtherArrowPrev', nextId:'mkOtherArrowNext', cardSelector:'.live-card', gap:16, speed:26});
     }
   }
 
