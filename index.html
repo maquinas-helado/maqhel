@@ -833,7 +833,15 @@
   /* marcas sin archivo de logo utilizable en este fondo: mismo tratamiento
      tipográfico que su logo de marca (el que ya se ve en las tarjetas de la
      home), para que acá también se lea como su logo y no como texto plano. */
-  .mk-title-dualmet{color:var(--muted);}
+  /* mismo tratamiento exacto que .brand-logo-dualmet en la tarjeta de la home:
+     el degradé de color se ve gris/plateado por el filtro grayscale, no por
+     ser texto plano -- eso es lo que hace que se lea igual al original. */
+  .mk-title-dualmet{
+    font-family:'Orbitron',sans-serif;letter-spacing:.02em;text-transform:uppercase;
+    background:linear-gradient(90deg,#EC4878,#F5A623,#2FA8DA);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    filter:grayscale(1) brightness(1.6);
+  }
   /* JIT sí tiene archivo de logo (texto oscuro sobre fondo transparente):
      se invierte para que se lea sobre este fondo oscuro, no se reemplaza. */
   .mk-logo-invert{filter:invert(1);}
@@ -1137,7 +1145,7 @@
           <div class="glow" style="background:var(--calor-2)"></div>
           <div class="brand-logo brand-logo-dualmet">Dualmet</div>
           <p>Equipamiento robusto para producción intensiva, pensado para heladerías que escalan sin perder calidad.</p>
-          <div class="tags"><span>Artesanal</span><span>Industrial</span></div>
+          <div class="tags"><span>Artesanal</span><span>Industrial</span><span>Argentino</span></div>
           <div class="arrow">Ver catálogo →</div>
         </div>
         <div class="brand-card" data-reveal data-marca="jit" role="button" tabindex="0">
@@ -3196,9 +3204,10 @@
       modelosTitle.textContent = 'Modelos';
     }
 
-    // el rediseño de tarjetas 3D con ícono grande arranca solo en Technogel;
-    // si funciona bien lo extendemos a Dualmet y JIT
-    catGrid.classList.toggle('cat-grid-v2', key === 'technogel');
+    // rediseño de tarjetas 3D con ícono grande: aprobado en Technogel, ahora
+    // también en Dualmet; JIT queda para después (una sola categoría, no
+    // tiene grilla que mostrar)
+    catGrid.classList.toggle('cat-grid-v2', key === 'technogel' || key === 'dualmet');
     renderGrid(catGrid, categoriasDisponibles);
     catGrid.querySelectorAll('.cat-card').forEach(function(card, i){
       card.style.cursor = 'pointer';
