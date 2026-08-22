@@ -484,6 +484,20 @@
   .cat-card h4{font-size:1.02rem;font-weight:600;margin-bottom:6px;}
   .cat-card p{font-size:.82rem;color:var(--muted-2);}
 
+  /* v2: ícono grande estilo neón sobre placa oscura, en vez del chip chico con
+     fondo degradé -- probando primero solo en Technogel (ver renderMarcaLanding) */
+  .cat-grid-v2 .cat-card{padding:30px 24px 26px;}
+  .cat-grid-v2 .cat-card .cat-icon{
+    width:84px;height:84px;border-radius:18px;margin-bottom:22px;
+    background:radial-gradient(circle at 30% 25%, rgba(255,255,255,.06), transparent 65%), var(--noche) !important;
+    border:1.5px solid color-mix(in srgb, var(--icon-line, var(--frio-1)) 55%, transparent);
+    box-shadow:0 0 26px -6px var(--glow, rgba(16,120,214,.6)), inset 0 0 22px -8px var(--glow, rgba(16,120,214,.5));
+  }
+  .cat-grid-v2 .cat-card .cat-icon::after{display:none;}
+  .cat-grid-v2 .cat-card:hover .cat-icon{transform:scale(1.05) translateY(-2px);box-shadow:0 0 34px -4px var(--glow, rgba(16,120,214,.75)), inset 0 0 22px -8px var(--glow, rgba(16,120,214,.5));}
+  .cat-grid-v2 .cat-card .cat-icon svg{width:40px;height:40px;color:var(--icon-line, var(--frio-1));filter:drop-shadow(0 0 7px var(--glow, rgba(16,120,214,.7)));}
+  .cat-grid-v2 .cat-card h4{text-transform:uppercase;font-weight:800;letter-spacing:.01em;font-size:1.04rem;}
+
   /* ===== USADAS MARKETPLACE ===== */
   .market-layout{display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start;}
   @media(max-width:960px){.market-layout{grid-template-columns:1fr;}}
@@ -2456,11 +2470,17 @@
     repuestos: '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L4 17l3 3 5.3-5.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2-2 2.6-2.6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
     cocinas: '<rect x="4" y="8" width="16" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 8V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v3" stroke="currentColor" stroke-width="2"/>',
     continuas: '<path d="M4 12h4l2-4 4 8 2-4h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>',
-    tuneles: '<path d="M4 18v-5a8 8 0 0 1 16 0v5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 18h16" stroke="currentColor" stroke-width="2"/>',
+    tunnel: '<path d="M4 18v-5a8 8 0 0 1 16 0v5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 18h16" stroke="currentColor" stroke-width="2"/>',
     robots: '<rect x="6" y="8" width="12" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9.5" cy="12.5" r="1" fill="currentColor"/><circle cx="14.5" cy="12.5" r="1" fill="currentColor"/><path d="M12 8V5m-3-1h6" stroke="currentColor" stroke-width="2"/>',
-    llenadoras: '<path d="M12 3v7M8 10h8l-1.5 9a2 2 0 0 1-2 1.7h-1a2 2 0 0 1-2-1.7L8 10z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+    llenadoras: '<path d="M8 8h8l-1 11a2 2 0 0 1-2 1.8h-2A2 2 0 0 1 9 19L8 8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M7 8h10M10 8V6a2 2 0 0 1 4 0v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
     lineas: '<circle cx="5" cy="12" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="19" cy="12" r="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 12h3M14 12h3" stroke="currentColor" stroke-width="2"/>',
     paletera: '<rect x="10" y="3" width="4" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 13v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+    cremera: '<circle cx="12" cy="8" r="2.3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8.8 10.3c0 2 1.4 3.4 3.2 3.4s3.2-1.4 3.2-3.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M9.5 20l1-6.3M14.5 20l-1-6.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+    'plantas-pasteurizacion': '<path d="M4 20V11l4-3v3l4-3v3l4-3v3l4-3v9H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M4 20h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+    'pasto-productora': '<rect x="5" y="7" width="14" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3v4M9 5.5l3-2 3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+    'sembradora-fruta': '<path d="M12 8c4 0 6 3 6 6.5S15.3 21 12 21s-6-3-6-6.5S8 8 12 8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 8l1-3M15 8l-1-3M12 8V6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="13" r=".7" fill="currentColor"/><circle cx="14" cy="13" r=".7" fill="currentColor"/><circle cx="12" cy="16.2" r=".7" fill="currentColor"/><circle cx="9.3" cy="17.5" r=".7" fill="currentColor"/><circle cx="14.7" cy="17.5" r=".7" fill="currentColor"/>',
+    'sembradora-salsa': '<path d="M7 20c-1.5-3 1-5 2.5-6.5C11 12 11 10 9.5 9c2.5-1 5 .5 5 3 0 1.5-1 2-1 3.5 0 2 1.5 2.5 1.5 4.5H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>',
+    otras: '<circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1" stroke="currentColor" stroke-width="2"/>',
     'tinas-maduracion': '<rect x="5" y="4" width="14" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 10h14M5 15h14" stroke="currentColor" stroke-width="2"/>',
     'torre-enfriamiento': '<path d="M7 21l1-13h8l1 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M6 8h12l-1.5-5h-9L6 8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
     'banco-agua-helada': '<path d="M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
@@ -2495,8 +2515,8 @@
   function renderGrid(el, data){
     el.innerHTML = data.map(function(item){
       return '<div class="cat-card" data-reveal>'+
-        '<div class="cat-icon" style="background:linear-gradient(135deg,'+item.c[0]+','+item.c[1]+');--glow:'+item.c[0]+'66">'+
-          '<svg viewBox="0 0 24 24" fill="none">'+icons[item.k]+'</svg>'+
+        '<div class="cat-icon" style="background:linear-gradient(135deg,'+item.c[0]+','+item.c[1]+');--glow:'+item.c[0]+'66;--icon-line:'+item.c[0]+'">'+
+          '<svg viewBox="0 0 24 24" fill="none">'+(icons[item.k]||icons.otras)+'</svg>'+
         '</div>'+
         '<h4>'+item.t+'</h4><p>'+item.d+'</p>'+
       '</div>';
@@ -3174,6 +3194,9 @@
       modelosTitle.textContent = 'Modelos';
     }
 
+    // el rediseño de tarjetas 3D con ícono grande arranca solo en Technogel;
+    // si funciona bien lo extendemos a Dualmet y JIT
+    catGrid.classList.toggle('cat-grid-v2', key === 'technogel');
     renderGrid(catGrid, categoriasDisponibles);
     catGrid.querySelectorAll('.cat-card').forEach(function(card, i){
       card.style.cursor = 'pointer';
