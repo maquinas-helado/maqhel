@@ -1827,6 +1827,11 @@
             <h3 class="pf-specs-heading">Características principales</h3>
             <div class="pf-specs-grid" id="pfSpecsGrid"></div>
 
+            <div id="pfReelWrap" style="display:none;">
+              <h3 class="pf-specs-heading">Video</h3>
+              <div id="pfReelEmbed"></div>
+            </div>
+
             <div class="pf-actions">
               <button type="button" class="btn btn-buy" id="pfSolicitarBtn" style="justify-content:center;">Solicitar precio</button>
               <a href="#" id="pfWhatsBtn" target="_blank" rel="noopener" class="btn btn-outline" style="justify-content:center;">Consultar por WhatsApp</a>
@@ -3166,6 +3171,7 @@
     {id:'rotary', marca:'technogel', cat:'llenadoras', catLabel:'Llenadora automática rotativa',
       titulo:'Technogel Rotary 4000/8D PLC', subtitulo:'Llenadora rotativa automática para cucuruchos, vasitos, tarritos, trufas, tiramisú y porciones individuales.',
       img: 'assets/img/nuevas-ia/rotary.jpg',
+      reel: 'https://www.instagram.com/reel/DbqafRugFvi/',
       g:['#1078D6','#0C3FA0'],
       specs:[['Dimensiones','1000×1320×2000h mm'],['Producción','Hasta 4000 u/h (4000 PLC) / 2000 u/h (8D PLC)'],['Diámetro máx. de envase','100 mm (4000) / 130 mm (8D)'],['Potencia','1,2 kW']]},
     {id:'filler-desk', marca:'technogel', cat:'llenadoras', catLabel:'Llenadora automática de mesa',
@@ -3418,6 +3424,19 @@
     });
   });
 
+  // carga el script de embeds de Instagram una sola vez, la primera vez
+  // que una ficha técnica necesita mostrar un reel
+  function loadInstagramEmbed(){
+    if (window.instgrm){ window.instgrm.Embeds.process(); return; }
+    if (document.getElementById('ig-embed-script')) return;
+    var s = document.createElement('script');
+    s.id = 'ig-embed-script';
+    s.async = true;
+    s.src = 'https://www.instagram.com/embed.js';
+    s.onload = function(){ if (window.instgrm) window.instgrm.Embeds.process(); };
+    document.body.appendChild(s);
+  }
+
   function renderProductoFicha(id){
     var p = catalogoNuevo.filter(function(x){ return x.id === id; })[0];
     if (!p) { location.hash = 'nueva'; return; }
@@ -3447,6 +3466,15 @@
     document.getElementById('pfSpecsGrid').innerHTML = p.specs.map(function(s){
       return '<div class="pf-spec-item"><span>'+s[0]+'</span><strong>'+s[1]+'</strong></div>';
     }).join('');
+
+    var reelWrap = document.getElementById('pfReelWrap');
+    if (p.reel){
+      document.getElementById('pfReelEmbed').innerHTML = '<blockquote class="instagram-media" data-instgrm-permalink="'+p.reel+'" data-instgrm-version="14" style="margin:0;"></blockquote>';
+      reelWrap.style.display = '';
+      loadInstagramEmbed();
+    } else {
+      reelWrap.style.display = 'none';
+    }
 
     document.getElementById('pfSolicitarBtn').onclick = function(){ openSolicitarPrecio(p, brand); };
 
