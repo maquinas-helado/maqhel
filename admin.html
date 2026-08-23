@@ -24,7 +24,7 @@
   .login-box p{color:var(--muted);font-size:13px;margin:0 0 22px;}
   .field{margin-bottom:14px;}
   .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;}
-  .field input{width:100%;padding:10px 12px;border-radius:9px;border:1px solid var(--line);background:var(--noche);color:var(--hielo);font-size:14px;}
+  .field input,.field select{width:100%;padding:10px 12px;border-radius:9px;border:1px solid var(--line);background:var(--noche);color:var(--hielo);font-size:14px;}
   .field input:focus{outline:2px solid var(--frio-1);outline-offset:1px;}
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:10px;border:none;font-size:14px;font-weight:600;}
   .btn-primary{background:linear-gradient(135deg,var(--frio-1),var(--frio-2));color:#fff;width:100%;margin-top:6px;}
@@ -136,6 +136,18 @@
         <div class="field"><label>Provincia <span style="opacity:.6;">(opcional)</span></label><input type="text" id="pvProvincia"></div>
       </div>
       <div class="field"><label>Descripción <span style="opacity:.6;">(opcional)</span></label><input type="text" id="pvDescripcion" placeholder="Contanos algo más sobre esta máquina"></div>
+      <div class="grid2">
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--hielo);"><input type="checkbox" id="pvGarantia" style="width:auto;"> Con garantía</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--hielo);"><input type="checkbox" id="pvCuotas" style="width:auto;"> Con financiación</label>
+      </div>
+      <div class="field"><label>Etiqueta <span style="opacity:.6;">(opcional)</span></label>
+        <select id="pvEtiqueta">
+          <option value="">Sin etiqueta</option>
+          <option value="OPORTUNIDAD">OPORTUNIDAD</option>
+          <option value="ÚLTIMO PRECIO">ÚLTIMO PRECIO</option>
+          <option value="IMPERDIBLE">IMPERDIBLE</option>
+        </select>
+      </div>
       <div class="field"><label>Foto <span style="opacity:.6;">(opcional)</span></label><input type="file" id="pvFoto" accept="image/*"></div>
       <div class="actions">
         <button class="btn btn-primary btn-small" id="pvSubmit">Publicar pre-venta</button>
@@ -238,6 +250,9 @@
         pais: 'Argentina',
         descripcion: document.getElementById('pvDescripcion').value.trim(),
         fotos: fotoUrl ? [fotoUrl] : [],
+        garantia: document.getElementById('pvGarantia').checked,
+        cuotas: document.getElementById('pvCuotas').checked,
+        etiqueta: document.getElementById('pvEtiqueta').value || null,
         contacto_nombre: 'MAQ.HEL',
         contacto_info: '',
         direccion: ''
@@ -247,6 +262,9 @@
         document.getElementById(id).value = '';
       });
       document.getElementById('pvFoto').value = '';
+      document.getElementById('pvGarantia').checked = false;
+      document.getElementById('pvCuotas').checked = false;
+      document.getElementById('pvEtiqueta').value = '';
       preventaForm.hidden = true;
       await loadAll();
       renderTab();
