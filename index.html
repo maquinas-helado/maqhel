@@ -2110,12 +2110,26 @@
     var neonEl = document.getElementById('heroNeon');
     if (!neonEl) return;
     var designs = [
-      // cucurucho con bocha
-      '<svg viewBox="0 0 100 100"><path class="hn-pink" d="M30 42c0-16 9-27 20-27s20 11 20 27c0 9-9 13-20 13s-20-4-20-13z" fill="none" stroke="#EC4878" stroke-width="3.5" stroke-linejoin="round"/><path class="hn-blue" d="M34 44l16 46 16-46M38 54h24M40 63h20" fill="none" stroke="#1078D6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-      // soft serve
-      '<svg viewBox="0 0 100 100"><path class="hn-pink" d="M50 12c-9 0-13 7-9 11-8 1-11 9-4 13-7 3-8 11 1 14-6 4-4 12 6 12h12c10 0 12-8 6-12 9-3 8-11 1-14 7-4 4-12-4-13 4-4 0-11-9-11z" fill="none" stroke="#EC4878" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/><path class="hn-blue" d="M38 62l12 34 12-34M42 70h16" fill="none" stroke="#1078D6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-      // palito
-      '<svg viewBox="0 0 100 100"><path class="hn-pink" d="M35 26c0-9 7-14 15-14s15 5 15 14v34c0 8-15 13-15 13s-15-5-15-13V26z" fill="none" stroke="#EC4878" stroke-width="3.5" stroke-linejoin="round"/><path class="hn-pink" d="M35 40c6 3 12-4 15 0s9 3 15-1" fill="none" stroke="#EC4878" stroke-width="3" stroke-linecap="round"/><path class="hn-blue" d="M46 73v22M54 73v22" fill="none" stroke="#1078D6" stroke-width="3.5" stroke-linecap="round"/></svg>'
+      // cucurucho con bocha — círculo + triángulo, prolijo en vez de a mano alzada
+      '<svg viewBox="0 0 100 100">'
+        + '<clipPath id="hnCone1"><path d="M34 52h32l-16 40z"/></clipPath>'
+        + '<circle class="hn-pink" cx="50" cy="30" r="20" fill="none" stroke="#EC4878" stroke-width="4"/>'
+        + '<g clip-path="url(#hnCone1)"><path class="hn-blue" d="M26 60h48M28 70h44M30 80h40" stroke="#1078D6" stroke-width="2.4" fill="none"/></g>'
+        + '<path class="hn-blue" d="M34 52h32l-16 40z" fill="none" stroke="#1078D6" stroke-width="4" stroke-linejoin="round"/>'
+        + '</svg>',
+      // soft serve — 3 círculos apilados en vez de una espiral a mano
+      '<svg viewBox="0 0 100 100">'
+        + '<clipPath id="hnCone2"><path d="M34 64h32l-16 34z"/></clipPath>'
+        + '<g class="hn-pink" fill="none" stroke="#EC4878" stroke-width="4"><circle cx="50" cy="56" r="17"/><circle cx="50" cy="38" r="13"/><circle cx="50" cy="22" r="9"/></g>'
+        + '<g clip-path="url(#hnCone2)"><path class="hn-blue" d="M26 72h48M28 82h44" stroke="#1078D6" stroke-width="2.4" fill="none"/></g>'
+        + '<path class="hn-blue" d="M34 64h32l-16 34z" fill="none" stroke="#1078D6" stroke-width="4" stroke-linejoin="round"/>'
+        + '</svg>',
+      // palito — píldora + palito, sin curvas irregulares
+      '<svg viewBox="0 0 100 100">'
+        + '<rect class="hn-pink" x="31" y="13" width="38" height="58" rx="19" fill="none" stroke="#EC4878" stroke-width="4"/>'
+        + '<path class="hn-pink" d="M31 32Q50 25 69 32" fill="none" stroke="#EC4878" stroke-width="2.4" stroke-linecap="round"/>'
+        + '<path class="hn-blue" d="M44 71v20M56 71v20" stroke="#1078D6" stroke-width="4" stroke-linecap="round" fill="none"/>'
+        + '</svg>'
     ];
     neonEl.innerHTML = designs[Math.floor(Math.random() * designs.length)];
     requestAnimationFrame(function(){ neonEl.classList.add('is-lit'); });
