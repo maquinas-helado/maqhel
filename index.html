@@ -532,6 +532,18 @@
   .sell-panel .step{display:flex;gap:12px;margin-bottom:14px;font-size:.86rem;color:var(--muted);align-items:flex-start;}
   .sell-panel .step .n{font-family:'IBM Plex Mono';color:var(--calor-1);flex-shrink:0;}
 
+  .request-panel{background:linear-gradient(165deg,var(--panel-2),var(--acero));border:1px solid var(--line);border-radius:22px;padding:32px;margin-top:28px;}
+  .request-panel-head h3{font-size:1.3rem;margin-bottom:8px;}
+  .request-panel-head p{color:var(--muted);font-size:.92rem;line-height:1.6;margin-bottom:22px;max-width:640px;}
+  .request-panel form{display:grid;grid-template-columns:1fr 1fr;gap:18px 24px;align-items:start;}
+  .rp-full{grid-column:1/-1;}
+  @media(max-width:720px){.request-panel form{grid-template-columns:1fr;}}
+  .rp-photo{display:flex;align-items:center;gap:14px;}
+  .rp-photo-slot{width:84px;height:84px;border:1.5px dashed var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;overflow:hidden;background:var(--noche);color:var(--muted);font-size:1.6rem;position:relative;}
+  .rp-photo-slot img{width:100%;height:100%;object-fit:cover;}
+  .rp-photo-note{font-size:.8rem;color:var(--muted-2);line-height:1.5;}
+  .rp-done{display:none;}
+
   /* ===== PUBLISH / WORLD ===== */
   .world-banner{background:radial-gradient(circle at 80% 20%, rgba(236,72,120,.10), transparent 55%), radial-gradient(circle at 10% 80%, rgba(16,120,214,.18), transparent 55%), var(--panel);border:1px solid var(--line);border-radius:28px;padding:56px;display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:center;}
   @media(max-width:880px){.world-banner{grid-template-columns:1fr;padding:36px 26px;}}
@@ -796,6 +808,15 @@
   .ld-specs .ld-spec b{color:var(--hielo);font-weight:600;text-align:right;}
   .ld-note{color:var(--muted-2);font-size:.78rem;line-height:1.5;margin-top:12px;text-align:center;}
   .ld-unique-badge{display:inline-flex;align-items:center;gap:6px;font-family:'IBM Plex Mono';font-size:.72rem;letter-spacing:.02em;color:var(--calor-1);background:rgba(236,72,120,.1);border:1px solid rgba(236,72,120,.3);padding:6px 12px;border-radius:100px;margin:10px 0 4px;}
+
+  /* tiritas de confianza — oportunidad (curada a mano por MAQ.HEL), garantía y financiación */
+  .mh-badge-row{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px;}
+  .mh-badge{display:inline-flex;align-items:center;gap:5px;font-family:'IBM Plex Mono';font-size:.7rem;letter-spacing:.02em;padding:5px 11px;border-radius:100px;font-weight:600;}
+  .mh-badge-oportunidad{color:#FFC24B;background:rgba(255,194,75,.12);border:1px solid rgba(255,194,75,.35);}
+  .mh-badge-garantia{color:var(--ok);background:rgba(47,191,113,.12);border:1px solid rgba(47,191,113,.35);}
+  .mh-badge-financiacion{color:var(--frio-1);background:rgba(16,120,214,.12);border:1px solid rgba(16,120,214,.35);}
+  .listing .mh-badge-row{margin:6px 0 0;}
+  .listing .mh-badge{font-size:.62rem;padding:3px 8px;}
 
   /* Botón CTA "La quiero" — moderno, con degradé propio de marca */
   .btn-buy{background:linear-gradient(135deg,#8FF6FF,var(--frio-1) 45%,var(--calor-1) 130%);color:var(--noche);font-weight:700;box-shadow:0 6px 0 rgba(10,11,13,.35), 0 16px 32px -12px rgba(16,120,214,.55), inset 0 1px 0 rgba(255,255,255,.6);}
@@ -1206,6 +1227,44 @@
           <div class="step"><span class="n mono">04</span> Cerrás la venta y pagás la comisión solo entonces.</div>
           <a href="#vender" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px;">Publicar mi máquina →</a>
         </aside>
+      </div>
+
+      <div class="request-panel" data-reveal>
+        <div class="request-panel-head">
+          <h3>¿No encontrás la máquina que buscás?</h3>
+          <p>Contanos qué necesitás. Si alguien la publica, te avisamos por WhatsApp apenas esté disponible — o dejanos tu contacto para enterarte de otras oportunidades en general.</p>
+        </div>
+        <form id="mrForm" novalidate>
+          <div class="vd-field rp-full">
+            <label>¿Qué máquina estás buscando?</label>
+            <textarea name="maquina" rows="2" placeholder="Ej: Fabricadora discontinua, 40 lts/hora, cualquier marca" required></textarea>
+          </div>
+          <div class="vd-field">
+            <label>Tu WhatsApp</label>
+            <div class="ld-phone-row">
+              <select id="mrCountryCode" class="ld-country-select"></select>
+              <input type="text" name="whatsapp_local" placeholder="Número sin 0 ni 15" required>
+            </div>
+          </div>
+          <div class="vd-field">
+            <label>Foto de referencia <span class="vd-optional-tag">(opcional)</span></label>
+            <div class="rp-photo">
+              <label class="rp-photo-slot" id="mrPhotoSlot"><input type="file" accept="image/*" id="mrPhotoInput" hidden><span id="mrPhotoPlus">+</span></label>
+              <p class="rp-photo-note">Si tenés una foto parecida a la máquina que buscás, la usamos como referencia para publicar el pedido.</p>
+            </div>
+          </div>
+          <div class="vd-field rp-full">
+            <label class="vd-check"><input type="checkbox" name="notificar_general" checked><span>Avisame también de otras oportunidades que puedan interesarme</span></label>
+          </div>
+          <div class="rp-full">
+            <button type="submit" class="btn btn-primary" id="mrSubmit">Avisame cuando aparezca →</button>
+          </div>
+        </form>
+        <div class="rp-done" id="mrDone">
+          <div class="vd-done-icon">✓</div>
+          <h3>¡Listo, quedaste anotado!</h3>
+          <p style="color:var(--muted);">Apenas aparezca una máquina así (o algo que se le parezca), te escribimos por WhatsApp.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -1912,6 +1971,7 @@
         <div class="ld-price mono" id="ldPrice"></div>
         <div class="ld-meta" id="ldMeta"></div>
         <div class="ld-unique-badge">◆ Unidad única — es la máquina física que ves en las fotos, no hay otra igual</div>
+        <div id="ldBadges"></div>
         <p class="ld-desc" id="ldDesc"></p>
         <div class="ld-specs" id="ldSpecs"></div>
 
@@ -2600,6 +2660,7 @@
           service_que: u.service_que || '',
           cuotas: u.cuotas ? 'si' : 'no',
           cuotas_como: u.cuotas_como || '',
+          etiqueta: u.etiqueta || '',
           reservedUntil: u.reserved_until || null,
           seller: {nombre: u.contacto_nombre || '', contacto: u.contacto_info || '', direccion: u.direccion || ''}
         };
@@ -2639,13 +2700,23 @@
         '<div class="shot"><div class="stage" style="'+bg+'"></div><span class="badge">'+l.cond+'</span>'+
           (reservada ? '<span class="reserved-ribbon">Reservada</span>' : '')+
         '</div>'+
-        '<div class="body"><div class="price mono">'+l.p+'</div><h4>'+l.t+'</h4><div class="meta">'+l.loc+'</div></div>'+
+        '<div class="body"><div class="price mono">'+l.p+'</div><h4>'+l.t+'</h4><div class="meta">'+l.loc+'</div>'+mhBadgesHtml(l)+'</div>'+
       '</div>';
     }).join('');
     observeReveal();
   }
   function isReserved(l){
     return !!(l.reservedUntil && new Date(l.reservedUntil) > new Date());
+  }
+  // tiritas de confianza: oportunidad (curada a mano por MAQ.HEL desde el panel admin),
+  // garantía y financiación — mismos datos que ya viven en los specs, pero destacados
+  // arriba de todo para que se noten de un vistazo
+  function mhBadgesHtml(l){
+    var b = [];
+    if (l.etiqueta) b.push('<span class="mh-badge mh-badge-oportunidad">★ '+l.etiqueta+'</span>');
+    if (l.garantia === 'si') b.push('<span class="mh-badge mh-badge-garantia">✓ Con garantía</span>');
+    if (l.cuotas === 'si') b.push('<span class="mh-badge mh-badge-financiacion">✓ Acepta financiación</span>');
+    return b.length ? '<div class="mh-badge-row">'+b.join('')+'</div>' : '';
   }
   renderListings('todas');
   fetchPublishedListings().then(function(){
@@ -2709,7 +2780,7 @@
       return '<option value="'+c.c+'">'+c.f+' +'+c.c+'</option>';
     }).join('');
   }
-  ['ldCountryCode','smCountryCode','spCountryCode'].forEach(fillCountrySelect);
+  ['ldCountryCode','smCountryCode','spCountryCode','mrCountryCode'].forEach(fillCountrySelect);
 
   function ldPlaceholderBg(l){
     var c = (l.g && l.g[0]) ? l.g[0] : '#1078D6';
@@ -2791,6 +2862,7 @@
     document.getElementById('ldPrice').textContent = l.p;
     document.getElementById('ldCond').textContent = l.cond;
     document.getElementById('ldMeta').textContent = l.loc + (l.tag ? ' · ' + l.tag : '');
+    document.getElementById('ldBadges').innerHTML = mhBadgesHtml(l);
     document.getElementById('ldDesc').textContent = l.desc || 'El vendedor todavía no cargó una descripción detallada para esta máquina.';
 
     var specs = [];
@@ -3452,6 +3524,74 @@
       spViewForm.style.display = 'none';
       spViewDone.style.display = 'block';
       spForm.reset();
+    });
+  });
+
+  // ---- "buscador": pedido de máquina no publicada, con foto de referencia opcional ----
+  var mrForm = document.getElementById('mrForm');
+  var mrPhotoInput = document.getElementById('mrPhotoInput');
+  var mrPhotoSlot = document.getElementById('mrPhotoSlot');
+  var mrPhotoPlus = document.getElementById('mrPhotoPlus');
+  var mrPhotoFile = null;
+  mrPhotoInput.addEventListener('change', function(){
+    var file = mrPhotoInput.files && mrPhotoInput.files[0];
+    if (!file) return;
+    mrPhotoFile = file;
+    var reader = new FileReader();
+    reader.onload = function(e){
+      mrPhotoSlot.innerHTML = '<img src="'+e.target.result+'" alt="">';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  mrForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    var maquinaEl = mrForm.querySelector('[name="maquina"]');
+    var whatsEl = mrForm.querySelector('[name="whatsapp_local"]');
+    var invalid = [];
+    if (!maquinaEl.value.trim()) invalid.push(maquinaEl);
+    if (!whatsEl.value.trim()) invalid.push(whatsEl);
+    if (invalid.length){
+      invalid.forEach(function(el){ el.style.borderColor = '#EC4878'; });
+      invalid[0].scrollIntoView({behavior:'smooth', block:'center'});
+      return;
+    }
+    var submitBtn = document.getElementById('mrSubmit');
+    var originalBtnText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Enviando...';
+
+    var whatsapp = '+' + document.getElementById('mrCountryCode').value + whatsEl.value.replace(/[^\d]/g, '');
+    var fd = new FormData(mrForm);
+
+    var uploadPromise = mrPhotoFile ? mhUploadFile('listing-media', mrPhotoFile, 'requests') : Promise.resolve('');
+    uploadPromise.then(function(fotoUrl){
+      var lead = {
+        status: 'new',
+        maquina: fd.get('maquina') || '',
+        whatsapp: whatsapp,
+        notificar_general: fd.get('notificar_general') === 'on',
+        foto_url: fotoUrl || null
+      };
+      return window.mhSupabase.from('machine_requests').insert(lead);
+    }).then(function(res){
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalBtnText;
+      if (res.error){
+        console.error(res.error);
+        alert('No pudimos enviar tu pedido. Revisá tu conexión e intentá de nuevo.');
+        return;
+      }
+      mrForm.style.display = 'none';
+      document.getElementById('mrDone').style.display = 'block';
+      mrForm.reset();
+      mrPhotoFile = null;
+      mrPhotoSlot.innerHTML = '<span id="mrPhotoPlus">+</span>';
+    }).catch(function(err){
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalBtnText;
+      console.error(err);
+      alert('No pudimos subir la foto. Intentá de nuevo o enviá el pedido sin foto.');
     });
   });
 
