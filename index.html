@@ -2110,24 +2110,24 @@
     var neonEl = document.getElementById('heroNeon');
     if (!neonEl) return;
     var designs = [
-      // cucurucho con bocha — círculo + triángulo, prolijo en vez de a mano alzada
+      // cucurucho con bocha — domo (no círculo perfecto) + triángulo con líneas diagonales, como la referencia
       '<svg viewBox="0 0 100 100">'
         + '<clipPath id="hnCone1"><path d="M34 52h32l-16 40z"/></clipPath>'
-        + '<circle class="hn-pink" cx="50" cy="30" r="20" fill="none" stroke="#EC4878" stroke-width="4"/>'
-        + '<g clip-path="url(#hnCone1)"><path class="hn-blue" d="M26 60h48M28 70h44M30 80h40" stroke="#1078D6" stroke-width="2.4" fill="none"/></g>'
+        + '<path class="hn-pink" d="M30 42 Q28 15 50 14 Q72 15 70 42 Q70 49 50 50 Q30 49 30 42 Z" fill="none" stroke="#EC4878" stroke-width="4"/>'
+        + '<g clip-path="url(#hnCone1)"><path class="hn-blue" d="M26 56 L46 90M36 53 L58 88M46 50 L66 80" stroke="#1078D6" stroke-width="2.4" fill="none"/></g>'
         + '<path class="hn-blue" d="M34 52h32l-16 40z" fill="none" stroke="#1078D6" stroke-width="4" stroke-linejoin="round"/>'
         + '</svg>',
-      // soft serve — 3 círculos apilados en vez de una espiral a mano
+      // soft serve — 3 bochas apiladas con desplazamiento alternado, sugiriendo el giro de la referencia
       '<svg viewBox="0 0 100 100">'
-        + '<clipPath id="hnCone2"><path d="M34 64h32l-16 34z"/></clipPath>'
-        + '<g class="hn-pink" fill="none" stroke="#EC4878" stroke-width="4"><circle cx="50" cy="56" r="17"/><circle cx="50" cy="38" r="13"/><circle cx="50" cy="22" r="9"/></g>'
-        + '<g clip-path="url(#hnCone2)"><path class="hn-blue" d="M26 72h48M28 82h44" stroke="#1078D6" stroke-width="2.4" fill="none"/></g>'
-        + '<path class="hn-blue" d="M34 64h32l-16 34z" fill="none" stroke="#1078D6" stroke-width="4" stroke-linejoin="round"/>'
+        + '<clipPath id="hnCone2"><path d="M34 66h32l-16 32z"/></clipPath>'
+        + '<g class="hn-pink" fill="none" stroke="#EC4878" stroke-width="3.6"><circle cx="50" cy="58" r="16"/><circle cx="55" cy="39" r="12"/><circle cx="45" cy="23" r="8"/></g>'
+        + '<g clip-path="url(#hnCone2)"><path class="hn-blue" d="M26 70 L46 96M36 67 L58 94" stroke="#1078D6" stroke-width="2.4" fill="none"/></g>'
+        + '<path class="hn-blue" d="M34 66h32l-16 32z" fill="none" stroke="#1078D6" stroke-width="4" stroke-linejoin="round"/>'
         + '</svg>',
-      // palito — píldora + palito, sin curvas irregulares
+      // palito — píldora con una sola onda asimétrica arriba, como el "mordisco" de la referencia
       '<svg viewBox="0 0 100 100">'
         + '<rect class="hn-pink" x="31" y="13" width="38" height="58" rx="19" fill="none" stroke="#EC4878" stroke-width="4"/>'
-        + '<path class="hn-pink" d="M31 32Q50 25 69 32" fill="none" stroke="#EC4878" stroke-width="2.4" stroke-linecap="round"/>'
+        + '<path class="hn-pink" d="M31 29 Q46 19 69 31" fill="none" stroke="#EC4878" stroke-width="2.6" stroke-linecap="round"/>'
         + '<path class="hn-blue" d="M44 71v20M56 71v20" stroke="#1078D6" stroke-width="4" stroke-linecap="round" fill="none"/>'
         + '</svg>'
     ];
