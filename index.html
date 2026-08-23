@@ -298,6 +298,20 @@
   .hero-media .hm-caption span{display:block;margin-top:3px;font-family:'IBM Plex Mono';font-size:.76rem;color:var(--muted-2);letter-spacing:.03em;}
 
   .hero .content{position:relative;z-index:3;max-width:900px;}
+
+  .hero-neon{position:absolute;top:-18px;right:8px;width:100px;height:100px;opacity:0;z-index:1;pointer-events:none;}
+  .hero-neon svg{width:100%;height:100%;overflow:visible;}
+  .hero-neon .hn-blue{filter:drop-shadow(0 0 4px #1078D6) drop-shadow(0 0 11px rgba(16,120,214,.7));}
+  .hero-neon .hn-pink{filter:drop-shadow(0 0 4px #EC4878) drop-shadow(0 0 11px rgba(236,72,120,.7));}
+  .hero-neon.is-lit{animation:hero-neon-flicker 1.8s ease-out forwards;}
+  @keyframes hero-neon-flicker{
+    0%{opacity:0;}
+    4%{opacity:1;} 8%{opacity:.2;} 12%{opacity:1;} 16%{opacity:.3;}
+    20%{opacity:1;} 24%{opacity:.15;} 30%{opacity:1;}
+    100%{opacity:1;}
+  }
+  @media(max-width:980px){.hero-neon{display:none;}}
+  @media (prefers-reduced-motion: reduce){.hero-neon.is-lit{animation:none;opacity:1;}}
   .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border:1px solid var(--line);border-radius:100px;color:var(--muted);font-size:.74rem;letter-spacing:.05em;text-transform:uppercase;margin-bottom:30px;white-space:nowrap;background:rgba(10,11,13,.35);backdrop-filter:blur(4px);}
   @media(max-width:560px){.eyebrow{white-space:normal;font-size:.68rem;}}
   .eyebrow b{color:var(--frio-1);font-weight:600;}
@@ -1001,6 +1015,7 @@
     </div>
     <div class="wrap hero-grid">
       <div class="hero-text">
+        <div class="hero-neon" id="heroNeon" aria-hidden="true"></div>
         <span class="eyebrow"><b>Marketplace en vivo</b> · Argentina / Uruguay · próximamente Paraguay y Bolivia</span>
         <h1>Comprá.<br>Vendé.<br><span class="grad">Crecé.</span></h1>
       </div>
@@ -2104,6 +2119,22 @@
   }
   window.addEventListener('hashchange', routeFromHash);
   document.addEventListener('DOMContentLoaded', routeFromHash);
+
+  // ---- ícono neón del hero: uno al azar cada vez que se entra/refresca, con efecto de encendido ----
+  (function(){
+    var neonEl = document.getElementById('heroNeon');
+    if (!neonEl) return;
+    var designs = [
+      // cucurucho con bocha
+      '<svg viewBox="0 0 100 100"><path class="hn-pink" d="M30 42c0-16 9-27 20-27s20 11 20 27c0 9-9 13-20 13s-20-4-20-13z" fill="none" stroke="#EC4878" stroke-width="3.5" stroke-linejoin="round"/><path class="hn-blue" d="M34 44l16 46 16-46M38 54h24M40 63h20" fill="none" stroke="#1078D6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      // soft serve
+      '<svg viewBox="0 0 100 100"><path class="hn-pink" d="M50 12c-9 0-13 7-9 11-8 1-11 9-4 13-7 3-8 11 1 14-6 4-4 12 6 12h12c10 0 12-8 6-12 9-3 8-11 1-14 7-4 4-12-4-13 4-4 0-11-9-11z" fill="none" stroke="#EC4878" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/><path class="hn-blue" d="M38 62l12 34 12-34M42 70h16" fill="none" stroke="#1078D6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      // palito
+      '<svg viewBox="0 0 100 100"><path class="hn-pink" d="M35 26c0-9 7-14 15-14s15 5 15 14v34c0 8-15 13-15 13s-15-5-15-13V26z" fill="none" stroke="#EC4878" stroke-width="3.5" stroke-linejoin="round"/><path class="hn-pink" d="M35 40c6 3 12-4 15 0s9 3 15-1" fill="none" stroke="#EC4878" stroke-width="3" stroke-linecap="round"/><path class="hn-blue" d="M46 73v22M54 73v22" fill="none" stroke="#1078D6" stroke-width="3.5" stroke-linecap="round"/></svg>'
+    ];
+    neonEl.innerHTML = designs[Math.floor(Math.random() * designs.length)];
+    requestAnimationFrame(function(){ neonEl.classList.add('is-lit'); });
+  })();
 
   // ---- mapa de Sudamérica: lucecitas por cliente ----
   // Proyección simple lon/lat -> coordenadas del viewBox del SVG (0 0 220 280)
