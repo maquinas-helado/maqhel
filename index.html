@@ -916,8 +916,12 @@
     opacity:.5;filter:blur(28px);
   }
   .pf-360-hint{font-family:'IBM Plex Mono';font-size:.72rem;color:var(--muted);background:rgba(10,11,13,.55);backdrop-filter:blur(6px);border:1px solid var(--line);padding:7px 14px;border-radius:100px;}
-  .pf-play-btn{position:absolute;bottom:16px;right:16px;width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.95);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.4);transition:transform .2s;}
+  .pf-play-btn{position:absolute;bottom:16px;right:16px;width:58px;height:58px;border-radius:50%;background:rgba(6,11,20,.55);backdrop-filter:blur(4px);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s;}
   .pf-play-btn:hover{transform:scale(1.08);}
+  .pf-play-ring{transform-origin:32px 32px;animation:pf-spin 3.5s linear infinite;filter:drop-shadow(0 0 5px #1078D6) drop-shadow(0 0 10px rgba(16,120,214,.6));}
+  .pf-play-tri{filter:drop-shadow(0 0 5px #EC4878) drop-shadow(0 0 10px rgba(236,72,120,.6));}
+  @keyframes pf-spin{to{transform:rotate(360deg);}}
+  @media (prefers-reduced-motion: reduce){.pf-play-ring{animation:none;}}
   .pf-thumbs{display:flex;gap:10px;margin-top:14px;overflow-x:auto;}
   .pf-thumb{flex:0 0 auto;width:76px;height:76px;border-radius:12px;background-size:contain;background-repeat:no-repeat;background-position:center;border:2px solid transparent;cursor:pointer;opacity:.6;transition:opacity .2s,border-color .2s;background-color:var(--panel-2);}
   .pf-thumb:hover{opacity:1;}
@@ -1821,7 +1825,10 @@
             <div class="pf-main-photo" id="pfMainPhoto">
               <video id="pfMainVideo" playsinline style="display:none;position:absolute;inset:0;width:100%;height:100%;border-radius:22px;background:#000;object-fit:contain;"></video>
               <button type="button" id="pfPlayBtn" class="pf-play-btn" style="display:none;" aria-label="Reproducir video">
-                <svg viewBox="0 0 24 24" width="26" height="26"><path d="M10 8.3v7.4a.8.8 0 0 0 1.2.7l6.2-3.7a.8.8 0 0 0 0-1.4l-6.2-3.7a.8.8 0 0 0-1.2.7z" fill="#0C3FA0"/></svg>
+                <svg viewBox="0 0 64 64" width="58" height="58">
+                  <circle class="pf-play-ring" cx="32" cy="32" r="26" fill="none" stroke="#1078D6" stroke-width="3" stroke-linecap="round" stroke-dasharray="130 33"/>
+                  <polygon points="27,21 27,43 45,32" fill="none" stroke="#EC4878" stroke-width="3" stroke-linejoin="round" class="pf-play-tri"/>
+                </svg>
               </button>
             </div>
             <div class="pf-thumbs" id="pfThumbs"></div>
