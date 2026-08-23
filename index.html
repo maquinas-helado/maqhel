@@ -1979,33 +1979,51 @@
         <h3 id="ldTitle"></h3>
         <div class="ld-price mono" id="ldPrice"></div>
         <div class="ld-meta" id="ldMeta"></div>
-        <div class="ld-unique-badge">◆ Unidad única — es la máquina física que ves en las fotos, no hay otra igual</div>
+        <div class="ld-unique-badge" id="ldUniqueBadge">◆ Unidad única — es la máquina física que ves en las fotos, no hay otra igual</div>
         <div id="ldBadges"></div>
         <p class="ld-desc" id="ldDesc"></p>
         <div class="ld-specs" id="ldSpecs"></div>
 
-        <button type="button" class="btn btn-buy ld-cta" id="ldWantBtn" style="width:100%;justify-content:center;margin-top:22px;">¡La quiero! Reservar esta máquina</button>
-        <p class="ld-note">Reservala ahora con una seña del 10% y te compartimos al toque los datos del vendedor para coordinar el resto.</p>
+        <div id="ldPurchaseBlock">
+          <button type="button" class="btn btn-buy ld-cta" id="ldWantBtn" style="width:100%;justify-content:center;margin-top:22px;">¡La quiero! Reservar esta máquina</button>
+          <p class="ld-note">Reservala ahora con una seña del 10% y te compartimos al toque los datos del vendedor para coordinar el resto.</p>
 
-        <!-- Panel de reserva / seña del 10%, siempre visible debajo del CTA -->
-        <div class="ld-pay-inline" id="ldPayInline">
-          <span class="ld-badge" style="background:linear-gradient(135deg,var(--frio-1),var(--frio-2));color:var(--noche);">Un paso más</span>
-          <h4>Reservá <span id="ldPayTitle"></span></h4>
-          <p class="ld-pay-text">Para reservar esta máquina y destrabar los datos de contacto del vendedor, primero abonás una <strong>seña del 10%</strong> del precio publicado. El 90% restante se coordina directo con el vendedor al momento de cerrar la operación.</p>
-          <div class="ld-pay-amount">
-            <span>Seña a pagar ahora</span>
-            <strong id="ldPayAmount" class="mono"></strong>
+          <!-- Panel de reserva / seña del 10%, siempre visible debajo del CTA -->
+          <div class="ld-pay-inline" id="ldPayInline">
+            <span class="ld-badge" style="background:linear-gradient(135deg,var(--frio-1),var(--frio-2));color:var(--noche);">Un paso más</span>
+            <h4>Reservá <span id="ldPayTitle"></span></h4>
+            <p class="ld-pay-text">Para reservar esta máquina y destrabar los datos de contacto del vendedor, primero abonás una <strong>seña del 10%</strong> del precio publicado. El 90% restante se coordina directo con el vendedor al momento de cerrar la operación.</p>
+            <div class="ld-pay-amount">
+              <span>Seña a pagar ahora</span>
+              <strong id="ldPayAmount" class="mono"></strong>
+            </div>
+            <div class="vd-field" style="margin-bottom:14px;">
+              <label>Tu WhatsApp <span class="vd-optional-tag">(para avisarte cuando esté todo listo)</span></label>
+              <div class="ld-phone-row">
+                <select id="ldCountryCode" class="ld-country-select"></select>
+                <input type="text" id="ldBuyerWhatsapp" placeholder="Ej: 11 5555-5555">
+              </div>
+            </div>
+            <a href="#" id="ldPayLink" class="btn btn-pay" style="width:100%;justify-content:center;">Pagar la seña del 10% →</a>
+            <p class="ld-secure-note">🔒 Pago 100% seguro, procesado por Mercado Pago</p>
+            <div id="ldReservedNote" class="ld-pay-text" style="display:none;margin-top:12px;font-weight:600;"></div>
           </div>
+        </div>
+
+        <!-- pre-venta: la máquina todavía no está confirmada, solo se capta interés -->
+        <div class="ld-pay-inline" id="ldPreventaBox" style="display:none;margin-top:22px;">
+          <span class="ld-badge" style="background:linear-gradient(135deg,#FFC24B,#C2861A);color:var(--noche);">Pre-venta</span>
+          <h4>Mostrá tu interés</h4>
+          <p class="ld-pay-text">Esta máquina todavía no está confirmada para la venta, pero podría estarlo pronto. Dejanos tu WhatsApp y te avisamos apenas se publique — sin compromiso.</p>
           <div class="vd-field" style="margin-bottom:14px;">
-            <label>Tu WhatsApp <span class="vd-optional-tag">(para avisarte cuando esté todo listo)</span></label>
+            <label>Tu WhatsApp</label>
             <div class="ld-phone-row">
-              <select id="ldCountryCode" class="ld-country-select"></select>
-              <input type="text" id="ldBuyerWhatsapp" placeholder="Ej: 11 5555-5555">
+              <select id="ldPreventaCountryCode" class="ld-country-select"></select>
+              <input type="text" id="ldPreventaWhatsapp" placeholder="Ej: 11 5555-5555">
             </div>
           </div>
-          <a href="#" id="ldPayLink" class="btn btn-pay" style="width:100%;justify-content:center;">Pagar la seña del 10% →</a>
-          <p class="ld-secure-note">🔒 Pago 100% seguro, procesado por Mercado Pago</p>
-          <div id="ldReservedNote" class="ld-pay-text" style="display:none;margin-top:12px;font-weight:600;"></div>
+          <button type="button" class="btn btn-buy" id="ldPreventaSubmit" style="width:100%;justify-content:center;">Avisame cuando esté disponible →</button>
+          <div id="ldPreventaDone" class="ld-pay-text" style="display:none;margin-top:12px;font-weight:600;color:var(--ok);">✓ ¡Listo! Te avisamos apenas se confirme la venta.</div>
         </div>
       </div>
     </div>
@@ -2643,19 +2661,21 @@
       var { data, error } = await window.mhSupabase
         .from('listings')
         .select('*')
-        .eq('status', 'published')
+        .in('status', ['published', 'preventa'])
         .order('created_at', { ascending: false });
       if (error) throw error;
       realListings = (data || []).map(function(u){
+        var isPreventa = u.status === 'preventa';
         return {
           id: u.id,
+          status: u.status,
           t: (u.marca ? u.marca + ' ' : '') + (u.modelo || u.tipo || ''),
-          p: (u.moneda === 'ARS' ? '$ ' : 'USD ') + (u.precio != null ? u.precio : '—'),
+          p: isPreventa ? 'Próximamente' : ((u.moneda === 'ARS' ? '$ ' : 'USD ') + (u.precio != null ? u.precio : '—')),
           loc: (u.localidad ? u.localidad + ', ' : '') + (u.provincia ? u.provincia + ', ' : '') + (u.pais || 'Argentina'),
-          cond: 'Usada · Publicada por heladero',
-          g: ['#1078D6','#0C3FA0'],
+          cond: isPreventa ? 'Pre-venta' : 'Usada · Publicada por heladero',
+          g: isPreventa ? ['#FFC24B','#C2861A'] : ['#1078D6','#0C3FA0'],
           cat: categorize(u.tipo),
-          tag: 'Publicada',
+          tag: isPreventa ? 'Pre-venta' : 'Publicada',
           img: (u.fotos && u.fotos[0]) || null,
           imgs: u.fotos || [],
           video: u.video_url || null,
@@ -2788,7 +2808,7 @@
       return '<option value="'+c.c+'">'+c.f+' +'+c.c+'</option>';
     }).join('');
   }
-  ['ldCountryCode','smCountryCode','spCountryCode','mrCountryCode'].forEach(fillCountrySelect);
+  ['ldCountryCode','smCountryCode','spCountryCode','mrCountryCode','ldPreventaCountryCode'].forEach(fillCountrySelect);
 
   function ldPlaceholderBg(l){
     var c = (l.g && l.g[0]) ? l.g[0] : '#1078D6';
@@ -2906,6 +2926,18 @@
       reservedNote.style.display = 'none';
       payLink.textContent = 'Pagar la seña del 10% →';
       payLink.classList.remove('btn-ghost');
+    }
+
+    var isPreventa = l.status === 'preventa';
+    document.getElementById('ldPurchaseBlock').style.display = isPreventa ? 'none' : '';
+    document.getElementById('ldUniqueBadge').style.display = isPreventa ? 'none' : '';
+    var preventaBox = document.getElementById('ldPreventaBox');
+    preventaBox.style.display = isPreventa ? '' : 'none';
+    if (isPreventa){
+      document.getElementById('ldPreventaWhatsapp').value = '';
+      document.getElementById('ldPreventaWhatsapp').closest('.vd-field').style.display = '';
+      document.getElementById('ldPreventaDone').style.display = 'none';
+      document.getElementById('ldPreventaSubmit').style.display = '';
     }
 
     ldViewInfo.style.display = '';
@@ -3055,6 +3087,39 @@
       btn.textContent = original;
       btn.style.pointerEvents = '';
     }
+  });
+
+  // ---- pre-venta: captar interés en una máquina todavía no confirmada ----
+  document.getElementById('ldPreventaSubmit').addEventListener('click', async function(){
+    if (!ldCurrent) return;
+    var btn = this;
+    var whatsInput = document.getElementById('ldPreventaWhatsapp');
+    var countrySel = document.getElementById('ldPreventaCountryCode');
+    var localNumber = whatsInput.value.replace(/[^\d]/g, '');
+    if (!localNumber){
+      whatsInput.focus();
+      whatsInput.style.borderColor = '#EC4878';
+      return;
+    }
+    var fullWhatsapp = '+' + countrySel.value + localNumber;
+    var original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+    var { error } = await window.mhSupabase.from('machine_requests').insert({
+      maquina: ldCurrent.t,
+      whatsapp: fullWhatsapp,
+      listing_id: ldCurrent.id,
+      notificar_general: false
+    });
+    btn.disabled = false;
+    btn.textContent = original;
+    if (error){
+      console.error(error);
+      alert('No pudimos guardar tu interés. Intentá de nuevo.');
+      return;
+    }
+    btn.style.display = 'none';
+    document.getElementById('ldPreventaDone').style.display = 'block';
   });
 
   // ---- MARCAS / CATÁLOGO DE MÁQUINAS NUEVAS (etapa de diseño UX, datos ficticios) ----

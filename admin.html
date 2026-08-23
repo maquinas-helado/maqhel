@@ -116,11 +116,33 @@
     <div class="tabs">
       <button class="tab active" data-tab="pending">Pendientes <span class="count" id="cnt-pending"></span></button>
       <button class="tab" data-tab="published">Publicadas <span class="count" id="cnt-published"></span></button>
+      <button class="tab" data-tab="preventa">Pre-venta <span class="count" id="cnt-preventa"></span></button>
       <button class="tab" data-tab="price">Solicitudes de precio <span class="count" id="cnt-price"></span></button>
       <button class="tab" data-tab="brand">Solicitudes de marca <span class="count" id="cnt-brand"></span></button>
       <button class="tab" data-tab="reservations">Reservas pagadas <span class="count" id="cnt-reservations"></span></button>
       <button class="tab" data-tab="requests">Búsquedas <span class="count" id="cnt-requests"></span></button>
+      <button class="btn btn-ghost btn-small" id="preventaToggle" style="margin-left:auto;">+ Nueva pre-venta</button>
     </div>
+
+    <div class="card" id="preventaForm" hidden>
+      <h3 style="margin:0 0 4px;">Nueva pre-venta</h3>
+      <p class="sub" style="margin-bottom:16px;">Cargá una máquina que sabés que puede llegar a venderse pronto. Se muestra en el sitio como "Próximamente" — el cliente solo puede dejar su WhatsApp para que lo avises, no hay reserva ni pago.</p>
+      <div class="grid2">
+        <div class="field"><label>Marca</label><input type="text" id="pvMarca" placeholder="Ej: Technogel"></div>
+        <div class="field"><label>Tipo / modelo</label><input type="text" id="pvTipo" placeholder="Ej: Mantecadora B75"></div>
+        <div class="field"><label>Capacidad <span style="opacity:.6;">(opcional)</span></label><input type="text" id="pvCapacidad" placeholder="Ej: 40 lts/hora"></div>
+        <div class="field"><label>Precio estimado <span style="opacity:.6;">(opcional)</span></label><input type="number" id="pvPrecio" placeholder="0"></div>
+        <div class="field"><label>Localidad <span style="opacity:.6;">(opcional)</span></label><input type="text" id="pvLocalidad"></div>
+        <div class="field"><label>Provincia <span style="opacity:.6;">(opcional)</span></label><input type="text" id="pvProvincia"></div>
+      </div>
+      <div class="field"><label>Descripción <span style="opacity:.6;">(opcional)</span></label><input type="text" id="pvDescripcion" placeholder="Contanos algo más sobre esta máquina"></div>
+      <div class="field"><label>Foto <span style="opacity:.6;">(opcional)</span></label><input type="file" id="pvFoto" accept="image/*"></div>
+      <div class="actions">
+        <button class="btn btn-primary btn-small" id="pvSubmit">Publicar pre-venta</button>
+        <button class="btn btn-ghost btn-small" id="pvCancel">Cancelar</button>
+      </div>
+    </div>
+
     <div id="panelBody"><div class="loading">Cargando…</div></div>
   </div>
 </div>
@@ -181,6 +203,60 @@
     if (session) await checkAdminAndEnter();
   })();
 
+  // ---------- pre-venta: Santiago carga a mano una máquina que todavía no está confirmada ----------
+  var preventaForm = document.getElementById('preventaForm');
+  document.getElementById('preventaToggle').addEventListener('click', function(){
+    preventaForm.hidden = !preventaForm.hidden;
+    if (!preventaForm.hidden) preventaForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+  document.getElementById('pvCancel').addEventListener('click', function(){ preventaForm.hidden = true; });
+  document.getElementById('pvSubmit').addEventListener('click', async function(){
+    var btn = this;
+    var marca = document.getElementById('pvMarca').value.trim();
+    var tipo = document.getElementById('pvTipo').value.trim();
+    if (!marca || !tipo){
+      alert('Cargá al menos la marca y el tipo/modelo.');
+      return;
+    }
+    var original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Publicando...';
+    try {
+      var fotoUrl = null;
+      var fotoFile = document.getElementById('pvFoto').files[0];
+      if (fotoFile) fotoUrl = await mhUploadFile('listing-media', fotoFile, 'listings');
+      var precioVal = document.getElementById('pvPrecio').value;
+      var { error } = await sb.from('listings').insert({
+        status: 'preventa',
+        marca: marca,
+        tipo: tipo,
+        capacidad: document.getElementById('pvCapacidad').value.trim(),
+        precio: precioVal !== '' ? Number(precioVal) : null,
+        moneda: 'USD',
+        localidad: document.getElementById('pvLocalidad').value.trim(),
+        provincia: document.getElementById('pvProvincia').value.trim(),
+        pais: 'Argentina',
+        descripcion: document.getElementById('pvDescripcion').value.trim(),
+        fotos: fotoUrl ? [fotoUrl] : [],
+        contacto_nombre: 'MAQ.HEL'
+      });
+      if (error) throw error;
+      ['pvMarca','pvTipo','pvCapacidad','pvPrecio','pvLocalidad','pvProvincia','pvDescripcion'].forEach(function(id){
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('pvFoto').value = '';
+      preventaForm.hidden = true;
+      await loadAll();
+      renderTab();
+    } catch (err){
+      console.error(err);
+      alert('No se pudo publicar la pre-venta. Intentá de nuevo.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = original;
+    }
+  });
+
   // ---------- data ----------
   async function loadAll(){
     panelBody.innerHTML = '<div class="loading">Cargando…</div>';
@@ -206,6 +282,7 @@
     document.getElementById('cnt-brand').textContent = cache.brand_requests.filter(x => x.status === 'new').length || '';
     document.getElementById('cnt-reservations').textContent = cache.reservations.filter(x => x.status === 'approved' && !x.buyer_notified).length || '';
     document.getElementById('cnt-requests').textContent = cache.machine_requests.filter(x => x.status === 'pendiente').length || '';
+    document.getElementById('cnt-preventa').textContent = cache.listings.filter(x => x.status === 'preventa').length || '';
   }
 
   document.querySelectorAll('.tab').forEach(function(tab){
@@ -231,6 +308,7 @@
   function renderTab(){
     if (currentTab === 'pending') renderListings('pending');
     else if (currentTab === 'published') renderListings('published');
+    else if (currentTab === 'preventa') renderListings('preventa');
     else if (currentTab === 'price') renderPriceRequests();
     else if (currentTab === 'brand') renderBrandRequests();
     else if (currentTab === 'reservations') renderReservations();
@@ -353,7 +431,7 @@
     panelBody.innerHTML = rows.map(function(l){
       var media = (l.fotos || []).map(function(u){ return '<img src="'+esc(u)+'" loading="lazy">'; }).join('')
         + (l.video_url ? '<video src="'+esc(l.video_url)+'" muted controls></video>' : '');
-      var badgeClass = status === 'pending' ? 'badge-pending' : (status === 'published' ? 'badge-published' : 'badge-rejected');
+      var badgeClass = status === 'pending' ? 'badge-pending' : (status === 'published' ? 'badge-published' : (status === 'preventa' ? 'badge-new' : 'badge-rejected'));
       var precio = l.precio != null ? ((l.moneda === 'ARS' ? '$ ' : 'USD ') + l.precio) : 'Sin precio';
       var actions = '';
       if (status === 'pending'){
@@ -366,6 +444,12 @@
         actions = '<div class="actions">'
           + '<button class="btn btn-ghost btn-small" data-action="unpublish" data-id="'+l.id+'">Despublicar</button>'
           + '<button class="btn btn-ghost btn-small" data-action="toggle-edit" data-id="'+l.id+'">Editar</button>'
+          + '</div>';
+      } else if (status === 'preventa'){
+        actions = '<div class="actions">'
+          + '<button class="btn btn-primary btn-small" data-action="publish" data-id="'+l.id+'">Ya es real: marcar como publicada</button>'
+          + '<button class="btn btn-ghost btn-small" data-action="toggle-edit" data-id="'+l.id+'">Editar</button>'
+          + '<button class="btn btn-ghost btn-small" data-action="delete-preventa" data-id="'+l.id+'">Eliminar</button>'
           + '</div>';
       }
       return '<div class="card">'
@@ -478,6 +562,19 @@
           } finally {
             btn.disabled = false; btn.textContent = originalText;
           }
+        });
+        return;
+      }
+      if (action === 'delete-preventa'){
+        btn.addEventListener('click', async function(){
+          var id = btn.getAttribute('data-id');
+          if (!confirm('¿Eliminar esta pre-venta? No se puede deshacer.')) return;
+          btn.disabled = true; btn.textContent = 'Eliminando...';
+          var { error } = await sb.from('listings').delete().eq('id', id);
+          if (error){ alert('No se pudo eliminar. Intentá de nuevo.'); btn.disabled = false; return; }
+          cache.listings = cache.listings.filter(function(x){ return x.id !== id; });
+          updateCounts();
+          renderTab();
         });
         return;
       }
