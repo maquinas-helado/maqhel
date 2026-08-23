@@ -1212,7 +1212,6 @@
             <div class="chip" data-filter="Fabricadoras">Fabricadoras</div>
             <div class="chip" data-filter="Pasteurizadores">Pasteurizadores</div>
             <div class="chip" data-filter="Líneas completas">Líneas completas</div>
-            <div class="chip" data-filter="cerca">Cerca mío</div>
           </div>
           <div class="listing-grid" id="listingGrid"></div>
         </div>
@@ -2683,7 +2682,6 @@
     all.forEach(function(l){ mhListingsById[l.id] = l; });
     var filtered = all.filter(function(l){
       if (!filter || filter === 'todas') return true;
-      if (filter === 'cerca') return /AR$|Argentina$/.test(l.loc);
       return l.cat === filter;
     });
     var grid = document.getElementById('listingGrid');
@@ -3567,7 +3565,6 @@
     var uploadPromise = mrPhotoFile ? mhUploadFile('listing-media', mrPhotoFile, 'requests') : Promise.resolve('');
     uploadPromise.then(function(fotoUrl){
       var lead = {
-        status: 'new',
         maquina: fd.get('maquina') || '',
         whatsapp: whatsapp,
         notificar_general: fd.get('notificar_general') === 'on',

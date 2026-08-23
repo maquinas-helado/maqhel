@@ -63,9 +63,25 @@
   .empty{color:var(--muted);padding:40px 0;text-align:center;font-size:14px;}
   .loading{color:var(--muted);padding:24px 0;text-align:center;font-size:13.5px;}
   .desc{margin-top:10px;font-size:13.5px;color:var(--hielo);line-height:1.5;}
-  .etiqueta-row{display:flex;gap:8px;margin-top:14px;}
+  .etiqueta-presets{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+  .chip-btn{border:1px solid var(--line);background:transparent;color:var(--muted);padding:6px 13px;border-radius:999px;font-size:12px;font-weight:600;}
+  .chip-btn:hover{border-color:var(--frio-1);color:var(--frio-1);}
+  .chip-btn.is-active{background:var(--frio-1);border-color:var(--frio-1);color:#fff;}
+  .chip-btn-clear.is-active{background:var(--panel-2);border-color:var(--line);color:var(--muted);}
+  .etiqueta-row{display:flex;gap:8px;margin-top:10px;}
   .etiqueta-row input{flex:1;min-width:0;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--noche);color:var(--hielo);font-size:13px;}
   .etiqueta-row input:focus{outline:2px solid var(--frio-1);outline-offset:1px;}
+
+  .edit-panel{margin-top:16px;padding:18px;border:1px solid var(--line);border-radius:12px;background:var(--noche);}
+  .edit-panel[hidden]{display:none;}
+  .edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;}
+  @media(max-width:640px){.edit-grid{grid-template-columns:1fr;}}
+  .edit-panel label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--muted);}
+  .edit-panel input[type="text"],.edit-panel input[type="number"],.edit-panel select,.edit-panel textarea,.edit-panel input[type="file"]{padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--acero);color:var(--hielo);font-size:13px;font-family:inherit;}
+  .edit-panel textarea{resize:vertical;}
+  .edit-check{flex-direction:row !important;align-items:center;gap:8px !important;font-size:13px !important;color:var(--hielo) !important;}
+  .edit-full{margin-top:14px;}
+  .edit-panel .actions{margin-top:16px;}
 </style>
 </head>
 <body>
@@ -189,7 +205,7 @@
     document.getElementById('cnt-price').textContent = cache.price_requests.filter(x => x.status === 'new').length || '';
     document.getElementById('cnt-brand').textContent = cache.brand_requests.filter(x => x.status === 'new').length || '';
     document.getElementById('cnt-reservations').textContent = cache.reservations.filter(x => x.status === 'approved' && !x.buyer_notified).length || '';
-    document.getElementById('cnt-requests').textContent = cache.machine_requests.filter(x => x.status === 'new').length || '';
+    document.getElementById('cnt-requests').textContent = cache.machine_requests.filter(x => x.status === 'pendiente').length || '';
   }
 
   document.querySelectorAll('.tab').forEach(function(tab){
@@ -225,24 +241,36 @@
     var rows = cache.machine_requests;
     if (!rows.length){ panelBody.innerHTML = '<div class="empty">Todavía no llegaron pedidos de máquinas.</div>'; return; }
     panelBody.innerHTML = rows.map(function(r){
-      var badgeClass = r.status === 'new' ? 'badge-new' : 'badge-contacted';
+      var badgeClass = r.status === 'pendiente' ? 'badge-new' : 'badge-contacted';
       var tel = (r.whatsapp || '').replace(/[^\d+]/g, '').replace(/^\+/, '');
       var msg = 'Hola! Somos de MAQ.HEL. Recibimos tu pedido por "' + (r.maquina || 'una máquina') + '". Te escribimos apenas tengamos algo así disponible.';
       var waUrl = 'https://wa.me/' + tel + '?text=' + encodeURIComponent(msg);
       var foto = r.foto_url ? '<div class="thumbs"><img src="'+esc(r.foto_url)+'"></div>' : '';
       return '<div class="card">'
         + '<div class="card-head"><div><h3>'+esc(r.maquina)+'</h3><div class="sub">'+fmtDate(r.created_at)+(r.notificar_general ? ' · quiere avisos generales' : '')+'</div></div>'
-        + '<span class="badge '+badgeClass+'">'+(r.status === 'new' ? 'nueva' : 'contactada')+'</span></div>'
+        + '<span class="badge '+badgeClass+'">'+(r.status === 'pendiente' ? 'pendiente' : 'contactada')+'</span></div>'
         + '<dl class="grid2"><dt>WhatsApp</dt><dd>'+esc(r.whatsapp || '—')+'</dd></dl>'
         + foto
         + '<div class="actions">'
         + (tel ? '<a href="'+waUrl+'" target="_blank" rel="noopener" class="btn btn-small" style="background:#25D366;color:#04140b;">Escribir por WhatsApp →</a>' : '')
-        + (r.status === 'new'
-            ? '<button class="btn btn-primary btn-small" data-action="contacted" data-id="'+r.id+'" data-table="machine_requests">Marcar como contactada</button>'
-            : '<button class="btn btn-ghost btn-small" data-action="new" data-id="'+r.id+'" data-table="machine_requests">Marcar como nueva</button>')
+        + (r.status === 'pendiente'
+            ? '<button class="btn btn-primary btn-small" data-mr-action="contactada" data-id="'+r.id+'">Marcar como contactada</button>'
+            : '<button class="btn btn-ghost btn-small" data-mr-action="pendiente" data-id="'+r.id+'">Marcar como pendiente</button>')
         + '</div></div>';
     }).join('');
-    bindStatusToggle();
+    panelBody.querySelectorAll('button[data-mr-action]').forEach(function(btn){
+      btn.addEventListener('click', async function(){
+        var id = btn.getAttribute('data-id');
+        var newStatus = btn.getAttribute('data-mr-action');
+        btn.disabled = true; btn.textContent = 'Guardando...';
+        var { error } = await sb.from('machine_requests').update({ status: newStatus }).eq('id', id);
+        if (error){ alert('No se pudo actualizar. Intentá de nuevo.'); btn.disabled = false; return; }
+        var row = cache.machine_requests.find(function(x){ return x.id === id; });
+        if (row) row.status = newStatus;
+        updateCounts();
+        renderTab();
+      });
+    });
   }
 
   function renderReservations(){
@@ -289,6 +317,36 @@
     });
   }
 
+  var ETIQUETA_PRESETS = ['OPORTUNIDAD', 'PRECIO REBAJADO', 'SE VENDE RÁPIDO'];
+
+  // panel de edición: para cuando un cliente le escribe a Santiago pidiendo
+  // cambiar algo de su publicación (agregar fotos/video, ajustar precio, etc.)
+  // y Santiago lo hace él mismo desde acá, sin que el cliente necesite loguearse.
+  function editPanelHtml(l){
+    return '<div class="edit-panel" id="edit-'+l.id+'" hidden>'
+      + '<div class="edit-grid">'
+      + '<label>Precio<input type="number" data-field="precio" value="'+esc(l.precio != null ? l.precio : '')+'"></label>'
+      + '<label>Moneda<select data-field="moneda"><option value="USD"'+(l.moneda !== 'ARS' ? ' selected' : '')+'>USD</option><option value="ARS"'+(l.moneda === 'ARS' ? ' selected' : '')+'>ARS</option></select></label>'
+      + '<label>Capacidad<input type="text" data-field="capacidad" value="'+esc(l.capacidad || '')+'"></label>'
+      + '<label>Año<input type="text" data-field="anio" value="'+esc(l.anio || '')+'"></label>'
+      + '<label>Voltaje<input type="text" data-field="voltaje" value="'+esc(l.voltaje || '')+'"></label>'
+      + '<label>Último service — cuándo<input type="text" data-field="service_cuando" value="'+esc(l.service_cuando || '')+'"></label>'
+      + '<label>Último service — qué<input type="text" data-field="service_que" value="'+esc(l.service_que || '')+'"></label>'
+      + '<label class="edit-check"><input type="checkbox" data-field="garantia" '+(l.garantia ? 'checked' : '')+'> Tiene garantía</label>'
+      + '<label>¿Cuánto tiempo de garantía?<input type="text" data-field="garantia_tiempo" value="'+esc(l.garantia_tiempo || '')+'"></label>'
+      + '<label class="edit-check"><input type="checkbox" data-field="cuotas" '+(l.cuotas ? 'checked' : '')+'> Ofrece cuotas</label>'
+      + '<label>¿Cómo?<input type="text" data-field="cuotas_como" value="'+esc(l.cuotas_como || '')+'"></label>'
+      + '</div>'
+      + '<label class="edit-full">Descripción<textarea data-field="descripcion" rows="3">'+esc(l.descripcion || '')+'</textarea></label>'
+      + '<label class="edit-full">Agregar fotos extra<input type="file" accept="image/*" multiple data-field="fotos-extra"></label>'
+      + '<label class="edit-full">Reemplazar video<input type="file" accept="video/*" data-field="video-nuevo"></label>'
+      + '<div class="actions">'
+      + '<button type="button" class="btn btn-primary btn-small" data-action="save-edit" data-id="'+l.id+'">Guardar cambios</button>'
+      + '<button type="button" class="btn btn-ghost btn-small" data-action="toggle-edit" data-id="'+l.id+'">Cancelar</button>'
+      + '</div>'
+      + '</div>';
+  }
+
   function renderListings(status){
     var rows = cache.listings.filter(x => x.status === status);
     if (!rows.length){ panelBody.innerHTML = '<div class="empty">No hay publicaciones acá todavía.</div>'; return; }
@@ -302,9 +360,13 @@
         actions = '<div class="actions">'
           + '<button class="btn btn-primary btn-small" data-action="publish" data-id="'+l.id+'">Aprobar y publicar</button>'
           + '<button class="btn btn-ghost btn-small" data-action="reject" data-id="'+l.id+'">Rechazar</button>'
+          + '<button class="btn btn-ghost btn-small" data-action="toggle-edit" data-id="'+l.id+'">Editar</button>'
           + '</div>';
       } else if (status === 'published'){
-        actions = '<div class="actions"><button class="btn btn-ghost btn-small" data-action="unpublish" data-id="'+l.id+'">Despublicar</button></div>';
+        actions = '<div class="actions">'
+          + '<button class="btn btn-ghost btn-small" data-action="unpublish" data-id="'+l.id+'">Despublicar</button>'
+          + '<button class="btn btn-ghost btn-small" data-action="toggle-edit" data-id="'+l.id+'">Editar</button>'
+          + '</div>';
       }
       return '<div class="card">'
         + '<div class="card-head"><div><h3>'+esc(l.marca)+' '+esc(l.modelo || l.tipo)+'</h3><div class="sub">'+fmtDate(l.created_at)+' · '+esc(l.localidad)+', '+esc(l.provincia)+', '+esc(l.pais)+'</div></div>'
@@ -323,10 +385,28 @@
         + '</dl>'
         + (l.descripcion ? '<p class="desc">'+esc(l.descripcion)+'</p>' : '')
         + (media ? '<div class="thumbs">'+media+'</div>' : '')
-        + '<div class="etiqueta-row"><input type="text" class="etiqueta-input" data-id="'+l.id+'" value="'+esc(l.etiqueta || '')+'" placeholder="Etiqueta a mostrar, ej: OPORTUNIDAD (dejar vacío para sacarla)"><button class="btn btn-ghost btn-small" data-action="save-etiqueta" data-id="'+l.id+'">Guardar etiqueta</button></div>'
+        + '<div class="etiqueta-presets">' + ETIQUETA_PRESETS.map(function(p){
+            return '<button type="button" class="chip-btn'+(l.etiqueta === p ? ' is-active' : '')+'" data-preset="'+esc(p)+'" data-id="'+l.id+'">'+esc(p)+'</button>';
+          }).join('') + '<button type="button" class="chip-btn chip-btn-clear'+(!l.etiqueta ? ' is-active' : '')+'" data-preset="" data-id="'+l.id+'">Sin etiqueta</button></div>'
+        + '<div class="etiqueta-row"><input type="text" class="etiqueta-input" data-id="'+l.id+'" value="'+esc(l.etiqueta || '')+'" placeholder="O escribí una etiqueta propia..."><button class="btn btn-ghost btn-small" data-action="save-etiqueta" data-id="'+l.id+'">Guardar etiqueta</button></div>'
+        + editPanelHtml(l)
         + actions
         + '</div>';
     }).join('');
+
+    panelBody.querySelectorAll('button[data-preset]').forEach(function(btn){
+      btn.addEventListener('click', async function(){
+        var id = btn.getAttribute('data-id');
+        var value = btn.getAttribute('data-preset');
+        btn.disabled = true;
+        var { error } = await sb.from('listings').update({ etiqueta: value || null }).eq('id', id);
+        btn.disabled = false;
+        if (error){ alert('No se pudo guardar la etiqueta. Intentá de nuevo.'); return; }
+        var row = cache.listings.find(x => x.id === id);
+        if (row) row.etiqueta = value || null;
+        renderTab();
+      });
+    });
 
     panelBody.querySelectorAll('button[data-action]').forEach(function(btn){
       var action = btn.getAttribute('data-action');
@@ -341,6 +421,63 @@
           if (error){ alert('No se pudo guardar la etiqueta. Intentá de nuevo.'); return; }
           var row = cache.listings.find(x => x.id === id);
           if (row) row.etiqueta = value || null;
+        });
+        return;
+      }
+      if (action === 'toggle-edit'){
+        btn.addEventListener('click', function(){
+          var id = btn.getAttribute('data-id');
+          var panel = document.getElementById('edit-'+id);
+          panel.hidden = !panel.hidden;
+          if (!panel.hidden) panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+        return;
+      }
+      if (action === 'save-edit'){
+        btn.addEventListener('click', async function(){
+          var id = btn.getAttribute('data-id');
+          var panel = document.getElementById('edit-'+id);
+          var field = function(name){ return panel.querySelector('[data-field="'+name+'"]'); };
+          var originalText = btn.textContent;
+          btn.disabled = true; btn.textContent = 'Guardando...';
+          try {
+            var row = cache.listings.find(function(x){ return x.id === id; });
+            var updates = {
+              precio: field('precio').value !== '' ? Number(field('precio').value) : null,
+              moneda: field('moneda').value,
+              capacidad: field('capacidad').value,
+              anio: field('anio').value,
+              voltaje: field('voltaje').value,
+              service_cuando: field('service_cuando').value,
+              service_que: field('service_que').value,
+              garantia: field('garantia').checked,
+              garantia_tiempo: field('garantia_tiempo').value,
+              cuotas: field('cuotas').checked,
+              cuotas_como: field('cuotas_como').value,
+              descripcion: field('descripcion').value
+            };
+            var fotosFiles = field('fotos-extra').files;
+            if (fotosFiles && fotosFiles.length){
+              var nuevasFotos = [];
+              for (var i = 0; i < fotosFiles.length; i++){
+                nuevasFotos.push(await mhUploadFile('listing-media', fotosFiles[i], 'listings'));
+              }
+              updates.fotos = (row.fotos || []).concat(nuevasFotos);
+            }
+            var videoFile = field('video-nuevo').files[0];
+            if (videoFile){
+              updates.video_url = await mhUploadFile('listing-media', videoFile, 'listings');
+            }
+            var { error } = await sb.from('listings').update(updates).eq('id', id);
+            if (error){ alert('No se pudo guardar. Intentá de nuevo.'); return; }
+            if (row) Object.assign(row, updates);
+            renderTab();
+          } catch (err){
+            console.error(err);
+            alert('No se pudo subir el archivo. Intentá de nuevo.');
+          } finally {
+            btn.disabled = false; btn.textContent = originalText;
+          }
         });
         return;
       }
