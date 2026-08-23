@@ -761,7 +761,7 @@
   @media(max-width:760px){.ld-view{grid-template-columns:1fr;}}
   .ld-view.ld-view-single{display:block;}
   .ld-gallery{padding:20px;}
-  .ld-main-photo{width:100%;aspect-ratio:4/3;border-radius:16px;background:linear-gradient(135deg,var(--panel-2),var(--acero));background-size:contain;background-repeat:no-repeat;background-position:center;position:relative;}
+  .ld-main-photo{width:100%;aspect-ratio:4/3;border-radius:16px;background:linear-gradient(135deg,var(--panel-2),var(--acero));background-size:contain;background-repeat:no-repeat;background-position:center;position:relative;cursor:zoom-in;}
   .ld-arrows{display:flex;justify-content:space-between;margin-top:-52px;padding:0 10px;position:relative;pointer-events:none;}
   .ld-arrow{pointer-events:auto;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(10,11,13,.55);backdrop-filter:blur(6px);color:#fff;font-size:1.3rem;line-height:1;cursor:pointer;}
   .ld-arrow:hover{border-color:var(--frio-1);color:var(--frio-1);}
@@ -771,6 +771,19 @@
   .ld-thumb-video svg{filter:drop-shadow(0 2px 5px rgba(0,0,0,.4));}
   .ld-thumb:hover{opacity:1;}
   .ld-thumb.is-active{opacity:1;border-color:var(--frio-1);}
+
+  /* ===== LIGHTBOX de fotos (máquinas usadas) — siempre grandes, con flechas ===== */
+  .lb-overlay{position:fixed;inset:0;z-index:90;background:rgba(4,5,7,.94);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s var(--ease);}
+  .lb-overlay.is-open{opacity:1;pointer-events:auto;}
+  .lb-img{max-width:min(92vw,1100px);max-height:88vh;width:auto;height:auto;object-fit:contain;border-radius:8px;box-shadow:0 30px 80px -20px rgba(0,0,0,.7);}
+  .lb-close{position:absolute;top:18px;right:22px;width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(10,11,13,.6);color:#fff;font-size:1.1rem;cursor:pointer;}
+  .lb-close:hover{border-color:var(--frio-1);color:var(--frio-1);}
+  .lb-arrow{position:absolute;top:50%;transform:translateY(-50%);width:52px;height:52px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(10,11,13,.6);backdrop-filter:blur(6px);color:#fff;font-size:1.6rem;line-height:1;cursor:pointer;}
+  .lb-arrow:hover{border-color:var(--frio-1);color:var(--frio-1);}
+  .lb-prev{left:18px;}
+  .lb-next{right:18px;}
+  .lb-count{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);font-family:'IBM Plex Mono';font-size:.8rem;color:var(--muted);background:rgba(10,11,13,.6);border:1px solid var(--line);padding:5px 14px;border-radius:100px;}
+  @media(max-width:640px){.lb-arrow{width:42px;height:42px;font-size:1.3rem;}.lb-prev{left:8px;}.lb-next{right:8px;}}
   .ld-info{padding:26px 26px 30px 8px;}
   @media(max-width:760px){.ld-info{padding:6px 20px 26px;}}
   .ld-badge{display:inline-block;font-family:'IBM Plex Mono';font-size:.7rem;padding:5px 11px;border-radius:100px;background:rgba(16,120,214,.12);color:var(--frio-1);border:1px solid rgba(16,120,214,.3);margin-bottom:12px;}
@@ -1822,6 +1835,15 @@
   </a>
 </div>
 
+<!-- ===== LIGHTBOX: fotos de máquinas usadas ampliadas a pantalla completa ===== -->
+<div class="lb-overlay" id="lbOverlay" aria-hidden="true">
+  <button type="button" class="lb-close" id="lbClose" aria-label="Cerrar">✕</button>
+  <button type="button" class="lb-arrow lb-prev" id="lbPrev" aria-label="Foto anterior">‹</button>
+  <img class="lb-img" id="lbImg" alt="">
+  <button type="button" class="lb-arrow lb-next" id="lbNext" aria-label="Foto siguiente">›</button>
+  <div class="lb-count" id="lbCount"></div>
+</div>
+
 <!-- ===== MODAL "SOLICITÁ TU PROPUESTA COMERCIAL" (máquinas nuevas) ===== -->
 <div class="ld-overlay" id="spOverlay" aria-hidden="true">
   <div class="ld-modal" role="dialog" aria-modal="true" aria-labelledby="spTitle">
@@ -2818,6 +2840,8 @@
     stopLdPolling();
     var video = document.getElementById('ldVideoPlayer');
     if (video){ video.pause(); }
+    var lb = document.getElementById('lbOverlay');
+    if (lb){ lb.classList.remove('is-open'); lb.setAttribute('aria-hidden', 'true'); }
   }
 
   document.getElementById('ldClose').addEventListener('click', closeListingDetail);
@@ -2836,6 +2860,46 @@
     if (!photos.length) return;
     ldPhotoIdx = (ldPhotoIdx + 1) % photos.length;
     ldRenderGallery();
+  });
+
+  // ---- lightbox: fotos siempre grandes, con flechas para recorrerlas ----
+  var lbOverlay = document.getElementById('lbOverlay');
+  var lbImg = document.getElementById('lbImg');
+  var lbCount = document.getElementById('lbCount');
+  function lbRender(){
+    var photos = (ldCurrent.imgs && ldCurrent.imgs.length) ? ldCurrent.imgs : [];
+    if (!photos.length) return;
+    lbImg.src = photos[ldPhotoIdx];
+    lbCount.textContent = (ldPhotoIdx + 1) + ' / ' + photos.length;
+  }
+  function lbOpen(){
+    var photos = (ldCurrent.imgs && ldCurrent.imgs.length) ? ldCurrent.imgs : [];
+    if (!photos.length || ldShowingVideo) return;
+    lbRender();
+    lbOverlay.classList.add('is-open');
+    lbOverlay.setAttribute('aria-hidden', 'false');
+  }
+  function lbClose(){
+    lbOverlay.classList.remove('is-open');
+    lbOverlay.setAttribute('aria-hidden', 'true');
+  }
+  function lbStep(dir){
+    var photos = (ldCurrent.imgs && ldCurrent.imgs.length) ? ldCurrent.imgs : [];
+    if (!photos.length) return;
+    ldPhotoIdx = (ldPhotoIdx + dir + photos.length) % photos.length;
+    lbRender();
+    ldRenderGallery();
+  }
+  document.getElementById('ldMainPhoto').addEventListener('click', lbOpen);
+  document.getElementById('lbClose').addEventListener('click', lbClose);
+  document.getElementById('lbPrev').addEventListener('click', function(){ lbStep(-1); });
+  document.getElementById('lbNext').addEventListener('click', function(){ lbStep(1); });
+  lbOverlay.addEventListener('click', function(e){ if (e.target === lbOverlay) lbClose(); });
+  document.addEventListener('keydown', function(e){
+    if (!lbOverlay.classList.contains('is-open')) return;
+    if (e.key === 'Escape') lbClose();
+    else if (e.key === 'ArrowLeft') lbStep(-1);
+    else if (e.key === 'ArrowRight') lbStep(1);
   });
 
   // el botón "¡La quiero!" lleva la vista directo al panel de reserva
