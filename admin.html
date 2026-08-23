@@ -238,7 +238,9 @@
         pais: 'Argentina',
         descripcion: document.getElementById('pvDescripcion').value.trim(),
         fotos: fotoUrl ? [fotoUrl] : [],
-        contacto_nombre: 'MAQ.HEL'
+        contacto_nombre: 'MAQ.HEL',
+        contacto_info: '',
+        direccion: ''
       });
       if (error) throw error;
       ['pvMarca','pvTipo','pvCapacidad','pvPrecio','pvLocalidad','pvProvincia','pvDescripcion'].forEach(function(id){
@@ -250,7 +252,7 @@
       renderTab();
     } catch (err){
       console.error(err);
-      alert('No se pudo publicar la pre-venta. Intentá de nuevo.');
+      alert('No se pudo publicar la pre-venta: ' + (err && err.message ? err.message : 'intentá de nuevo.'));
     } finally {
       btn.disabled = false;
       btn.textContent = original;

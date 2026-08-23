@@ -532,7 +532,8 @@
   .sell-panel .step{display:flex;gap:12px;margin-bottom:14px;font-size:.86rem;color:var(--muted);align-items:flex-start;}
   .sell-panel .step .n{font-family:'IBM Plex Mono';color:var(--calor-1);flex-shrink:0;}
 
-  .request-panel{background:linear-gradient(165deg,var(--panel-2),var(--acero));border:1px solid var(--line);border-radius:22px;padding:32px;margin-top:28px;}
+  .request-panel{background:radial-gradient(circle at 15% 0%, rgba(16,120,214,.16), transparent 55%), linear-gradient(165deg,var(--panel-2),var(--acero));border:1.5px solid rgba(16,120,214,.4);border-radius:22px;padding:32px;margin-top:28px;box-shadow:0 0 40px -18px rgba(16,120,214,.6);}
+  .request-panel-eyebrow{display:inline-flex;align-items:center;gap:6px;font-family:'IBM Plex Mono';font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:var(--frio-1);background:rgba(16,120,214,.12);border:1px solid rgba(16,120,214,.3);padding:5px 12px;border-radius:100px;margin-bottom:14px;}
   .request-panel-head h3{font-size:1.3rem;margin-bottom:8px;}
   .request-panel-head p{color:var(--muted);font-size:.92rem;line-height:1.6;margin-bottom:22px;max-width:640px;}
   .request-panel form{display:grid;grid-template-columns:1fr 1fr;gap:18px 24px;align-items:start;}
@@ -915,8 +916,8 @@
     opacity:.5;filter:blur(28px);
   }
   .pf-360-hint{font-family:'IBM Plex Mono';font-size:.72rem;color:var(--muted);background:rgba(10,11,13,.55);backdrop-filter:blur(6px);border:1px solid var(--line);padding:7px 14px;border-radius:100px;}
-  .pf-play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.95);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.4);transition:transform .2s;}
-  .pf-play-btn:hover{transform:translate(-50%,-50%) scale(1.08);}
+  .pf-play-btn{position:absolute;bottom:16px;right:16px;width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.95);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.4);transition:transform .2s;}
+  .pf-play-btn:hover{transform:scale(1.08);}
   .pf-thumbs{display:flex;gap:10px;margin-top:14px;overflow-x:auto;}
   .pf-thumb{flex:0 0 auto;width:76px;height:76px;border-radius:12px;background-size:contain;background-repeat:no-repeat;background-position:center;border:2px solid transparent;cursor:pointer;opacity:.6;transition:opacity .2s,border-color .2s;background-color:var(--panel-2);}
   .pf-thumb:hover{opacity:1;}
@@ -1214,6 +1215,9 @@
             <div class="chip" data-filter="Fabricadoras">Fabricadoras</div>
             <div class="chip" data-filter="Pasteurizadores">Pasteurizadores</div>
             <div class="chip" data-filter="Líneas completas">Líneas completas</div>
+            <div class="chip" data-filter="garantia">Con garantía</div>
+            <div class="chip" data-filter="financiacion">Con financiación</div>
+            <div class="chip" data-filter="oportunidad">Oportunidad</div>
           </div>
           <div class="listing-grid" id="listingGrid"></div>
         </div>
@@ -1232,6 +1236,7 @@
 
       <div class="request-panel" data-reveal>
         <div class="request-panel-head">
+          <span class="request-panel-eyebrow">◆ Buscador</span>
           <h3>¿No encontrás la máquina que buscás?</h3>
           <p>Contanos qué necesitás. Si alguien la publica, te avisamos por WhatsApp apenas esté disponible — o dejanos tu contacto para enterarte de otras oportunidades en general.</p>
         </div>
@@ -2712,6 +2717,9 @@
     all.forEach(function(l){ mhListingsById[l.id] = l; });
     var filtered = all.filter(function(l){
       if (!filter || filter === 'todas') return true;
+      if (filter === 'garantia') return l.garantia === 'si';
+      if (filter === 'financiacion') return l.cuotas === 'si';
+      if (filter === 'oportunidad') return !!l.etiqueta;
       return l.cat === filter;
     });
     var grid = document.getElementById('listingGrid');
@@ -3551,6 +3559,11 @@
         pfPlayBtn.style.display = 'none';
         pfVideo.controls = true;
         pfVideo.play();
+      };
+      pfVideo.onended = function(){
+        pfVideo.style.display = 'none';
+        pfVideo.removeAttribute('controls');
+        pfPlayBtn.style.display = 'flex';
       };
     } else {
       pfPlayBtn.style.display = 'none';
