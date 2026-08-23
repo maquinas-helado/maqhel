@@ -261,17 +261,13 @@
   .hero{position:relative;padding:70px 0 90px;overflow:hidden;}
   .hero::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
     background:radial-gradient(ellipse 90% 70% at 68% 55%, transparent 45%, rgba(4,5,7,.55) 100%);}
-  .hero-blob-wrap{position:absolute;top:2%;left:52%;width:560px;height:560px;z-index:1;filter:url(#goo);animation:heroFloat 8s ease-in-out infinite;pointer-events:none;opacity:.85;}
-  @keyframes heroFloat{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-16px) rotate(3deg);}}
-  .hero-blob-wrap .hb{position:absolute;border-radius:50%;}
-  .hb1{width:360px;height:360px;top:60px;left:60px;background:radial-gradient(circle at 32% 28%, #5EC2F0, #1078D6 45%, #0B4A6B 100%);animation:hmorph1 10s ease-in-out infinite;}
-  .hb2{width:220px;height:220px;top:170px;left:250px;background:radial-gradient(circle at 30% 30%, #F5A9C4, #EC4878 55%, #6B1233 100%);animation:hmorph2 12s ease-in-out infinite;}
-  .hb3{width:150px;height:150px;top:30px;left:300px;background:radial-gradient(circle at 35% 30%, #C9F5FF, #38BDF8 60%, #123049 100%);animation:hmorph3 9s ease-in-out infinite;}
-  @keyframes hmorph1{0%,100%{border-radius:42% 58% 65% 35% / 45% 45% 55% 55%;}50%{border-radius:60% 40% 35% 65% / 55% 60% 40% 45%;}}
-  @keyframes hmorph2{0%,100%{border-radius:60% 40% 30% 70% / 60% 50% 50% 40%;}50%{border-radius:35% 65% 60% 40% / 40% 55% 45% 60%;}}
-  @keyframes hmorph3{0%,100%{border-radius:50% 50% 35% 65% / 65% 40% 60% 35%;}50%{border-radius:65% 35% 55% 45% / 40% 60% 40% 60%;}}
-  @media(max-width:980px){.hero-blob-wrap{width:360px;height:360px;left:20%;opacity:.6;}}
-  @media(max-width:680px){.hero-blob-wrap{width:260px;height:260px;left:14%;top:2%;}}
+  .hero-neon-wrap{position:absolute;top:2%;left:52%;width:560px;height:560px;z-index:1;pointer-events:none;opacity:0;}
+  .hero-neon-wrap svg{width:100%;height:100%;overflow:visible;}
+  .hero-neon-wrap .hn-blue{filter:drop-shadow(0 0 6px #1078D6) drop-shadow(0 0 22px rgba(16,120,214,.7));}
+  .hero-neon-wrap .hn-pink{filter:drop-shadow(0 0 6px #EC4878) drop-shadow(0 0 22px rgba(236,72,120,.7));}
+  .hero-neon-wrap.is-lit{animation:hero-neon-flicker 1.8s ease-out forwards;}
+  @media(max-width:980px){.hero-neon-wrap{width:360px;height:360px;left:20%;}}
+  @media(max-width:680px){.hero-neon-wrap{width:260px;height:260px;left:14%;top:2%;}}
 
   .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;grid-template-rows:auto auto;gap:8px 32px;align-items:stretch;position:relative;z-index:3;min-height:0;}
   @media(max-width:980px){.hero-grid{grid-template-columns:1fr;grid-template-rows:auto;gap:22px;}}
@@ -299,19 +295,13 @@
 
   .hero .content{position:relative;z-index:3;max-width:900px;}
 
-  .hero-neon{position:absolute;top:-18px;right:8px;width:100px;height:100px;opacity:0;z-index:1;pointer-events:none;}
-  .hero-neon svg{width:100%;height:100%;overflow:visible;}
-  .hero-neon .hn-blue{filter:drop-shadow(0 0 4px #1078D6) drop-shadow(0 0 11px rgba(16,120,214,.7));}
-  .hero-neon .hn-pink{filter:drop-shadow(0 0 4px #EC4878) drop-shadow(0 0 11px rgba(236,72,120,.7));}
-  .hero-neon.is-lit{animation:hero-neon-flicker 1.8s ease-out forwards;}
   @keyframes hero-neon-flicker{
     0%{opacity:0;}
     4%{opacity:1;} 8%{opacity:.2;} 12%{opacity:1;} 16%{opacity:.3;}
     20%{opacity:1;} 24%{opacity:.15;} 30%{opacity:1;}
     100%{opacity:1;}
   }
-  @media(max-width:980px){.hero-neon{display:none;}}
-  @media (prefers-reduced-motion: reduce){.hero-neon.is-lit{animation:none;opacity:1;}}
+  @media (prefers-reduced-motion: reduce){.hero-neon-wrap.is-lit{animation:none;opacity:1;}}
   .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border:1px solid var(--line);border-radius:100px;color:var(--muted);font-size:.74rem;letter-spacing:.05em;text-transform:uppercase;margin-bottom:30px;white-space:nowrap;background:rgba(10,11,13,.35);backdrop-filter:blur(4px);}
   @media(max-width:560px){.eyebrow{white-space:normal;font-size:.68rem;}}
   .eyebrow b{color:var(--frio-1);font-weight:600;}
@@ -1008,14 +998,9 @@
 <div id="page-home" class="app-page is-active">
 <!-- HERO -->
   <section class="hero">
-    <div class="hero-blob-wrap">
-      <div class="hb hb1"></div>
-      <div class="hb hb2"></div>
-      <div class="hb hb3"></div>
-    </div>
+    <div class="hero-neon-wrap" id="heroNeon" aria-hidden="true"></div>
     <div class="wrap hero-grid">
       <div class="hero-text">
-        <div class="hero-neon" id="heroNeon" aria-hidden="true"></div>
         <span class="eyebrow"><b>Marketplace en vivo</b> · Argentina / Uruguay · próximamente Paraguay y Bolivia</span>
         <h1>Comprá.<br>Vendé.<br><span class="grad">Crecé.</span></h1>
       </div>
