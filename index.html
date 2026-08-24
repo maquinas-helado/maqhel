@@ -901,6 +901,8 @@
   .mk-product-card .mp-body h4{font-size:1.02rem;font-weight:700;margin:6px 0 4px;text-transform:uppercase;}
   .mk-product-card .mp-body p{color:var(--muted);font-size:.84rem;line-height:1.4;}
   .mk-product-card .mp-cta{margin-top:12px;color:var(--frio-1);font-size:.85rem;font-weight:600;}
+  .mp-play-btn{position:absolute;bottom:10px;right:10px;width:40px;height:40px;border-radius:50%;background:rgba(6,11,20,.55);backdrop-filter:blur(4px);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s;z-index:1;}
+  .mp-play-btn:hover{transform:scale(1.08);}
 
   /* ===== FICHA DE PRODUCTO ===== */
   .pf-layout{display:grid;grid-template-columns:1.45fr 1fr;gap:52px;align-items:start;margin-top:24px;}
@@ -3476,13 +3478,42 @@
         var bg = p.img
           ? ('background-image:url(' + p.img + ');background-color:#000;background-size:contain;background-repeat:no-repeat;background-position:center;')
           : ('background:linear-gradient(135deg,' + p.g[0] + ',#0F1B2E 75%);');
+        var playBtn = p.video ? (
+          '<video class="mp-video" playsinline style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;"></video>'+
+          '<button type="button" class="mp-play-btn" data-video="'+p.video+'" aria-label="Reproducir video">'+
+            '<svg viewBox="0 0 64 64" width="40" height="40">'+
+              '<circle class="pf-play-ring" cx="32" cy="32" r="26" fill="none" stroke="#1078D6" stroke-width="3" stroke-linecap="round" stroke-dasharray="130 33"/>'+
+              '<polygon points="27,21 27,43 45,32" fill="none" stroke="#EC4878" stroke-width="3" stroke-linejoin="round" class="pf-play-tri"/>'+
+            '</svg>'+
+          '</button>'
+        ) : '';
         return '<div class="mk-product-card" data-id="'+p.id+'">'+
-          '<div class="mp-shot" style="'+bg+'"></div>'+
+          '<div class="mp-shot" style="'+bg+'">'+playBtn+'</div>'+
           '<div class="mp-body"><span>'+p.catLabel+(p.nuevo?' <b class="badge-nuevo">Nuevo modelo</b>':'')+'</span><h4>'+stripBrandPrefix(p.titulo, p.marca)+'</h4><p>'+p.subtitulo+'</p><div class="mp-cta">Ver ficha técnica →</div></div>'+
         '</div>';
       }).join('');
       grid.querySelectorAll('.mk-product-card').forEach(function(card){
         card.addEventListener('click', function(){ location.hash = 'producto-' + card.getAttribute('data-id'); });
+      });
+      grid.querySelectorAll('.mp-play-btn').forEach(function(btn){
+        btn.addEventListener('click', function(e){
+          e.stopPropagation();
+          var video = btn.previousElementSibling;
+          video.src = btn.getAttribute('data-video');
+          video.style.display = 'block';
+          video.controls = true;
+          btn.style.display = 'none';
+          video.play();
+          video.onended = function(){
+            video.style.display = 'none';
+            video.removeAttribute('controls');
+            video.pause();
+            btn.style.display = 'flex';
+          };
+        });
+      });
+      grid.querySelectorAll('.mp-video').forEach(function(v){
+        v.addEventListener('click', function(e){ e.stopPropagation(); });
       });
     }
 
