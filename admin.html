@@ -464,6 +464,7 @@
         actions = '<div class="actions">'
           + '<button class="btn btn-ghost btn-small" data-action="unpublish" data-id="'+l.id+'">Despublicar</button>'
           + '<button class="btn btn-ghost btn-small" data-action="toggle-edit" data-id="'+l.id+'">Editar</button>'
+          + '<button class="btn btn-ghost btn-small" data-action="delete-listing" data-id="'+l.id+'">Eliminar</button>'
           + '</div>';
       } else if (status === 'preventa'){
         actions = '<div class="actions">'
@@ -585,10 +586,11 @@
         });
         return;
       }
-      if (action === 'delete-preventa'){
+      if (action === 'delete-preventa' || action === 'delete-listing'){
         btn.addEventListener('click', async function(){
           var id = btn.getAttribute('data-id');
-          if (!confirm('¿Eliminar esta pre-venta? No se puede deshacer.')) return;
+          var msg = action === 'delete-preventa' ? '¿Eliminar esta pre-venta? No se puede deshacer.' : '¿Eliminar esta máquina de la página? No se puede deshacer.';
+          if (!confirm(msg)) return;
           btn.disabled = true; btn.textContent = 'Eliminando...';
           var { error } = await sb.from('listings').delete().eq('id', id);
           if (error){ alert('No se pudo eliminar. Intentá de nuevo.'); btn.disabled = false; return; }
