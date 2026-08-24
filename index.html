@@ -511,11 +511,12 @@
   .listing:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.18);}
   .listing .shot{aspect-ratio:1/1;position:relative;overflow:hidden;}
   .listing .shot .stage{position:absolute;inset:0;}
-  .listing .badge{position:absolute;top:10px;left:10px;background:rgba(6,11,20,.7);backdrop-filter:blur(6px);color:var(--hielo);font-size:.68rem;padding:5px 10px;border-radius:100px;font-family:'IBM Plex Mono';border:1px solid var(--line);}
+  .listing .shot .mh-badge-row{position:absolute;top:10px;left:10px;right:10px;margin:0;z-index:1;}
   .listing .body{padding:12px 14px 14px;}
   .listing .body .price{font-family:'IBM Plex Mono';color:var(--frio-1);font-size:.96rem;font-weight:600;}
   .listing .body h4{font-size:.86rem;margin:5px 0 3px;font-weight:600;line-height:1.3;}
   .listing .body .meta{font-size:.72rem;color:var(--muted-2);}
+  .mh-status-badge{display:inline-flex;align-items:center;margin-top:8px;background:rgba(6,11,20,.5);color:var(--muted-2);font-size:.68rem;padding:5px 10px;border-radius:100px;font-family:'IBM Plex Mono';border:1px solid var(--line);}
   .listing.is-reserved .stage{filter:grayscale(.5) brightness(.55);}
   .listing.is-reserved .body{opacity:.6;}
   .reserved-ribbon{
@@ -2741,10 +2742,12 @@
                       : ('background:linear-gradient(135deg,' + l.g[0] + ',#0F1B2E 70%);');
       var reservada = isReserved(l);
       return '<div class="listing'+(reservada?' is-reserved':'')+'" data-reveal data-id="'+l.id+'" role="button" tabindex="0">'+
-        '<div class="shot"><div class="stage" style="'+bg+'"></div><span class="badge">'+l.cond+'</span>'+
+        '<div class="shot"><div class="stage" style="'+bg+'"></div>'+mhBadgesHtml(l)+
           (reservada ? '<span class="reserved-ribbon">Reservada</span>' : '')+
         '</div>'+
-        '<div class="body"><div class="price mono">'+l.p+'</div><h4>'+l.t+'</h4><div class="meta">'+l.loc+'</div>'+mhBadgesHtml(l)+'</div>'+
+        '<div class="body"><div class="price mono">'+l.p+'</div><h4>'+l.t+'</h4><div class="meta">'+l.loc+'</div>'+
+          '<span class="mh-status-badge">'+l.cond+'</span>'+
+        '</div>'+
       '</div>';
     }).join('');
     observeReveal();
@@ -3235,6 +3238,7 @@
     {id:'fruit-feeder-ff30e', marca:'technogel', cat:'sembradora-fruta', catLabel:'Sembradora de fruta',
       titulo:'Technogel Fruit Feeder FF30E', subtitulo:'Dispensador de fruta e ingredientes sólidos, con dosificación mediante rotor de pistón alterno. Reconocido mundialmente por su tecnología y fiabilidad.',
       img: 'assets/img/nuevas-ia/fruit-feeder.jpg',
+      video: 'assets/video/fruit-feeder-ff30e.mp4',
       g:['#EC4878','#C23361'],
       specs:[['Producción','Hasta 5000 l/h de helado']]},
     {id:'ripple-pump', marca:'technogel', cat:'sembradora-salsa', catLabel:'Sembradora de salsa',
