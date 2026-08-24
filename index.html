@@ -2075,7 +2075,22 @@
       window.addEventListener('load', function(){ window.scrollTo(0,0); }, {once:true});
     }
   }
+  // corta cualquier video que haya quedado reproduciéndose (miniatura o ficha)
+  // al salir de la página donde se lo prendió — showAppPage solo oculta con
+  // display:none, no destruye el DOM, así que el <video> sigue sonando si no
+  // lo pausamos a mano.
+  function pauseAllVideos(){
+    document.querySelectorAll('video').forEach(function(v){
+      if (v.paused) return;
+      v.pause();
+      v.style.display = 'none';
+      v.removeAttribute('controls');
+      var btn = v.nextElementSibling;
+      if (btn && (btn.id === 'pfPlayBtn' || btn.classList.contains('mp-play-btn'))) btn.style.display = 'flex';
+    });
+  }
   function routeFromHash(){
+    pauseAllVideos();
     var h = (location.hash || '').replace('#','');
     if (h === 'nueva'){
       showAppPage('page-nueva', true);
