@@ -441,7 +441,7 @@
   .brand-card h3{font-size:1.4rem;margin-bottom:8px;}
   /* "logos" tipográficos de marca: grises por defecto, cobran su color propio al hover */
   .brand-logo{margin-bottom:14px;line-height:1;transition:filter .35s var(--ease), opacity .35s var(--ease);}
-  .brand-logo-dualmet{font-family:'Orbitron',sans-serif;font-weight:800;font-size:1.5rem;color:#CDD5DF;letter-spacing:.02em;text-transform:uppercase;filter:grayscale(1) brightness(1.6);opacity:.85;background:linear-gradient(90deg,#EC4878,#F5A623,#2FA8DA);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  .brand-logo-dualmet{font-family:'Orbitron',sans-serif;font-weight:800;font-size:1.5rem;color:#CDD5DF;letter-spacing:.02em;text-transform:uppercase;filter:grayscale(1) brightness(1.6);opacity:.97;background:linear-gradient(90deg,#EC4878,#F5A623,#2FA8DA);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
   .brand-card:hover .brand-logo-dualmet{filter:grayscale(0) brightness(1);opacity:1;}
   /* placa clara detrás de los logos con imagen: así siempre hay contraste,
      sea cual sea el color original del logo (JIT es azul oscuro, se perdía
@@ -449,7 +449,7 @@
   /* logo siempre visible sobre fondo oscuro sin caja: brightness(0)+invert(1)
      convierte CUALQUIER color de logo (claro u oscuro) en blanco parejo, y al
      hacer hover se saca el filtro y aparece el color real del logo */
-  .brand-logo-img{height:30px;width:auto;display:block;filter:brightness(0) saturate(0) invert(1) opacity(.55);transition:filter .35s var(--ease);}
+  .brand-logo-img{height:30px;width:auto;display:block;filter:brightness(0) saturate(0) invert(1) opacity(.92);transition:filter .35s var(--ease);}
   .brand-card:hover .brand-logo-img{filter:none;}
   .brand-card[data-marca="jit"] .brand-logo-img{height:40px;}
   .brand-card p{color:var(--muted);font-size:.92rem;line-height:1.55;margin-bottom:18px;}
