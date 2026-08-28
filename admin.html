@@ -59,6 +59,7 @@
   .badge-rejected{background:rgba(160,168,180,.15);color:var(--muted);}
   .badge-new{background:rgba(16,120,214,.15);color:#6fb4ec;}
   .badge-contacted{background:rgba(47,191,113,.15);color:#5fe0a0;}
+  .badge-reservada{background:rgba(255,194,75,.15);color:#FFC24B;margin-left:6px;}
   .actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
   .empty{color:var(--muted);padding:40px 0;text-align:center;font-size:14px;}
   .loading{color:var(--muted);padding:24px 0;text-align:center;font-size:13.5px;}
@@ -453,6 +454,7 @@
         + (l.video_url ? '<video src="'+esc(l.video_url)+'" muted controls></video>' : '');
       var badgeClass = status === 'pending' ? 'badge-pending' : (status === 'published' ? 'badge-published' : (status === 'preventa' ? 'badge-new' : 'badge-rejected'));
       var precio = l.precio != null ? ((l.moneda === 'ARS' ? '$ ' : 'USD ') + l.precio) : 'Sin precio';
+      var reservedNow = !!(l.reserved_until && new Date(l.reserved_until) > new Date());
       var actions = '';
       if (status === 'pending'){
         actions = '<div class="actions">'
@@ -464,6 +466,7 @@
         actions = '<div class="actions">'
           + '<button class="btn btn-ghost btn-small" data-action="unpublish" data-id="'+l.id+'">Despublicar</button>'
           + '<button class="btn btn-ghost btn-small" data-action="toggle-edit" data-id="'+l.id+'">Editar</button>'
+          + '<button class="btn btn-ghost btn-small" data-action="toggle-reserved" data-id="'+l.id+'">'+(reservedNow ? 'Quitar reserva' : 'Marcar como reservada')+'</button>'
           + '<button class="btn btn-ghost btn-small" data-action="delete-listing" data-id="'+l.id+'">Eliminar</button>'
           + '</div>';
       } else if (status === 'preventa'){
@@ -475,7 +478,9 @@
       }
       return '<div class="card">'
         + '<div class="card-head"><div><h3>'+esc(l.marca)+' '+esc(l.modelo || l.tipo)+'</h3><div class="sub">'+fmtDate(l.created_at)+' · '+esc(l.localidad)+', '+esc(l.provincia)+', '+esc(l.pais)+'</div></div>'
-        + '<span class="badge '+badgeClass+'">'+esc(status)+'</span></div>'
+        + '<span class="badge '+badgeClass+'">'+esc(status)+'</span>'
+        + (reservedNow ? '<span class="badge badge-reservada">Reservada hasta '+fmtDate(l.reserved_until)+'</span>' : '')
+        + '</div>'
         + '<dl class="grid2">'
         + '<dt>Precio</dt><dd>'+esc(precio)+'</dd>'
         + '<dt>Tipo</dt><dd>'+esc(l.tipo)+'</dd>'
@@ -596,6 +601,31 @@
           if (error){ alert('No se pudo eliminar. Intentá de nuevo.'); btn.disabled = false; return; }
           cache.listings = cache.listings.filter(function(x){ return x.id !== id; });
           updateCounts();
+          renderTab();
+        });
+        return;
+      }
+      if (action === 'toggle-reserved'){
+        btn.addEventListener('click', async function(){
+          var id = btn.getAttribute('data-id');
+          var row = cache.listings.find(function(x){ return x.id === id; });
+          var isReservedNow = !!(row && row.reserved_until && new Date(row.reserved_until) > new Date());
+          var updates;
+          if (isReservedNow){
+            updates = { reserved_until: null };
+          } else {
+            var dias = prompt('¿Por cuántos días la marcamos como reservada?', '15');
+            if (dias === null) return;
+            var n = parseInt(dias, 10);
+            if (!n || n <= 0){ alert('Ingresá un número de días válido.'); return; }
+            var fecha = new Date();
+            fecha.setDate(fecha.getDate() + n);
+            updates = { reserved_until: fecha.toISOString() };
+          }
+          btn.disabled = true;
+          var { error } = await sb.from('listings').update(updates).eq('id', id);
+          if (error){ alert('No se pudo actualizar. Intentá de nuevo.'); btn.disabled = false; return; }
+          if (row) row.reserved_until = updates.reserved_until;
           renderTab();
         });
         return;
