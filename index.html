@@ -1996,7 +1996,7 @@
       <div class="ld-gallery">
         <div class="ld-main-photo" id="ldMainPhoto">
           <video id="ldVideoPlayer" controls playsinline style="display:none;position:absolute;inset:0;width:100%;height:100%;border-radius:16px;background:#000;"></video>
-          <button type="button" class="ld-share-btn" id="ldShareBtn" aria-label="Compartir como historia de Instagram" title="Compartir como historia de Instagram">
+          <button type="button" class="ld-share-btn" id="ldShareBtn" aria-label="Compartir esta publicación" title="Compartir esta publicación">
             <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M4 13v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6"/></svg>
           </button>
         </div>
@@ -2834,6 +2834,15 @@
   var ldViewSeller = document.getElementById('ldViewSeller');
   var ldCurrent = null;
   var ldPhotoIdx = 0;
+  // precarga en segundo plano las fotos que se van mostrando en la ficha, para
+  // que al tocar "compartir" el navigator.share() se dispare sin ningún await
+  // de por medio -- Safari (y algunos Chrome) cancelan el gesto del usuario si
+  // pasa un fetch de red entre el click y el share(), y el share queda mudo.
+  var ldPhotoBlobCache = {};
+  function ldPrefetchPhoto(url){
+    if (!url || ldPhotoBlobCache[url]) return;
+    fetch(url).then(function(r){ return r.blob(); }).then(function(b){ ldPhotoBlobCache[url] = b; }).catch(function(){});
+  }
   var ldShowingVideo = false;
 
   // países más consultados primero; banderas emoji (siempre nítidas, cada
@@ -2883,6 +2892,7 @@
       video.load();
       if (photos.length){
         main.style.cssText = 'background-image:url(' + photos[ldPhotoIdx] + ');background-size:contain;background-repeat:no-repeat;background-position:center;background-color:var(--panel-2);';
+        ldPrefetchPhoto(photos[ldPhotoIdx]);
       } else {
         main.style.cssText = ldPlaceholderBg(ldCurrent);
       }
@@ -3076,23 +3086,27 @@
     setTimeout(function(){ panel.classList.remove('is-pulsing'); }, 900);
   });
 
-  // ---- compartir como historia de Instagram ----
-  // Bajamos la foto principal como archivo y usamos el share sheet nativo del
-  // celular (navigator.share con "files"): ahí Instagram aparece como una app
-  // más para compartir, con la opción de mandarlo directo a una Historia. En
-  // desktop (sin Web Share API con archivos) directamente descargamos la foto
-  // para que la suba a mano.
+  // ---- compartir la publicación ----
+  // Le pasamos la foto que se está mostrando al share sheet nativo del celular
+  // (navigator.share con "files"): ahí aparecen todas las apps para compartir
+  // que tenga instaladas -- Instagram (con Historia entre las opciones),
+  // WhatsApp, Mensajes, etc. La foto se precarga en ldPhotoBlobCache apenas se
+  // muestra (ver ldPrefetchPhoto) para que acá no haya ningún await de red
+  // entre el click y el share(): un fetch en el medio le hace perder a Safari
+  // (y a veces Chrome) el gesto del usuario y el share queda mudo.
   document.getElementById('ldShareBtn').addEventListener('click', async function(e){
     e.stopPropagation();
     var btn = this;
     var l = ldCurrent;
-    if (!l || !l.img){ alert('Esta máquina todavía no tiene una foto para compartir.'); return; }
+    if (!l){ return; }
+    var photos = (l.imgs && l.imgs.length) ? l.imgs : [];
+    var photoUrl = photos.length ? photos[ldPhotoIdx] : l.img;
+    if (!photoUrl){ alert('Esta máquina todavía no tiene una foto para compartir.'); return; }
     btn.disabled = true;
     var originalHtml = btn.innerHTML;
     btn.innerHTML = '<span style="font-size:.7rem;">...</span>';
     try {
-      var res = await fetch(l.img);
-      var blob = await res.blob();
+      var blob = ldPhotoBlobCache[photoUrl] || await fetch(photoUrl).then(function(r){ return r.blob(); });
       var file = new File([blob], 'maqhel-' + (l.id || 'maquina') + '.jpg', { type: blob.type || 'image/jpeg' });
       var caption = l.t + ' — ' + l.p + ' · maqhel.com';
       if (navigator.canShare && navigator.canShare({ files: [file] })){
