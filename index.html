@@ -2906,6 +2906,18 @@
   // historia (esa integración es exclusiva de apps nativas de iOS vía su API
   // privada de pasteboard) -- por eso el link va escrito grande en la propia
   // imagen en vez de ser un link real dentro de la historia.
+  var ldLogoImgPromise = null;
+  function ldGetLogoImg(){
+    if (!ldLogoImgPromise){
+      ldLogoImgPromise = new Promise(function(resolve){
+        var im = new Image();
+        im.onload = function(){ resolve(im); };
+        im.onerror = function(){ resolve(null); };
+        im.src = 'assets/img/img-03.png';
+      });
+    }
+    return ldLogoImgPromise;
+  }
   async function ldBuildStoryCard(l, photoBlob){
     if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch(e){} }
     var img = await new Promise(function(resolve, reject){
@@ -2925,7 +2937,18 @@
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, W, H);
 
-    var cardX = 70, cardY = 300, cardW = W - 140, cardH = 980, cardR = 36;
+    var logoImg = await ldGetLogoImg();
+    var iconSize = 130, iconY = 55;
+    if (logoImg) ctx.drawImage(logoImg, W / 2 - iconSize / 2, iconY, iconSize, iconSize);
+    ctx.textAlign = 'center';
+    ctx.font = "800 58px 'Space Grotesk', sans-serif";
+    ctx.fillStyle = '#7FC4F5';
+    ctx.fillText('MAQ.HEL', W / 2, iconY + iconSize + 62);
+    ctx.font = "600 26px 'IBM Plex Mono', monospace";
+    ctx.fillStyle = 'rgba(255,255,255,.5)';
+    ctx.fillText('MÁQUINAS DE HELADO', W / 2, iconY + iconSize + 98);
+
+    var cardX = 70, cardY = 340, cardW = W - 140, cardH = 940, cardR = 36;
     ctx.save();
     ldRoundRectPath(ctx, cardX, cardY, cardW, cardH, cardR);
     ctx.clip();
@@ -2941,13 +2964,6 @@
     ctx.stroke();
 
     ctx.textAlign = 'left';
-    ctx.fillStyle = '#7FC4F5';
-    ctx.font = "800 54px 'Space Grotesk', sans-serif";
-    ctx.fillText('MAQ.HEL', cardX, 165);
-    ctx.font = "600 26px 'IBM Plex Mono', monospace";
-    ctx.fillStyle = 'rgba(255,255,255,.5)';
-    ctx.fillText('MÁQUINAS DE HELADO', cardX + 4, 205);
-
     if (l.etiqueta){
       ctx.font = "700 28px 'IBM Plex Mono', monospace";
       ctx.fillStyle = '#FFC24B';
