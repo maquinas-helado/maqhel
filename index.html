@@ -2857,6 +2857,7 @@
   // pasa un fetch de red entre el click y el share(), y el share queda mudo.
   var ldPhotoBlobCache = {};
   var ldStoryCardCache = {};
+  var ldStoryVideoCache = {};
   function ldPrefetchPhoto(url, listing){
     if (!url) return;
     var already = ldPhotoBlobCache[url];
@@ -2866,7 +2867,16 @@
     if (ldStoryCardCache[key]) return;
     p.then(function(blob){
       if (!blob) return;
-      return ldBuildStoryCard(listing, blob).then(function(cardBlob){ ldStoryCardCache[key] = cardBlob; });
+      return ldBuildStoryCard(listing, blob).then(function(cardBlob){
+        ldStoryCardCache[key] = cardBlob;
+        // el video tarda ~3s reales en grabarse (MediaRecorder graba en
+        // tiempo real, no se puede acelerar) -- lo armamos recién después de
+        // que la imagen fija ya está lista, así el share nunca se queda sin
+        // nada para mandar mientras tanto.
+        return ldBuildStoryVideo(listing, blob).then(function(videoBlob){
+          if (videoBlob) ldStoryVideoCache[key] = videoBlob;
+        }).catch(function(){});
+      });
     }).catch(function(){});
   }
 
@@ -2918,27 +2928,27 @@
     }
     return ldLogoImgPromise;
   }
-  async function ldBuildStoryCard(l, photoBlob){
-    if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch(e){} }
-    var img = await new Promise(function(resolve, reject){
-      var im = new Image();
-      im.onload = function(){ resolve(im); };
-      im.onerror = reject;
-      im.src = URL.createObjectURL(photoBlob);
-    });
-    var W = 1080, H = 1920;
-    var canvas = document.createElement('canvas');
-    canvas.width = W; canvas.height = H;
-    var ctx = canvas.getContext('2d');
-
+  var STORY_W = 1080, STORY_H = 1920;
+  // dibuja un frame completo de la tarjeta en el instante t (0..1 a lo largo
+  // de la animación). t=0 se usa tal cual para la versión imagen fija; para
+  // el video se llama muchas veces con t creciente, dando el efecto de zoom
+  // suave en la foto y el brillo pulsando detrás del isologo.
+  function ldDrawStoryFrame(ctx, l, img, logoImg, t){
+    var W = STORY_W, H = STORY_H;
+    ctx.clearRect(0, 0, W, H);
     var bg = ctx.createLinearGradient(0, 0, 0, H);
     bg.addColorStop(0, '#14161A');
     bg.addColorStop(1, '#0A0B0D');
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, W, H);
 
-    var logoImg = await ldGetLogoImg();
     var iconSize = 130, iconY = 55;
+    var pulse = 0.5 + 0.5 * Math.sin(t * Math.PI * 2 * 1.4);
+    var glow = ctx.createRadialGradient(W / 2, iconY + iconSize / 2, 10, W / 2, iconY + iconSize / 2, 95 + pulse * 20);
+    glow.addColorStop(0, 'rgba(16,120,214,' + (0.35 + pulse * 0.25) + ')');
+    glow.addColorStop(1, 'rgba(16,120,214,0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(W / 2 - 140, iconY - 40, 280, 280);
     if (logoImg) ctx.drawImage(logoImg, W / 2 - iconSize / 2, iconY, iconSize, iconSize);
     ctx.textAlign = 'center';
     ctx.font = "800 58px 'Space Grotesk', sans-serif";
@@ -2954,7 +2964,9 @@
     ctx.clip();
     ctx.fillStyle = '#000';
     ctx.fillRect(cardX, cardY, cardW, cardH);
-    var scale = Math.min(cardW / img.width, cardH / img.height);
+    // Ken Burns bien sutil: la foto crece de 100% a 106% a lo largo del clip
+    var zoom = 1 + 0.06 * t;
+    var scale = Math.min(cardW / img.width, cardH / img.height) * zoom;
     var iw = img.width * scale, ih = img.height * scale;
     ctx.drawImage(img, cardX + (cardW - iw) / 2, cardY + (cardH - ih) / 2, iw, ih);
     ctx.restore();
@@ -2997,8 +3009,72 @@
     ctx.font = "800 56px 'Space Grotesk', sans-serif";
     ctx.fillStyle = '#1078D6';
     ctx.fillText('maqhel.com', W / 2, H - 70);
-
+  }
+  async function ldLoadStoryAssets(l, photoBlob){
+    if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch(e){} }
+    var img = await new Promise(function(resolve, reject){
+      var im = new Image();
+      im.onload = function(){ resolve(im); };
+      im.onerror = reject;
+      im.src = URL.createObjectURL(photoBlob);
+    });
+    var logoImg = await ldGetLogoImg();
+    return { img: img, logoImg: logoImg };
+  }
+  async function ldBuildStoryCard(l, photoBlob){
+    var assets = await ldLoadStoryAssets(l, photoBlob);
+    var canvas = document.createElement('canvas');
+    canvas.width = STORY_W; canvas.height = STORY_H;
+    var ctx = canvas.getContext('2d');
+    ldDrawStoryFrame(ctx, l, assets.img, assets.logoImg, 0);
     return new Promise(function(resolve){ canvas.toBlob(resolve, 'image/png'); });
+  }
+  // versión animada: graba ~3s de la misma tarjeta (zoom suave en la foto +
+  // brillo pulsando) como video mudo, para compartirla como Historia con
+  // movimiento en vez de una imagen fija. MediaRecorder solo puede grabar en
+  // WebM desde el navegador (no hay forma de codificar MP4 del lado del
+  // cliente sin una librería enorme) -- funciona seguro en WhatsApp; en
+  // Instagram para Android no hay garantía de que lo acepte como Historia.
+  function ldStoryVideoSupported(){
+    return typeof MediaRecorder !== 'undefined' && typeof HTMLCanvasElement.prototype.captureStream === 'function';
+  }
+  function ldPickStoryMimeType(){
+    var candidates = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'];
+    for (var i = 0; i < candidates.length; i++){
+      if (MediaRecorder.isTypeSupported(candidates[i])) return candidates[i];
+    }
+    return null;
+  }
+  async function ldBuildStoryVideo(l, photoBlob){
+    if (!ldStoryVideoSupported()) return null;
+    var mimeType = ldPickStoryMimeType();
+    if (!mimeType) return null;
+    var assets = await ldLoadStoryAssets(l, photoBlob);
+    var canvas = document.createElement('canvas');
+    canvas.width = STORY_W; canvas.height = STORY_H;
+    var ctx = canvas.getContext('2d');
+    ldDrawStoryFrame(ctx, l, assets.img, assets.logoImg, 0);
+
+    var stream = canvas.captureStream(30);
+    var chunks = [];
+    var recorder = new MediaRecorder(stream, { mimeType: mimeType, videoBitsPerSecond: 4000000 });
+    recorder.ondataavailable = function(e){ if (e.data && e.data.size) chunks.push(e.data); };
+    var duration = 3000;
+    var done = new Promise(function(resolve){ recorder.onstop = resolve; });
+    recorder.start();
+    var startTs = performance.now();
+    await new Promise(function(resolve){
+      function tick(now){
+        var t = Math.min(1, (now - startTs) / duration);
+        ldDrawStoryFrame(ctx, l, assets.img, assets.logoImg, t);
+        if (t < 1) requestAnimationFrame(tick);
+        else resolve();
+      }
+      requestAnimationFrame(tick);
+    });
+    recorder.stop();
+    await done;
+    return new Blob(chunks, { type: mimeType.split(';')[0] });
   }
   var ldShowingVideo = false;
 
@@ -3265,21 +3341,27 @@
     btn.innerHTML = '<span style="font-size:.7rem;">...</span>';
     try {
       var cacheKey = l.id + '|' + photoUrl;
-      var blob = ldStoryCardCache[cacheKey];
-      if (!blob){
+      var imgBlob = ldStoryCardCache[cacheKey];
+      if (!imgBlob){
         var photoBlob = ldPhotoBlobCache[photoUrl] || await fetch(photoUrl).then(function(r){ return r.blob(); });
-        blob = await ldBuildStoryCard(l, photoBlob);
+        imgBlob = await ldBuildStoryCard(l, photoBlob);
       }
-      var file = new File([blob], 'maqhel-' + (l.id || 'maquina') + '.png', { type: 'image/png' });
+      var videoBlob = ldStoryVideoCache[cacheKey];
+      var imgFile = new File([imgBlob], 'maqhel-' + (l.id || 'maquina') + '.png', { type: 'image/png' });
+      var videoFile = videoBlob ? new File([videoBlob], 'maqhel-' + (l.id || 'maquina') + '.webm', { type: videoBlob.type || 'video/webm' }) : null;
+      // preferimos el video (con movimiento) si ya se terminó de grabar y el
+      // navegador acepta compartir ese archivo; si no, la imagen fija de toda
+      // la vida -- nunca nos quedamos sin nada para compartir.
+      var file = (videoFile && navigator.canShare && navigator.canShare({ files: [videoFile] })) ? videoFile : imgFile;
       var caption = l.t + ' — ' + l.p + ' · maqhel.com';
       if (navigator.canShare && navigator.canShare({ files: [file] })){
         await navigator.share({ files: [file], title: l.t, text: caption });
       } else if (navigator.share){
         await navigator.share({ title: l.t, text: caption, url: location.href });
       } else {
-        var url = URL.createObjectURL(blob);
+        var url = URL.createObjectURL(file);
         var a = document.createElement('a');
-        a.href = url; a.download = 'maqhel-' + (l.id || 'maquina') + '.png';
+        a.href = url; a.download = file.name;
         document.body.appendChild(a); a.click(); a.remove();
         URL.revokeObjectURL(url);
         alert('Descargamos la imagen — subila a tu Historia de Instagram desde la app.');
