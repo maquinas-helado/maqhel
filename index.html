@@ -2981,7 +2981,14 @@
 
     ctx.font = "500 32px 'IBM Plex Mono', monospace";
     ctx.fillStyle = 'rgba(255,255,255,.55)';
-    ctx.fillText(l.loc, cardX, titleY + titleLines * 56 + 20);
+    var locY = titleY + titleLines * 56 + 20;
+    ctx.fillText(l.loc, cardX, locY);
+
+    if (l.desc){
+      ctx.font = "400 26px 'IBM Plex Mono', monospace";
+      ctx.fillStyle = 'rgba(255,255,255,.72)';
+      ldWrapText(ctx, l.desc, cardX, locY + 50, cardW, 34, 2);
+    }
 
     ctx.textAlign = 'center';
     ctx.font = "600 30px 'IBM Plex Mono', monospace";
