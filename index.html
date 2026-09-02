@@ -2889,8 +2889,11 @@
     ctx.arcTo(x, y, x + w, y, r);
     ctx.closePath();
   }
-  function ldWrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines){
-    var words = (text || '').split(' ');
+  // separa el texto en líneas que entran en maxWidth con la tipografía ya
+  // seteada en ctx (solo mide, no dibuja nada) -- sirve para calcular cuánto
+  // espacio necesita un texto ANTES de decidir el resto del layout.
+  function ldGetLines(ctx, text, maxWidth, maxLines){
+    var words = (text || '').trim().split(/\s+/);
     var line = '';
     var lines = [];
     for (var i = 0; i < words.length; i++){
@@ -2907,8 +2910,10 @@
       lines = lines.slice(0, maxLines);
       lines[maxLines - 1] = lines[maxLines - 1].replace(/\s+\S*$/, '') + '…';
     }
+    return lines;
+  }
+  function ldDrawLines(ctx, lines, x, y, lineHeight){
     lines.forEach(function(l, i){ ctx.fillText(l, x, y + i * lineHeight); });
-    return lines.length;
   }
   // arma la "tarjeta" 1080x1920 (formato historia) que se comparte: la foto de
   // la máquina más precio/título/ubicación y "maqhel.com" bien grande al pie.
@@ -2958,7 +2963,24 @@
     ctx.fillStyle = 'rgba(255,255,255,.5)';
     ctx.fillText('MÁQUINAS DE HELADO', W / 2, iconY + iconSize + 98);
 
-    var cardX = 70, cardY = 340, cardW = W - 140, cardH = 940, cardR = 36;
+    var cardX = 70, cardY = 340, cardW = W - 140, cardR = 36;
+
+    // medimos primero todo lo que va DEBAJO de la foto -- título y, sobre
+    // todo, la descripción completa (sin cortar) -- para recién ahí decidir
+    // cuánto lugar le queda a la foto. Si la descripción es larga, la tarjeta
+    // de la foto se achica sola en vez de recortar el texto.
+    var titleLineH = 56, descLineH = 34;
+    ctx.font = "700 46px 'Space Grotesk', sans-serif";
+    var titleLines = ldGetLines(ctx, l.t, cardW, 2);
+    ctx.font = "400 26px 'IBM Plex Mono', monospace";
+    var descLines = l.desc ? ldGetLines(ctx, l.desc, cardW, 10) : [];
+
+    var belowCard = (l.etiqueta ? 165 : 120) + 30 + titleLines.length * titleLineH + 20;
+    if (descLines.length) belowCard += 26 + descLines.length * descLineH;
+    var ctaSafeTop = H - 190;
+    var minCardH = 340, maxCardH = 940;
+    var cardH = Math.max(minCardH, Math.min(maxCardH, ctaSafeTop - cardY - belowCard));
+
     ctx.save();
     ldRoundRectPath(ctx, cardX, cardY, cardW, cardH, cardR);
     ctx.clip();
@@ -2976,30 +2998,37 @@
     ctx.stroke();
 
     ctx.textAlign = 'left';
+    var cursorY = cardY + cardH;
     if (l.etiqueta){
+      cursorY += 75;
       ctx.font = "700 28px 'IBM Plex Mono', monospace";
       ctx.fillStyle = '#FFC24B';
-      ctx.fillText('★ ' + l.etiqueta.toUpperCase(), cardX, cardY + cardH + 75);
+      ctx.fillText('★ ' + l.etiqueta.toUpperCase(), cardX, cursorY - 10);
     }
 
+    cursorY += l.etiqueta ? 90 : 120;
     ctx.font = "800 78px 'Space Grotesk', sans-serif";
     ctx.fillStyle = '#ffffff';
-    ctx.fillText(l.p, cardX, cardY + cardH + (l.etiqueta ? 165 : 130));
+    ctx.fillText(l.p, cardX, cursorY);
 
+    cursorY += 30;
     ctx.font = "700 46px 'Space Grotesk', sans-serif";
     ctx.fillStyle = '#DCF0FF';
-    var titleY = cardY + cardH + (l.etiqueta ? 225 : 190);
-    var titleLines = ldWrapText(ctx, l.t, cardX, titleY, cardW, 56, 2);
+    cursorY += titleLineH;
+    ldDrawLines(ctx, titleLines, cardX, cursorY, titleLineH);
+    cursorY += (titleLines.length - 1) * titleLineH;
 
+    cursorY += 20;
     ctx.font = "500 32px 'IBM Plex Mono', monospace";
     ctx.fillStyle = 'rgba(255,255,255,.55)';
-    var locY = titleY + titleLines * 56 + 20;
-    ctx.fillText(l.loc, cardX, locY);
+    ctx.fillText(l.loc, cardX, cursorY);
 
-    if (l.desc){
+    if (descLines.length){
+      cursorY += 26;
       ctx.font = "400 26px 'IBM Plex Mono', monospace";
       ctx.fillStyle = 'rgba(255,255,255,.72)';
-      ldWrapText(ctx, l.desc, cardX, locY + 50, cardW, 34, 2);
+      cursorY += descLineH;
+      ldDrawLines(ctx, descLines, cardX, cursorY, descLineH);
     }
 
     ctx.textAlign = 'center';
