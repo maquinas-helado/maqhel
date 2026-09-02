@@ -791,7 +791,7 @@
   .ld-gallery, .ld-info{min-width:0;}
   .ld-gallery{padding:20px;}
   .ld-main-photo{width:100%;aspect-ratio:4/3;border-radius:16px;background:linear-gradient(135deg,var(--panel-2),var(--acero));background-size:contain;background-repeat:no-repeat;background-position:center;position:relative;cursor:zoom-in;}
-  .ld-share-btn{position:absolute;bottom:14px;right:14px;width:52px;height:52px;border-radius:50%;background:rgba(6,11,20,.6);backdrop-filter:blur(4px);border:none;color:var(--hielo);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;transition:transform .2s;}
+  .ld-share-btn{position:absolute;top:14px;right:14px;width:52px;height:52px;border-radius:50%;background:rgba(6,11,20,.6);backdrop-filter:blur(4px);border:none;color:var(--hielo);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;transition:transform .2s;}
   .ld-share-btn:hover{transform:scale(1.08);}
   .ld-share-ring{transform-origin:32px 32px;animation:pf-spin 3.5s linear infinite;filter:drop-shadow(0 0 5px #1078D6) drop-shadow(0 0 10px rgba(16,120,214,.6));}
   .ld-share-glyph{filter:drop-shadow(0 0 5px #EC4878) drop-shadow(0 0 10px rgba(236,72,120,.6));}
@@ -2008,11 +2008,11 @@
             <svg viewBox="0 0 64 64" width="46" height="46">
               <circle class="ld-share-ring" cx="32" cy="32" r="26" fill="none" stroke="#1078D6" stroke-width="3" stroke-linecap="round" stroke-dasharray="130 33"/>
               <g class="ld-share-glyph">
-                <line x1="24" y1="29" x2="39" y2="20" stroke="#EC4878" stroke-width="2.4"/>
-                <line x1="24" y1="35" x2="39" y2="44" stroke="#EC4878" stroke-width="2.4"/>
-                <circle cx="20" cy="32" r="6.5" fill="#0A0B0D" stroke="#EC4878" stroke-width="2.6"/>
-                <circle cx="43" cy="18" r="6.5" fill="#0A0B0D" stroke="#EC4878" stroke-width="2.6"/>
-                <circle cx="43" cy="46" r="6.5" fill="#0A0B0D" stroke="#EC4878" stroke-width="2.6"/>
+                <line x1="23.6" y1="32" x2="39.7" y2="22.2" stroke="#EC4878" stroke-width="2.1"/>
+                <line x1="23.6" y1="32" x2="39.7" y2="41.8" stroke="#EC4878" stroke-width="2.1"/>
+                <circle cx="23.6" cy="32" r="4.6" fill="#0A0B0D" stroke="#EC4878" stroke-width="2.2"/>
+                <circle cx="39.7" cy="22.2" r="4.6" fill="#0A0B0D" stroke="#EC4878" stroke-width="2.2"/>
+                <circle cx="39.7" cy="41.8" r="4.6" fill="#0A0B0D" stroke="#EC4878" stroke-width="2.2"/>
               </g>
             </svg>
           </button>
@@ -2856,9 +2856,126 @@
   // de por medio -- Safari (y algunos Chrome) cancelan el gesto del usuario si
   // pasa un fetch de red entre el click y el share(), y el share queda mudo.
   var ldPhotoBlobCache = {};
-  function ldPrefetchPhoto(url){
-    if (!url || ldPhotoBlobCache[url]) return;
-    fetch(url).then(function(r){ return r.blob(); }).then(function(b){ ldPhotoBlobCache[url] = b; }).catch(function(){});
+  var ldStoryCardCache = {};
+  function ldPrefetchPhoto(url, listing){
+    if (!url) return;
+    var already = ldPhotoBlobCache[url];
+    var p = already ? Promise.resolve(already) : fetch(url).then(function(r){ return r.blob(); }).then(function(b){ ldPhotoBlobCache[url] = b; return b; }).catch(function(){ return null; });
+    if (!listing) return;
+    var key = listing.id + '|' + url;
+    if (ldStoryCardCache[key]) return;
+    p.then(function(blob){
+      if (!blob) return;
+      return ldBuildStoryCard(listing, blob).then(function(cardBlob){ ldStoryCardCache[key] = cardBlob; });
+    }).catch(function(){});
+  }
+
+  function ldRoundRectPath(ctx, x, y, w, h, r){
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+  function ldWrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines){
+    var words = (text || '').split(' ');
+    var line = '';
+    var lines = [];
+    for (var i = 0; i < words.length; i++){
+      var test = line ? line + ' ' + words[i] : words[i];
+      if (ctx.measureText(test).width > maxWidth && line){
+        lines.push(line);
+        line = words[i];
+      } else {
+        line = test;
+      }
+    }
+    if (line) lines.push(line);
+    if (maxLines && lines.length > maxLines){
+      lines = lines.slice(0, maxLines);
+      lines[maxLines - 1] = lines[maxLines - 1].replace(/\s+\S*$/, '') + '…';
+    }
+    lines.forEach(function(l, i){ ctx.fillText(l, x, y + i * lineHeight); });
+    return lines.length;
+  }
+  // arma la "tarjeta" 1080x1920 (formato historia) que se comparte: la foto de
+  // la máquina más precio/título/ubicación y "maqhel.com" bien grande al pie.
+  // Instagram no deja que un sitio le pegue un sticker de link tocable a una
+  // historia (esa integración es exclusiva de apps nativas de iOS vía su API
+  // privada de pasteboard) -- por eso el link va escrito grande en la propia
+  // imagen en vez de ser un link real dentro de la historia.
+  async function ldBuildStoryCard(l, photoBlob){
+    if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch(e){} }
+    var img = await new Promise(function(resolve, reject){
+      var im = new Image();
+      im.onload = function(){ resolve(im); };
+      im.onerror = reject;
+      im.src = URL.createObjectURL(photoBlob);
+    });
+    var W = 1080, H = 1920;
+    var canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    var ctx = canvas.getContext('2d');
+
+    var bg = ctx.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, '#14161A');
+    bg.addColorStop(1, '#0A0B0D');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    var cardX = 70, cardY = 300, cardW = W - 140, cardH = 980, cardR = 36;
+    ctx.save();
+    ldRoundRectPath(ctx, cardX, cardY, cardW, cardH, cardR);
+    ctx.clip();
+    ctx.fillStyle = '#000';
+    ctx.fillRect(cardX, cardY, cardW, cardH);
+    var scale = Math.min(cardW / img.width, cardH / img.height);
+    var iw = img.width * scale, ih = img.height * scale;
+    ctx.drawImage(img, cardX + (cardW - iw) / 2, cardY + (cardH - ih) / 2, iw, ih);
+    ctx.restore();
+    ctx.strokeStyle = 'rgba(255,255,255,.12)';
+    ctx.lineWidth = 2;
+    ldRoundRectPath(ctx, cardX, cardY, cardW, cardH, cardR);
+    ctx.stroke();
+
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#7FC4F5';
+    ctx.font = "800 54px 'Space Grotesk', sans-serif";
+    ctx.fillText('MAQ.HEL', cardX, 165);
+    ctx.font = "600 26px 'IBM Plex Mono', monospace";
+    ctx.fillStyle = 'rgba(255,255,255,.5)';
+    ctx.fillText('MÁQUINAS DE HELADO', cardX + 4, 205);
+
+    if (l.etiqueta){
+      ctx.font = "700 28px 'IBM Plex Mono', monospace";
+      ctx.fillStyle = '#FFC24B';
+      ctx.fillText('★ ' + l.etiqueta.toUpperCase(), cardX, cardY + cardH + 75);
+    }
+
+    ctx.font = "800 78px 'Space Grotesk', sans-serif";
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(l.p, cardX, cardY + cardH + (l.etiqueta ? 165 : 130));
+
+    ctx.font = "700 46px 'Space Grotesk', sans-serif";
+    ctx.fillStyle = '#DCF0FF';
+    var titleY = cardY + cardH + (l.etiqueta ? 225 : 190);
+    var titleLines = ldWrapText(ctx, l.t, cardX, titleY, cardW, 56, 2);
+
+    ctx.font = "500 32px 'IBM Plex Mono', monospace";
+    ctx.fillStyle = 'rgba(255,255,255,.55)';
+    ctx.fillText(l.loc, cardX, titleY + titleLines * 56 + 20);
+
+    ctx.textAlign = 'center';
+    ctx.font = "600 30px 'IBM Plex Mono', monospace";
+    ctx.fillStyle = 'rgba(255,255,255,.6)';
+    ctx.fillText('Mirá esta máquina en', W / 2, H - 130);
+    ctx.font = "800 56px 'Space Grotesk', sans-serif";
+    ctx.fillStyle = '#1078D6';
+    ctx.fillText('maqhel.com', W / 2, H - 70);
+
+    return new Promise(function(resolve){ canvas.toBlob(resolve, 'image/png'); });
   }
   var ldShowingVideo = false;
 
@@ -2909,7 +3026,7 @@
       video.load();
       if (photos.length){
         main.style.cssText = 'background-image:url(' + photos[ldPhotoIdx] + ');background-size:contain;background-repeat:no-repeat;background-position:center;background-color:var(--panel-2);';
-        ldPrefetchPhoto(photos[ldPhotoIdx]);
+        ldPrefetchPhoto(photos[ldPhotoIdx], ldCurrent);
       } else {
         main.style.cssText = ldPlaceholderBg(ldCurrent);
       }
@@ -3104,13 +3221,14 @@
   });
 
   // ---- compartir la publicación ----
-  // Le pasamos la foto que se está mostrando al share sheet nativo del celular
-  // (navigator.share con "files"): ahí aparecen todas las apps para compartir
-  // que tenga instaladas -- Instagram (con Historia entre las opciones),
-  // WhatsApp, Mensajes, etc. La foto se precarga en ldPhotoBlobCache apenas se
-  // muestra (ver ldPrefetchPhoto) para que acá no haya ningún await de red
-  // entre el click y el share(): un fetch en el medio le hace perder a Safari
-  // (y a veces Chrome) el gesto del usuario y el share queda mudo.
+  // Le pasamos al share sheet nativo del celular (navigator.share con "files")
+  // una tarjeta armada con canvas -- la foto de la máquina más precio, título
+  // y "maqhel.com" bien grande al pie -- en vez de la foto pelada, para que se
+  // comparta la publicación y no solo una imagen suelta. Esa tarjeta se arma
+  // en segundo plano apenas se abre la ficha (ver ldPrefetchPhoto/ldBuildStoryCard)
+  // para que acá no haya ningún await de por medio entre el click y el share():
+  // un await en el medio le hace perder a Safari (y a veces Chrome) el gesto
+  // del usuario y el share queda mudo.
   document.getElementById('ldShareBtn').addEventListener('click', async function(e){
     e.stopPropagation();
     var btn = this;
@@ -3123,8 +3241,13 @@
     var originalHtml = btn.innerHTML;
     btn.innerHTML = '<span style="font-size:.7rem;">...</span>';
     try {
-      var blob = ldPhotoBlobCache[photoUrl] || await fetch(photoUrl).then(function(r){ return r.blob(); });
-      var file = new File([blob], 'maqhel-' + (l.id || 'maquina') + '.jpg', { type: blob.type || 'image/jpeg' });
+      var cacheKey = l.id + '|' + photoUrl;
+      var blob = ldStoryCardCache[cacheKey];
+      if (!blob){
+        var photoBlob = ldPhotoBlobCache[photoUrl] || await fetch(photoUrl).then(function(r){ return r.blob(); });
+        blob = await ldBuildStoryCard(l, photoBlob);
+      }
+      var file = new File([blob], 'maqhel-' + (l.id || 'maquina') + '.png', { type: 'image/png' });
       var caption = l.t + ' — ' + l.p + ' · maqhel.com';
       if (navigator.canShare && navigator.canShare({ files: [file] })){
         await navigator.share({ files: [file], title: l.t, text: caption });
@@ -3133,10 +3256,10 @@
       } else {
         var url = URL.createObjectURL(blob);
         var a = document.createElement('a');
-        a.href = url; a.download = 'maqhel-' + (l.id || 'maquina') + '.jpg';
+        a.href = url; a.download = 'maqhel-' + (l.id || 'maquina') + '.png';
         document.body.appendChild(a); a.click(); a.remove();
         URL.revokeObjectURL(url);
-        alert('Descargamos la foto — subila a tu Historia de Instagram desde la app.');
+        alert('Descargamos la imagen — subila a tu Historia de Instagram desde la app.');
       }
     } catch (err){
       if (err && err.name !== 'AbortError'){
