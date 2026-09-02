@@ -788,8 +788,8 @@
   .ld-main-photo{width:100%;aspect-ratio:4/3;border-radius:16px;background:linear-gradient(135deg,var(--panel-2),var(--acero));background-size:contain;background-repeat:no-repeat;background-position:center;position:relative;cursor:zoom-in;}
   .ld-share-btn{position:absolute;bottom:14px;right:14px;width:52px;height:52px;border-radius:50%;background:rgba(6,11,20,.6);backdrop-filter:blur(4px);border:none;color:var(--hielo);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;transition:transform .2s;}
   .ld-share-btn:hover{transform:scale(1.08);}
-  .ld-share-ring{transform-origin:32px 32px;animation:pf-spin 3.5s linear infinite;filter:drop-shadow(0 0 5px #7B61FF) drop-shadow(0 0 10px rgba(123,97,255,.6));}
-  .ld-share-glyph{filter:drop-shadow(0 0 4px rgba(236,72,120,.7)) drop-shadow(0 0 8px rgba(47,224,196,.4));}
+  .ld-share-ring{transform-origin:32px 32px;animation:pf-spin 3.5s linear infinite;filter:drop-shadow(0 0 5px #1078D6) drop-shadow(0 0 10px rgba(16,120,214,.6));}
+  .ld-share-glyph{filter:drop-shadow(0 0 5px #EC4878) drop-shadow(0 0 10px rgba(236,72,120,.6));}
   @media (prefers-reduced-motion: reduce){.ld-share-ring{animation:none;}}
   .ld-arrows{display:flex;justify-content:space-between;margin-top:-52px;padding:0 10px;position:relative;pointer-events:none;}
   .ld-arrow{pointer-events:auto;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(10,11,13,.55);backdrop-filter:blur(6px);color:#fff;font-size:1.3rem;line-height:1;cursor:pointer;}
@@ -2001,19 +2001,11 @@
           <video id="ldVideoPlayer" controls playsinline style="display:none;position:absolute;inset:0;width:100%;height:100%;border-radius:16px;background:#000;"></video>
           <button type="button" class="ld-share-btn" id="ldShareBtn" aria-label="Compartir esta publicación" title="Compartir esta publicación">
             <svg viewBox="0 0 64 64" width="46" height="46">
-              <defs>
-                <linearGradient id="ldShareGrad" x1="10%" y1="0%" x2="90%" y2="100%">
-                  <stop offset="0%" stop-color="#2FE0C4"/>
-                  <stop offset="35%" stop-color="#7B61FF"/>
-                  <stop offset="65%" stop-color="#EC4878"/>
-                  <stop offset="100%" stop-color="#FF8A3D"/>
-                </linearGradient>
-              </defs>
-              <circle class="ld-share-ring" cx="32" cy="32" r="26" fill="none" stroke="url(#ldShareGrad)" stroke-width="3" stroke-linecap="round" stroke-dasharray="130 33"/>
+              <circle class="ld-share-ring" cx="32" cy="32" r="26" fill="none" stroke="#1078D6" stroke-width="3" stroke-linecap="round" stroke-dasharray="130 33"/>
               <g class="ld-share-glyph">
                 <line x1="24" y1="29" x2="39" y2="20" stroke="#EC4878" stroke-width="2.4"/>
                 <line x1="24" y1="35" x2="39" y2="44" stroke="#EC4878" stroke-width="2.4"/>
-                <circle cx="20" cy="32" r="6.5" fill="#0A0B0D" stroke="#2FE0C4" stroke-width="2.6"/>
+                <circle cx="20" cy="32" r="6.5" fill="#0A0B0D" stroke="#EC4878" stroke-width="2.6"/>
                 <circle cx="43" cy="18" r="6.5" fill="#0A0B0D" stroke="#EC4878" stroke-width="2.6"/>
                 <circle cx="43" cy="46" r="6.5" fill="#0A0B0D" stroke="#EC4878" stroke-width="2.6"/>
               </g>
