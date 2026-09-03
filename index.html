@@ -791,6 +791,8 @@
   .ld-gallery, .ld-info{min-width:0;}
   .ld-gallery{padding:20px;}
   .ld-main-photo{width:100%;aspect-ratio:4/3;border-radius:16px;background:linear-gradient(135deg,var(--panel-2),var(--acero));background-size:contain;background-repeat:no-repeat;background-position:center;position:relative;cursor:zoom-in;}
+  .ld-copylink-btn{position:absolute;top:18px;right:76px;width:44px;height:44px;border-radius:50%;background:rgba(6,11,20,.6);backdrop-filter:blur(4px);border:1px solid var(--line);color:var(--hielo);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;transition:transform .2s,border-color .2s;}
+  .ld-copylink-btn:hover{transform:scale(1.08);border-color:rgba(16,120,214,.5);}
   .ld-share-btn{position:absolute;top:14px;right:14px;width:52px;height:52px;border-radius:50%;background:rgba(6,11,20,.6);backdrop-filter:blur(4px);border:none;color:var(--hielo);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;transition:transform .2s;}
   .ld-share-btn:hover{transform:scale(1.08);}
   .ld-share-ring{transform-origin:32px 32px;animation:pf-spin 3.5s linear infinite;filter:drop-shadow(0 0 5px #1078D6) drop-shadow(0 0 10px rgba(16,120,214,.6));}
@@ -2004,6 +2006,9 @@
       <div class="ld-gallery">
         <div class="ld-main-photo" id="ldMainPhoto">
           <video id="ldVideoPlayer" controls playsinline style="display:none;position:absolute;inset:0;width:100%;height:100%;border-radius:16px;background:#000;"></video>
+          <button type="button" class="ld-copylink-btn" id="ldCopyLinkBtn" aria-label="Copiar link de esta publicación" title="Copiar link">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          </button>
           <button type="button" class="ld-share-btn" id="ldShareBtn" aria-label="Compartir esta publicación" title="Compartir esta publicación">
             <svg viewBox="0 0 64 64" width="46" height="46">
               <circle class="ld-share-ring" cx="32" cy="32" r="26" fill="none" stroke="#1078D6" stroke-width="3" stroke-linecap="round" stroke-dasharray="130 33"/>
@@ -2129,6 +2134,13 @@
       showAppPage('page-nueva', true);
     } else if (h === 'usada'){
       showAppPage('page-usada', true);
+    } else if (h.indexOf('usada-') === 0){
+      // deep link a una máquina usada puntual (usada-<id>): mostramos el
+      // catálogo de usadas de fondo y abrimos la ficha encima. Si todavía no
+      // cargaron las publicaciones de Supabase, ldOpenListingFromHash() se
+      // vuelve a llamar cuando terminan de llegar (ver más abajo).
+      showAppPage('page-usada', true);
+      if (window.ldOpenListingFromHash) window.ldOpenListingFromHash();
     } else if (h === 'vender'){
       showAppPage('page-vender', true);
       if (window.mhResetVenderWizard) window.mhResetVenderWizard();
@@ -2815,11 +2827,23 @@
     if (l.cuotas === 'si') b.push('<span class="mh-badge mh-badge-financiacion">✓ Acepta financiación</span>');
     return b.length ? '<div class="mh-badge-row">'+b.join('')+'</div>' : '';
   }
+  // abre la ficha de una máquina usada puntual si el hash actual es
+  // "usada-<id>" y esa publicación ya está cargada -- se llama al rutear y
+  // de nuevo cuando terminan de llegar las publicaciones de Supabase, por si
+  // alguien entra directo con el link y el fetch todavía no había terminado.
+  window.ldOpenListingFromHash = function(){
+    var h = (location.hash || '').replace('#', '');
+    if (h.indexOf('usada-') !== 0) return;
+    var id = h.slice('usada-'.length);
+    var l = mhListingsById[id];
+    if (l) openListingDetail(l);
+  };
   renderListings('todas');
   fetchPublishedListings().then(function(){
     var activeChip = document.querySelector('.chip[data-filter].active');
     renderListings(activeChip ? activeChip.getAttribute('data-filter') : 'todas');
     if (typeof renderLiveBand === 'function') renderLiveBand();
+    window.ldOpenListingFromHash();
   });
 
   document.getElementById('listingGrid').addEventListener('click', function(e){
@@ -3269,6 +3293,11 @@
     ldOverlay.classList.add('is-open');
     ldOverlay.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
+    // así la URL de la barra de direcciones queda apuntando a esta máquina
+    // puntual mientras la ficha está abierta -- es lo que se copia/comparte.
+    // replaceState (no pushState) para no ensuciar el historial ni romper
+    // el botón de "atrás" del navegador.
+    if (l.id) history.replaceState(null, '', '#usada-' + l.id);
   }
 
   function closeListingDetail(){
@@ -3280,6 +3309,7 @@
     if (video){ video.pause(); }
     var lb = document.getElementById('lbOverlay');
     if (lb){ lb.classList.remove('is-open'); lb.setAttribute('aria-hidden', 'true'); }
+    if ((location.hash || '').indexOf('#usada-') === 0) history.replaceState(null, '', '#usada');
   }
 
   document.getElementById('ldClose').addEventListener('click', closeListingDetail);
@@ -3348,6 +3378,37 @@
     setTimeout(function(){ panel.classList.remove('is-pulsing'); }, 900);
   });
 
+  // ---- copiar el link de esta publicación ----
+  // openListingDetail() ya deja la URL de la barra de direcciones apuntando
+  // a "#usada-<id>" apenas se abre la ficha, así que acá alcanza con copiar
+  // location.href tal cual -- es un link real que, pegado en cualquier lado,
+  // abre esta misma máquina directamente (ver ldOpenListingFromHash).
+  document.getElementById('ldCopyLinkBtn').addEventListener('click', function(e){
+    e.stopPropagation();
+    var btn = this;
+    var url = location.href;
+    var showCopied = function(){
+      var original = btn.innerHTML;
+      btn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#2FBF71" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+      setTimeout(function(){ btn.innerHTML = original; }, 1500);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(showCopied).catch(function(){
+        alert('No se pudo copiar. Este es el link: ' + url);
+      });
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = url;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); showCopied(); }
+      catch (err){ alert('No se pudo copiar. Este es el link: ' + url); }
+      ta.remove();
+    }
+  });
+
   // ---- compartir la publicación ----
   // Le pasamos al share sheet nativo del celular (navigator.share con "files")
   // una tarjeta armada con canvas -- la foto de la máquina más precio, título
@@ -3382,7 +3443,7 @@
       // navegador acepta compartir ese archivo; si no, la imagen fija de toda
       // la vida -- nunca nos quedamos sin nada para compartir.
       var file = (videoFile && navigator.canShare && navigator.canShare({ files: [videoFile] })) ? videoFile : imgFile;
-      var caption = l.t + ' — ' + l.p + ' · maqhel.com';
+      var caption = l.t + ' — ' + l.p + ' · ' + location.href;
       if (navigator.canShare && navigator.canShare({ files: [file] })){
         await navigator.share({ files: [file], title: l.t, text: caption });
       } else if (navigator.share){
