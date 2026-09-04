@@ -570,7 +570,8 @@
             if (fotosFiles && fotosFiles.length){
               var nuevasFotos = [];
               for (var i = 0; i < fotosFiles.length; i++){
-                nuevasFotos.push(await mhUploadFile('listing-media', fotosFiles[i], 'listings'));
+                var fotoComprimida = await mhCompressImage(fotosFiles[i]);
+                nuevasFotos.push(await mhUploadFile('listing-media', fotoComprimida, 'listings'));
               }
               updates.fotos = (row.fotos || []).concat(nuevasFotos);
             }

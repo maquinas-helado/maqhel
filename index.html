@@ -2478,6 +2478,7 @@
             var file = input && input.files && input.files[0];
             if (!file) continue;
             var slotNum = slotEl.getAttribute('data-slot');
+            if (slotNum !== '7') file = await mhCompressImage(file);
             var url = await mhUploadFile('listing-media', file, 'listings');
             if (slotNum === '7') videoUrl = url; else fotos.push(url);
           }
@@ -4175,7 +4176,9 @@
     var whatsapp = '+' + document.getElementById('mrCountryCode').value + whatsEl.value.replace(/[^\d]/g, '');
     var fd = new FormData(mrForm);
 
-    var uploadPromise = mrPhotoFile ? mhUploadFile('listing-media', mrPhotoFile, 'requests') : Promise.resolve('');
+    var uploadPromise = mrPhotoFile
+      ? mhCompressImage(mrPhotoFile).then(function(f){ return mhUploadFile('listing-media', f, 'requests'); })
+      : Promise.resolve('');
     uploadPromise.then(function(fotoUrl){
       var lead = {
         maquina: fd.get('maquina') || '',
