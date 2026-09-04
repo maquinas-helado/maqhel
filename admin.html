@@ -53,6 +53,10 @@
   .grid2 dd{margin:0 0 6px;}
   .thumbs{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
   .thumbs img,.thumbs video{width:84px;height:84px;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:#000;}
+  .edit-fotos-actuales{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+  .edit-foto-thumb{position:relative;width:84px;height:84px;}
+  .edit-foto-thumb img{width:100%;height:100%;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:#000;}
+  .edit-foto-del{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:var(--calor-1);color:#fff;border:2px solid var(--noche);font-size:12px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;}
   .badge{font-size:11px;padding:3px 9px;border-radius:999px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;}
   .badge-pending{background:rgba(236,72,120,.15);color:#ff8fac;}
   .badge-published{background:rgba(47,191,113,.15);color:#5fe0a0;}
@@ -437,6 +441,14 @@
       + '<label>¿Cómo?<input type="text" data-field="cuotas_como" value="'+esc(l.cuotas_como || '')+'"></label>'
       + '</div>'
       + '<label class="edit-full">Descripción<textarea data-field="descripcion" rows="3">'+esc(l.descripcion || '')+'</textarea></label>'
+      + ((l.fotos && l.fotos.length)
+          ? '<label class="edit-full">Fotos actuales<div class="edit-fotos-actuales">'
+            + l.fotos.map(function(url, i){
+                return '<div class="edit-foto-thumb"><img src="'+esc(url)+'" loading="lazy">'
+                  + '<button type="button" class="edit-foto-del" data-action="delete-foto" data-id="'+l.id+'" data-idx="'+i+'" title="Eliminar esta foto">✕</button></div>';
+              }).join('')
+            + '</div></label>'
+          : '')
       + '<label class="edit-full">Agregar fotos extra<input type="file" accept="image/*" multiple data-field="fotos-extra"></label>'
       + '<label class="edit-full">Reemplazar video<input type="file" accept="video/*" data-field="video-nuevo"></label>'
       + '<div class="actions">'
@@ -602,6 +614,23 @@
           if (error){ alert('No se pudo eliminar. Intentá de nuevo.'); btn.disabled = false; return; }
           cache.listings = cache.listings.filter(function(x){ return x.id !== id; });
           updateCounts();
+          renderTab();
+        });
+        return;
+      }
+      if (action === 'delete-foto'){
+        btn.addEventListener('click', async function(){
+          var id = btn.getAttribute('data-id');
+          var idx = parseInt(btn.getAttribute('data-idx'), 10);
+          if (!confirm('¿Eliminar esta foto de la publicación? No se puede deshacer.')) return;
+          var row = cache.listings.find(function(x){ return x.id === id; });
+          if (!row || !row.fotos) return;
+          var nuevasFotos = row.fotos.slice();
+          nuevasFotos.splice(idx, 1);
+          btn.disabled = true;
+          var { error } = await sb.from('listings').update({ fotos: nuevasFotos }).eq('id', id);
+          if (error){ alert('No se pudo eliminar la foto: ' + (error.message || JSON.stringify(error))); btn.disabled = false; return; }
+          row.fotos = nuevasFotos;
           renderTab();
         });
         return;
