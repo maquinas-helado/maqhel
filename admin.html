@@ -568,7 +568,7 @@
               precio: field('precio').value !== '' ? Number(field('precio').value) : null,
               moneda: field('moneda').value,
               capacidad: field('capacidad').value,
-              anio: field('anio').value,
+              anio: field('anio').value !== '' ? Number(field('anio').value) : null,
               voltaje: field('voltaje').value,
               service_cuando: field('service_cuando').value,
               service_que: field('service_que').value,
