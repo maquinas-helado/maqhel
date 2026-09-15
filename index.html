@@ -502,9 +502,13 @@
   /* ===== USADAS MARKETPLACE ===== */
   .market-layout{display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start;}
   @media(max-width:960px){.market-layout{grid-template-columns:1fr;}}
-  .chips{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px;}
-  .chip{border:1px solid var(--line);color:var(--muted);padding:8px 16px;border-radius:100px;font-size:.82rem;transition:.3s;}
+  .market-toolbar{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:26px;}
+  .chips{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:0;}
+  .chip{border:1px solid var(--line);color:var(--muted);padding:8px 16px;border-radius:100px;font-size:.82rem;transition:.3s;cursor:pointer;}
   .chip.active, .chip:hover{border-color:var(--frio-1);color:var(--frio-1);}
+  .sort-field{display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--muted-2);white-space:nowrap;flex:0 0 auto;}
+  .sort-field select{background:var(--panel);border:1px solid var(--line);color:var(--hielo);border-radius:100px;padding:8px 14px;font-size:.82rem;font-family:inherit;cursor:pointer;}
+  .sort-field select:focus{outline:none;border-color:var(--frio-1);}
   .listing-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;align-items:start;}
   @media(max-width:640px){.listing-grid{grid-template-columns:repeat(2,1fr);gap:10px;}}
   .listing{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:transform .4s var(--ease), border-color .4s;cursor:pointer;display:flex;flex-direction:column;}
@@ -1241,14 +1245,25 @@
 
       <div class="market-layout">
         <div>
-          <div class="chips">
-            <div class="chip active" data-filter="todas">Todas</div>
-            <div class="chip" data-filter="Fabricadoras">Fabricadoras</div>
-            <div class="chip" data-filter="Pasteurizadores">Pasteurizadores</div>
-            <div class="chip" data-filter="Líneas completas">Líneas completas</div>
-            <div class="chip" data-filter="garantia">Con garantía</div>
-            <div class="chip" data-filter="financiacion">Con financiación</div>
-            <div class="chip" data-filter="oportunidad">Oportunidad</div>
+          <div class="market-toolbar">
+            <div class="chips">
+              <div class="chip active" data-filter="todas">Todas</div>
+              <div class="chip" data-filter="Fabricadoras">Fabricadoras</div>
+              <div class="chip" data-filter="Cocinas">Cocinas</div>
+              <div class="chip" data-filter="Pasteurizadores">Pasteurizadoras</div>
+              <div class="chip" data-filter="Tinas">Tinas</div>
+              <div class="chip" data-filter="Sembradoras">Sembradoras</div>
+              <div class="chip" data-filter="garantia">Con garantía</div>
+              <div class="chip" data-filter="financiacion">Con financiación</div>
+              <div class="chip" data-filter="oportunidad">Oportunidad</div>
+            </div>
+            <label class="sort-field">Ordenar por
+              <select id="listingSort">
+                <option value="recientes">Más recientes</option>
+                <option value="precio-asc">Precio: menor a mayor</option>
+                <option value="precio-desc">Precio: mayor a menor</option>
+              </select>
+            </label>
           </div>
           <div class="listing-grid" id="listingGrid"></div>
         </div>
@@ -2721,11 +2736,16 @@
     }).join('');
   }
   // ---- listings (publicados por usuarios vía el formulario "Vender", desde Supabase) ----
-  function categorize(modelo){
-    var m = (modelo || '').toLowerCase();
-    if (m.indexOf('fabricadora') > -1) return 'Fabricadoras';
-    if (m.indexOf('pasteuriz') > -1) return 'Pasteurizadores';
-    if (m.indexOf('línea') > -1 || m.indexOf('linea') > -1) return 'Líneas completas';
+  // "tipo" viene del <select> del formulario de venta (vdTipo), así que son
+  // valores fijos y conocidos -- comparamos exacto en vez de buscar texto
+  // suelto, que antes dejaba casi todo (cocinas, tinas, sembradoras) afuera
+  // de cualquier categoría y esos chips ni existían.
+  function categorize(tipo){
+    if (tipo === 'Fabricadora discontinua' || tipo === 'Fabricadora continua') return 'Fabricadoras';
+    if (tipo === 'Cocinador') return 'Cocinas';
+    if (tipo === 'Pasteurizador') return 'Pasteurizadores';
+    if (tipo === 'Tina de maduración') return 'Tinas';
+    if (tipo === 'Dosificadora de salsa' || tipo === 'Dosificadora de sólidos') return 'Sembradoras';
     return 'Otras';
   }
 
@@ -2748,6 +2768,7 @@
           status: u.status,
           t: (u.marca ? u.marca + ' ' : '') + (u.modelo || u.tipo || ''),
           p: isPreventa ? 'Próximamente' : ((u.moneda === 'ARS' ? '$ ' : 'USD ') + (u.precio != null ? u.precio : '—')),
+          precioRaw: isPreventa ? null : (u.precio != null ? Number(u.precio) : null),
           loc: (u.localidad ? u.localidad + ', ' : '') + (u.provincia ? u.provincia + ', ' : '') + (u.pais || 'Argentina'),
           cond: isPreventa ? 'Pre-venta' : 'Usada · Publicada por heladero',
           g: isPreventa ? ['#FFC24B','#C2861A'] : ['#1078D6','#0C3FA0'],
@@ -2783,6 +2804,7 @@
   }
 
   var mhListingsById = {};
+  var mhCurrentSort = 'recientes';
 
   function renderListings(filter){
     var all = getAllListings();
@@ -2794,6 +2816,18 @@
       if (filter === 'oportunidad') return !!l.etiqueta;
       return l.cat === filter;
     });
+    // "más recientes" ya viene así de Supabase (order by created_at desc);
+    // para precio, las que no tienen precio cargado (pre-venta, por ejemplo)
+    // se mandan siempre al final en vez de romper el orden.
+    if (mhCurrentSort === 'precio-asc' || mhCurrentSort === 'precio-desc'){
+      var dir = mhCurrentSort === 'precio-asc' ? 1 : -1;
+      filtered = filtered.slice().sort(function(a, b){
+        if (a.precioRaw == null && b.precioRaw == null) return 0;
+        if (a.precioRaw == null) return 1;
+        if (b.precioRaw == null) return -1;
+        return (a.precioRaw - b.precioRaw) * dir;
+      });
+    }
     var grid = document.getElementById('listingGrid');
     if (!grid) return;
     if (!filtered.length){
@@ -2869,6 +2903,14 @@
       renderListings(chip.getAttribute('data-filter'));
     });
   });
+  var listingSortEl = document.getElementById('listingSort');
+  if (listingSortEl){
+    listingSortEl.addEventListener('change', function(){
+      mhCurrentSort = listingSortEl.value;
+      var activeChip = document.querySelector('.chip[data-filter].active');
+      renderListings(activeChip ? activeChip.getAttribute('data-filter') : 'todas');
+    });
+  }
 
   // ---- modal de detalle de publicación (fotos, descripción, comprar) ----
   var ldOverlay = document.getElementById('ldOverlay');
