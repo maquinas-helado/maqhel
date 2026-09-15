@@ -341,8 +341,8 @@
   }
 
   function renderMachineRequests(){
-    var rows = cache.machine_requests;
-    if (!rows.length){ panelBody.innerHTML = '<div class="empty">Todavía no llegaron pedidos de máquinas.</div>'; return; }
+    var rows = cache.machine_requests.filter(function(r){ return r.status === 'pendiente'; });
+    if (!rows.length){ panelBody.innerHTML = '<div class="empty">No hay pedidos pendientes de contactar.</div>'; return; }
     panelBody.innerHTML = rows.map(function(r){
       var badgeClass = r.status === 'pendiente' ? 'badge-new' : 'badge-contacted';
       var tel = (r.whatsapp || '').replace(/[^\d+]/g, '').replace(/^\+/, '');
