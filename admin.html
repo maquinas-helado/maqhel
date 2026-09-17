@@ -126,6 +126,7 @@
       <button class="tab" data-tab="brand">Solicitudes de marca <span class="count" id="cnt-brand"></span></button>
       <button class="tab" data-tab="reservations">Reservas pagadas <span class="count" id="cnt-reservations"></span></button>
       <button class="tab" data-tab="requests">Búsquedas <span class="count" id="cnt-requests"></span></button>
+      <button class="tab" data-tab="visitas">Visitas</button>
       <button class="btn btn-ghost btn-small" id="preventaToggle" style="margin-left:auto;">+ Nueva pre-venta</button>
     </div>
 
@@ -338,6 +339,37 @@
     else if (currentTab === 'brand') renderBrandRequests();
     else if (currentTab === 'reservations') renderReservations();
     else if (currentTab === 'requests') renderMachineRequests();
+    else if (currentTab === 'visitas') renderVisitas();
+  }
+
+  // ---- visitas (Google Analytics, vía la función serverless ga-stats) ----
+  var visitasCargadas = false;
+  function fmtNum(n){ return (n || 0).toLocaleString('es-AR'); }
+  async function renderVisitas(){
+    if (visitasCargadas) return; // ya la trajimos una vez en esta sesión de admin, no hace falta repetir
+    panelBody.innerHTML = '<div class="loading">Cargando visitas…</div>';
+    try {
+      var res = await fetch('/.netlify/functions/ga-stats');
+      var data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Error desconocido');
+      visitasCargadas = true;
+      var topPaginasHtml = (data.topPaginas || []).map(function(p){
+        return '<div class="grid2"><dt>'+esc(p.pagina)+'</dt><dd>'+fmtNum(p.vistas)+' vistas</dd></div>';
+      }).join('') || '<p class="sub">Todavía no hay suficientes datos.</p>';
+      panelBody.innerHTML =
+        '<div class="card">'
+        + '<h3 style="margin:0 0 16px;">Visitas al sitio</h3>'
+        + '<div class="grid2">'
+        + '<dt>Hoy</dt><dd>'+fmtNum(data.hoy.usuarios)+' usuarios · '+fmtNum(data.hoy.vistas)+' vistas</dd>'
+        + '<dt>Últimos 7 días</dt><dd>'+fmtNum(data.ultimos7dias.usuarios)+' usuarios · '+fmtNum(data.ultimos7dias.vistas)+' vistas</dd>'
+        + '<dt>Últimos 30 días</dt><dd>'+fmtNum(data.ultimos30dias.usuarios)+' usuarios · '+fmtNum(data.ultimos30dias.vistas)+' vistas</dd>'
+        + '</div>'
+        + '<h3 style="margin:24px 0 12px;">Páginas más vistas (últimos 7 días)</h3>'
+        + topPaginasHtml
+        + '</div>';
+    } catch (err){
+      panelBody.innerHTML = '<div class="empty">No se pudieron cargar las visitas: ' + esc(err.message) + '<br><span class="sub">¿Ya configuraste GA_PROPERTY_ID, GA_CLIENT_EMAIL y GA_PRIVATE_KEY en Netlify?</span></div>';
+    }
   }
 
   function renderMachineRequests(){
