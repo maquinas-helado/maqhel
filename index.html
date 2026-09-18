@@ -771,8 +771,8 @@
   .about-hero p.lead{color:var(--muted);font-size:1.05rem;line-height:1.65;max-width:640px;margin-bottom:14px;}
   .about-actions{display:flex;gap:14px;margin-top:28px;flex-wrap:wrap;}
   .clientes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:18px;}
-  .cliente-card{background:#F1F4F8;border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;align-items:center;justify-content:center;aspect-ratio:1.4/1;transition:border-color .3s,transform .3s var(--ease);}
-  .cliente-card--oscuro{background:#12151a;}
+  .cliente-card{background:var(--noche);border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;align-items:center;justify-content:center;aspect-ratio:1.4/1;transition:border-color .3s,transform .3s var(--ease);}
+  a.cliente-card{cursor:pointer;}
   .cliente-card:hover{border-color:rgba(16,120,214,.4);transform:translateY(-3px);}
   .cliente-card img{max-width:100%;max-height:100%;object-fit:contain;}
   @media(max-width:560px){.clientes-grid{grid-template-columns:repeat(2,1fr);gap:12px;}.cliente-card{padding:14px;}}
@@ -1717,7 +1717,7 @@
         <a href="#" onclick="history.back();return false;" class="vd-back">← Volver</a>
         <span class="kicker" style="color:var(--frio-1);font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;font-family:'IBM Plex Mono';display:block;margin:22px 0 14px;">Nuestros clientes</span>
         <h1>Heladerías y fábricas que ya <span class="grad">confían en nosotros</span></h1>
-        <p class="lead">20 años acompañando a la industria del helado en Argentina, Uruguay, Paraguay y Bolivia.</p>
+        <p class="lead">20 años acompañando a la industria del helado en Argentina, Uruguay, Paraguay y Bolivia. Tocá un logo para conocer a cada cliente.</p>
       </div>
     </section>
     <section class="sec" style="padding-top:0;">
@@ -3881,81 +3881,89 @@
   // Cada entrada: nombre del cliente y ruta al logo (assets/img/clientes/...).
   // Santiago manda los logos y se van sumando acá, uno por línea.
   var CLIENTES = [
-    {nombre:'Abuela Goye', logo:'assets/img/clientes/abuela-goye.png', fondo:'claro'},
-    {nombre:'Alpino', logo:'assets/img/clientes/alpino.png', fondo:'claro'},
-    {nombre:'Aragón Helados', logo:'assets/img/clientes/aragon.png', fondo:'oscuro'},
-    {nombre:'Bahía', logo:'assets/img/clientes/bahia.png', fondo:'claro'},
-    {nombre:'Bajo Cero', logo:'assets/img/clientes/bajo-cero.png', fondo:'oscuro'},
-    {nombre:'Bianco e Nero', logo:'assets/img/clientes/bianco-e-nero.png', fondo:'oscuro'},
-    {nombre:'Cadore', logo:'assets/img/clientes/cadore.png', fondo:'claro'},
-    {nombre:'Caseratto', logo:'assets/img/clientes/caseratto.png', fondo:'claro'},
-    {nombre:'Chocorissimo', logo:'assets/img/clientes/chocorisimo.png', fondo:'claro'},
-    {nombre:'Cremolatti', logo:'assets/img/clientes/cremolatti.png', fondo:'claro'},
-    {nombre:'Crufi', logo:'assets/img/clientes/crufi.png', fondo:'claro'},
-    {nombre:'De Buen Humor Helados', logo:'assets/img/clientes/de-buen-humor.png', fondo:'claro'},
-    {nombre:'Dolce Rama', logo:'assets/img/clientes/dolce-rama.png', fondo:'claro'},
-    {nombre:'El Podio', logo:'assets/img/clientes/podio.png', fondo:'claro'},
-    {nombre:'Emede 1952 Helados', logo:'assets/img/clientes/emede.png', fondo:'claro'},
-    {nombre:'Fabri Helados', logo:'assets/img/clientes/fabri.png', fondo:'claro'},
-    {nombre:'Faricci', logo:'assets/img/clientes/faricci.png', fondo:'oscuro'},
-    {nombre:'Figlio', logo:'assets/img/clientes/figlio.png', fondo:'claro'},
-    {nombre:'Fiore', logo:'assets/img/clientes/fiore.png', fondo:'oscuro'},
-    {nombre:'Freddo', logo:'assets/img/clientes/freddo.png', fondo:'oscuro'},
-    {nombre:'Freschezza', logo:'assets/img/clientes/freschezza.png', fondo:'claro'},
-    {nombre:'Frigor', logo:'assets/img/clientes/frigor.png', fondo:'claro'},
-    {nombre:'Glacé Helados', logo:'assets/img/clientes/glace.png', fondo:'claro'},
-    {nombre:'Heidi', logo:'assets/img/clientes/heidi.png', fondo:'claro'},
-    {nombre:'Helacor (Grido)', logo:'assets/img/clientes/grido-helacor.png', fondo:'claro'},
-    {nombre:'Heladería del Parque', logo:'assets/img/clientes/del-parque.png', fondo:'claro'},
-    {nombre:'Helados Bahillo', logo:'assets/img/clientes/bahillo.png', fondo:'oscuro'},
-    {nombre:'Helados Daniel', logo:'assets/img/clientes/helados-daniel.png', fondo:'oscuro'},
-    {nombre:'Helados Italia', logo:'assets/img/clientes/helados-italia.png', fondo:'claro'},
-    {nombre:'Helados Pablo', logo:'assets/img/clientes/pablo.png', fondo:'oscuro'},
-    {nombre:'Helados Panda', logo:'assets/img/clientes/panda.png', fondo:'claro'},
-    {nombre:'Helados Quintana', logo:'assets/img/clientes/quintana.png', fondo:'oscuro'},
-    {nombre:'Helados Santilli', logo:'assets/img/clientes/santilli.png', fondo:'claro'},
-    {nombre:'Iglú', logo:'assets/img/clientes/iglu.png', fondo:'claro'},
-    {nombre:'Il Bombón', logo:'assets/img/clientes/il-bombon.png', fondo:'claro'},
-    {nombre:'Il Volo', logo:'assets/img/clientes/il-volo.png', fondo:'claro'},
-    {nombre:'La Cigale', logo:'assets/img/clientes/la-cigale.png', fondo:'claro'},
-    {nombre:'La Delicia del Boulevard', logo:'assets/img/clientes/delicia-boulevard.png', fondo:'claro'},
-    {nombre:'La Fe', logo:'assets/img/clientes/la-fe.png', fondo:'claro'},
-    {nombre:'La Montevideana', logo:'assets/img/clientes/la-montevideana.png', fondo:'claro'},
-    {nombre:'La Nueva Roma', logo:'assets/img/clientes/nueva-roma.png', fondo:'oscuro'},
-    {nombre:'La Veneciana', logo:'assets/img/clientes/la-veneciana.png', fondo:'claro'},
-    {nombre:'Las Malvinas', logo:'assets/img/clientes/las-malvinas.png', fondo:'claro'},
-    {nombre:'Limar', logo:'assets/img/clientes/limar.png', fondo:'claro'},
-    {nombre:'Los Arcos', logo:'assets/img/clientes/los-arcos.png', fondo:'oscuro'},
-    {nombre:'Lucacen', logo:'assets/img/clientes/lucacen.png', fondo:'oscuro'},
-    {nombre:"Lucciano's", logo:'assets/img/clientes/luccianos.png', fondo:'oscuro'},
-    {nombre:'Massera', logo:'assets/img/clientes/massera.png', fondo:'claro'},
-    {nombre:'Natural Cream', logo:'assets/img/clientes/natural-cream.png', fondo:'claro'},
-    {nombre:'Occo Helados', logo:'assets/img/clientes/occo.png', fondo:'claro'},
-    {nombre:'Ovejitas de la Patagonia', logo:'assets/img/clientes/ovejitas.png', fondo:'claro'},
-    {nombre:'Perlatto', logo:'assets/img/clientes/perlatto.png', fondo:'claro'},
-    {nombre:'Pire', logo:'assets/img/clientes/pire.png', fondo:'claro'},
-    {nombre:'Plaza Mayor', logo:'assets/img/clientes/plaza-mayor.png', fondo:'claro'},
-    {nombre:'Portho', logo:'assets/img/clientes/portho.png', fondo:'claro'},
-    {nombre:'Quelay', logo:'assets/img/clientes/quelay.png', fondo:'oscuro'},
-    {nombre:'Rabelia', logo:'assets/img/clientes/rabelia.png', fondo:'oscuro'},
-    {nombre:'Rapanui', logo:'assets/img/clientes/rapa-nui.png', fondo:'oscuro'},
-    {nombre:'Río Helados', logo:'assets/img/clientes/rio-helados.png', fondo:'claro'},
-    {nombre:'Saint Moritz', logo:'assets/img/clientes/saint-moritz.png', fondo:'oscuro'},
-    {nombre:'Schietto', logo:'assets/img/clientes/schietto.png', fondo:'oscuro'},
-    {nombre:'Schock BA', logo:'assets/img/clientes/schock.png', fondo:'claro'},
-    {nombre:'Sei Tu', logo:'assets/img/clientes/seitu.png', fondo:'claro'},
-    {nombre:'Shelattino', logo:'assets/img/clientes/shelattino.png', fondo:'claro'},
-    {nombre:'Tasty', logo:'assets/img/clientes/tasty.png', fondo:'claro'},
-    {nombre:'Thionis', logo:'assets/img/clientes/thionis.png', fondo:'claro'},
-    {nombre:'Trápani', logo:'assets/img/clientes/trapani.png', fondo:'claro'},
-    {nombre:'Valence', logo:'assets/img/clientes/valence.png', fondo:'claro'},
-    {nombre:'Vanshelato / Vangelato / Vangeli', logo:'assets/img/clientes/vanshelato.png', fondo:'oscuro'},
-    {nombre:'Vëllezo', logo:'assets/img/clientes/vellezo.png', fondo:'claro'},
-    {nombre:'Venezia', logo:'assets/img/clientes/venezia.png', fondo:'claro'},
-    {nombre:'Vía Cosenza', logo:'assets/img/clientes/via-cosenza.png', fondo:'oscuro'},
-    {nombre:'Vía Varese', logo:'assets/img/clientes/via-varese.png', fondo:'oscuro'},
-    {nombre:'Yampi Helados', logo:'assets/img/clientes/yampi.png', fondo:'claro'}
-  ];  var clientesRenderizados = false;
+    {nombre:"Lucciano's", logo:"assets/img/clientes/luccianos.png", url:"https://luccianos.net/"},
+    {nombre:"Rapanui", logo:"assets/img/clientes/rapa-nui.png", url:"https://www.rapanui.com.ar/"},
+    {nombre:"Grido", logo:"assets/img/clientes/grido-helacor.png", url:"https://argentina.gridohelado.com/"},
+    {nombre:"La Montevideana", logo:"assets/img/clientes/la-montevideana.png", url:"https://www.montevideanahelados.com.ar/"},
+    {nombre:"Crufi", logo:"assets/img/clientes/crufi.png", url:"https://crufi.com.uy/"},
+    {nombre:"Cremolatti", logo:"assets/img/clientes/cremolatti.png", url:"https://cremolatti.com.ar/"},
+    {nombre:"Cadore", logo:"assets/img/clientes/cadore.png", url:"https://heladeriacadore.com.ar/"},
+    {nombre:"Faricci", logo:"assets/img/clientes/faricci.png", url:"https://faricci.com/"},
+    {nombre:"Schietto", logo:"assets/img/clientes/schietto.png", url:"https://www.heladosschietto.com.ar/"},
+    {nombre:"Vanshelato", logo:"assets/img/clientes/vanshelato.png", url:"https://www.vanshelato.com.ar/"},
+    {nombre:"Abuela Goye", logo:"assets/img/clientes/abuela-goye.png", url:"https://www.abuelagoye.com/"},
+    {nombre:"Al-Pino", logo:"assets/img/clientes/alpino.png", url:"https://www.instagram.com/heladeriasalpino/"},
+    {nombre:"Amandau", logo:"assets/img/clientes/amandau.png", url:"https://www.amandau.com.py/"},
+    {nombre:"Aragón Helados", logo:"assets/img/clientes/aragon.png", url:"https://www.aragonhelados.com.ar/"},
+    {nombre:"Bahía", logo:"assets/img/clientes/bahia.png", url:"https://www.bahiahelados.com/"},
+    {nombre:"Bajo Cero", logo:"assets/img/clientes/bajo-cero.png", url:"https://www.bajocerohelados.com.ar/"},
+    {nombre:"Bianco e Nero", logo:"assets/img/clientes/bianco-e-nero.png", url:"https://biancoynero.com/"},
+    {nombre:"Caseratto", logo:"assets/img/clientes/caseratto.png", url:"https://www.instagram.com/casseratto/"},
+    {nombre:"Chocorissimo", logo:"assets/img/clientes/chocorisimo.png", url:"https://www.chocorisimo.com/"},
+    {nombre:"De Buen Humor Helados", logo:"assets/img/clientes/de-buen-humor.png", url:"http://debuenhumorhelados.com.ar/"},
+    {nombre:"Delizia", logo:"assets/img/clientes/delizia.png", url:"https://delizia.bo/"},
+    {nombre:"Dolce Rama", logo:"assets/img/clientes/dolce-rama.png", url:"https://www.facebook.com/dolceramabariloche/"},
+    {nombre:"El Podio", logo:"assets/img/clientes/podio.png", url:"https://www.facebook.com/podio.oficial/"},
+    {nombre:"Emede 1952 Helados", logo:"assets/img/clientes/emede.png", url:"https://www.facebook.com/p/Emede-1952-Helados-100050317032679/"},
+    {nombre:"Fabri Helados", logo:"assets/img/clientes/fabri.png", url:"https://www.facebook.com/fabri.heladeria/"},
+    {nombre:"Figlio", logo:"assets/img/clientes/figlio.png", url:"https://www.figlio.com.ar/"},
+    {nombre:"Fiore", logo:"assets/img/clientes/fiore.png", url:"https://fiore.com.ar/"},
+    {nombre:"Freddo", logo:"assets/img/clientes/freddo.png", url:"https://ar.freddo.com/"},
+    {nombre:"Freschezza", logo:"assets/img/clientes/freschezza.png", url:"https://clubfreschezza.com.ar/"},
+    {nombre:"Frigo", logo:"assets/img/clientes/frigo.png", url:"https://www.facebook.com/heladosAchumani/"},
+    {nombre:"Frigor", logo:"assets/img/clientes/frigor.png", url:"https://www.facebook.com/frigorar/"},
+    {nombre:"Glacé Helados", logo:"assets/img/clientes/glace.png", url:"https://www.facebook.com/glaceheladoslomas/"},
+    {nombre:"Heidi", logo:"assets/img/clientes/heidi.png", url:"https://heidiheladerias.com/"},
+    {nombre:"Heladería del Parque", logo:"assets/img/clientes/del-parque.png", url:"https://www.facebook.com/delparqueheladerias/"},
+    {nombre:"Heladería París", logo:"assets/img/clientes/paris-py.png", url:"https://hparis.com.py/"},
+    {nombre:"Helados Bahillo", logo:"assets/img/clientes/bahillo.png", url:"https://www.facebook.com/heladosbahillo1966/"},
+    {nombre:"Helados Daniel", logo:"assets/img/clientes/helados-daniel.png", url:"https://heladosdaniel.com/"},
+    {nombre:"Helados Italia", logo:"assets/img/clientes/helados-italia.png", url:"https://heladositalia.com.ar/"},
+    {nombre:"Helados Pablo", logo:"assets/img/clientes/pablo.png", url:"https://siesheladoespablo.com.ar/"},
+    {nombre:"Helados Panda", logo:"assets/img/clientes/panda.png", url:"https://www.facebook.com/HeladosPandaOficial/"},
+    {nombre:"Helados Quintana", logo:"assets/img/clientes/quintana.png", url:"https://www.facebook.com/HELADERIAQUINTANA/"},
+    {nombre:"Helados Santilli", logo:"assets/img/clientes/santilli.png", url:"https://www.facebook.com/HeladosSantilli/"},
+    {nombre:"Iglú", logo:"assets/img/clientes/iglu.png", url:"https://igluhelados.com.ar/"},
+    {nombre:"Il Bombón", logo:"assets/img/clientes/il-bombon.png", url:"https://www.facebook.com/ilbombonheladeriaartesanal/"},
+    {nombre:"Il Volo", logo:"assets/img/clientes/il-volo.png", url:"https://www.facebook.com/ilvologelato/"},
+    {nombre:"La Cabrera", logo:"assets/img/clientes/la-cabrera.png", url:"https://www.lacabrera.com.ar/"},
+    {nombre:"La Cigale", logo:"assets/img/clientes/la-cigale.png", url:"https://www.instagram.com/lacigaleuy/"},
+    {nombre:"La Delicia del Boulevard", logo:"assets/img/clientes/delicia-boulevard.png", url:"https://ladeliciaboulevard.com.ar/"},
+    {nombre:"La Fe", logo:"assets/img/clientes/la-fe.png", url:"http://heladoslafe.com.ar/"},
+    {nombre:"La Nueva Roma", logo:"assets/img/clientes/nueva-roma.png", url:"https://lanuevaroma.com.uy/"},
+    {nombre:"La Veneciana", logo:"assets/img/clientes/la-veneciana.png", url:"https://www.laveneciana.com.ar/"},
+    {nombre:"Las Malvinas", logo:"assets/img/clientes/las-malvinas.png", url:"http://www.heladerialasmalvinas.com/"},
+    {nombre:"Limar", logo:"assets/img/clientes/limar.png", url:"https://www.facebook.com/cremaslimar/"},
+    {nombre:"Lomoro", logo:"assets/img/clientes/lomoro.png", url:"https://heladoslomoro.com.ar/"},
+    {nombre:"Los Arcos", logo:"assets/img/clientes/los-arcos.png", url:"https://los-arcos.com.ar/"},
+    {nombre:"Massera", logo:"assets/img/clientes/massera.png", url:"https://www.facebook.com/p/Helader%C3%ADa-Massera-100065156914105/"},
+    {nombre:"Natural Cream", logo:"assets/img/clientes/natural-cream.png", url:"https://natural-cream.com.ar/"},
+    {nombre:"Occo Helados", logo:"assets/img/clientes/occo.png"},
+    {nombre:"Ovejitas de la Patagonia", logo:"assets/img/clientes/ovejitas.png", url:"https://www.instagram.com/ovejitasdelapatagonia/"},
+    {nombre:"Paletto", logo:"assets/img/clientes/paletto.png", url:"https://www.facebook.com/palettopaletas/"},
+    {nombre:"Perlatto", logo:"assets/img/clientes/perlatto.png", url:"https://www.perlatto.com.ar/"},
+    {nombre:"Persicco", logo:"assets/img/clientes/persicco.png", url:"https://www.persicco.com.ar/"},
+    {nombre:"Pire", logo:"assets/img/clientes/pire.png", url:"https://pireheladerias.com.ar/"},
+    {nombre:"Plaza Mayor", logo:"assets/img/clientes/plaza-mayor.png", url:"https://www.facebook.com/helaplazamayor/"},
+    {nombre:"Portho", logo:"assets/img/clientes/portho.png", url:"https://www.portho.com.ar/"},
+    {nombre:"Quattro D", logo:"assets/img/clientes/quattro-d.png", url:"https://www.facebook.com/quattrodpy/"},
+    {nombre:"Quelay", logo:"assets/img/clientes/quelay.png", url:"https://www.quelay.com.ar/"},
+    {nombre:"Rabelia", logo:"assets/img/clientes/rabelia.png", url:"https://rabelia.com.ar/"},
+    {nombre:"Río Helados", logo:"assets/img/clientes/rio-helados.png", url:"https://www.riogrupo.com/site/helados/"},
+    {nombre:"Saint Moritz", logo:"assets/img/clientes/saint-moritz.png", url:"https://saintmoritz.com.ar/"},
+    {nombre:"Schock BA", logo:"assets/img/clientes/schock.png", url:"https://www.schockba.com.ar/"},
+    {nombre:"Sei Tu", logo:"assets/img/clientes/seitu.png", url:"https://www.seitu.com/"},
+    {nombre:"Shelattino", logo:"assets/img/clientes/shelattino.png", url:"https://shelattinohelados.com.ar/"},
+    {nombre:"Tasty", logo:"assets/img/clientes/tasty.png", url:"https://www.tastyhelados.com/"},
+    {nombre:"Thionis", logo:"assets/img/clientes/thionis.png", url:"https://thionis.com.ar/"},
+    {nombre:"Trápani", logo:"assets/img/clientes/trapani.png", url:"https://www.facebook.com/HeladosTrapani/"},
+    {nombre:"Valence", logo:"assets/img/clientes/valence.png", url:"https://www.valence.com.ar/"},
+    {nombre:"Vëllezo", logo:"assets/img/clientes/vellezo.png", url:"https://www.instagram.com/vellezohelados/"},
+    {nombre:"Venezia", logo:"assets/img/clientes/venezia.png", url:"https://heladeriavenezia.com.ar/"},
+    {nombre:"Vía Cosenza", logo:"assets/img/clientes/via-cosenza.png", url:"https://franquiciadeheladerias.com/"},
+    {nombre:"Vía Varese", logo:"assets/img/clientes/via-varese.png", url:"https://viavarese.com.ar/"},
+    {nombre:"Yampi Helados", logo:"assets/img/clientes/yampi.png", url:"https://www.yampihelados.com.ar/"}
+  ]; var clientesRenderizados = false;
   function renderClientes(){
     if (clientesRenderizados) return;
     var grid = document.getElementById('clientesGrid');
@@ -3965,7 +3973,9 @@
       return;
     }
     grid.innerHTML = CLIENTES.map(function(c){
-      return '<div class="cliente-card'+(c.fondo==='oscuro'?' cliente-card--oscuro':'')+'" title="'+c.nombre+'"><img src="'+c.logo+'" alt="'+c.nombre+'" loading="lazy"></div>';
+      var img = '<img src="'+c.logo+'" alt="'+c.nombre+'" loading="lazy">';
+      if (c.url) return '<a class="cliente-card" href="'+c.url+'" target="_blank" rel="noopener noreferrer" title="'+c.nombre+'" aria-label="'+c.nombre+' (se abre en una pestaña nueva)">'+img+'</a>';
+      return '<div class="cliente-card" title="'+c.nombre+'">'+img+'</div>';
     }).join('');
     clientesRenderizados = true;
   }
