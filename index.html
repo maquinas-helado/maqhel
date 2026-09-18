@@ -260,6 +260,10 @@
     .logo-tagline{font-size:7px;}
     .cta-mini{padding:8px 14px;font-size:.76rem;white-space:nowrap;}
     .cta-mini::before{inset:-4px;}
+    /* menú desplegable del celular: la barra de arriba se oculta y el botón ☰ la abre */
+    header.site.menu-open nav.main{display:flex;flex-direction:column;gap:0;position:absolute;top:100%;left:0;right:0;margin:0;padding:6px 16px 14px;background:#0A0B0D;border-bottom:1px solid var(--line);}
+    header.site.menu-open nav.main a{padding:15px 4px;font-size:1.05rem;color:var(--hielo);border-bottom:1px solid var(--line);}
+    header.site.menu-open nav.main a:last-child{border-bottom:0;}
   }
   @media(max-width:480px){
     header.site .inner{padding:14px 16px;gap:8px 14px;}
@@ -773,6 +777,8 @@
   .clientes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:18px;}
   .cliente-card{background:var(--noche);border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;align-items:center;justify-content:center;aspect-ratio:1.4/1;transition:border-color .3s,transform .3s var(--ease);}
   a.cliente-card{cursor:pointer;}
+  #page-clientes .grad{background:linear-gradient(100deg,#5DB4FF,var(--frio-1));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .clientes-cierre{text-align:center;font-family:'Space Grotesk',sans-serif;font-size:clamp(1.35rem,3.4vw,2rem);font-weight:700;line-height:1.25;max-width:760px;margin:64px auto 0;text-wrap:balance;}
   .cliente-card:hover{border-color:rgba(16,120,214,.4);transform:translateY(-3px);}
   .cliente-card img{max-width:100%;max-height:100%;object-fit:contain;}
   @media(max-width:560px){.clientes-grid{grid-template-columns:repeat(2,1fr);gap:12px;}.cliente-card{padding:14px;}}
@@ -1723,6 +1729,7 @@
     <section class="sec" style="padding-top:0;">
       <div class="wrap">
         <div class="clientes-grid" id="clientesGrid"></div>
+        <p class="clientes-cierre">Si no estás dentro de todo este listado, <span class="grad">fallaste como heladero.</span></p>
       </div>
     </section>
   </div>
@@ -2217,6 +2224,24 @@
   }
   window.addEventListener('hashchange', routeFromHash);
   document.addEventListener('DOMContentLoaded', routeFromHash);
+
+  // ---- menú del celular (botón ☰) ----
+  (function(){
+    var hd = document.querySelector('header.site');
+    var b = hd && hd.querySelector('.burger');
+    if (!b) return;
+    function setMenu(open){
+      hd.classList.toggle('menu-open', open);
+      b.setAttribute('aria-expanded', open ? 'true' : 'false');
+      b.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+      b.textContent = open ? '✕' : '☰';
+    }
+    b.addEventListener('click', function(){ setMenu(!hd.classList.contains('menu-open')); });
+    hd.querySelectorAll('nav.main a').forEach(function(a){ a.addEventListener('click', function(){ setMenu(false); }); });
+    document.addEventListener('click', function(e){ if (!hd.contains(e.target)) setMenu(false); });
+    window.addEventListener('hashchange', function(){ setMenu(false); });
+    window.addEventListener('resize', function(){ if (window.innerWidth > 880) setMenu(false); });
+  })();
 
   // ---- mapa de Sudamérica: lucecitas por cliente ----
   // Proyección simple lon/lat -> coordenadas del viewBox del SVG (0 0 220 280)
@@ -3956,6 +3981,7 @@
     {nombre:"Lomoro", logo:"assets/img/clientes/lomoro.png", url:"https://heladoslomoro.com.ar/"},
     {nombre:"Los Arcos", logo:"assets/img/clientes/los-arcos.png", url:"https://los-arcos.com.ar/"},
     {nombre:"Massera", logo:"assets/img/clientes/massera.png", url:"https://www.facebook.com/p/Helader%C3%ADa-Massera-100065156914105/"},
+    {nombre:"Mousse", logo:"assets/img/clientes/mousse.png", url:"https://www.instagram.com/mousseok/"},
     {nombre:"Natural Cream", logo:"assets/img/clientes/natural-cream.png", url:"https://natural-cream.com.ar/"},
     {nombre:"Nicolo", logo:"assets/img/clientes/nicolo.png", url:"https://www.instagram.com/nicolohelados_ok/"},
     {nombre:"Occo Helados", logo:"assets/img/clientes/occo.png", url:"https://occohelados.com.ar/"},
