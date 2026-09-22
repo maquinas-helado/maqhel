@@ -434,7 +434,16 @@
   .live-arrow-next{right:6px;}
   @media(max-width:640px){.live-arrow{width:34px;height:34px;font-size:1.2rem;}}
   .clientes-strip{padding:64px 0 88px;}
-  .clientes-strip .sec-head{margin-bottom:36px;}
+  .clientes-strip .sec-head{margin-bottom:36px;max-width:none;}
+  /* de ~641px para arriba el título y la bajada entran en un renglón: el
+     tamaño de letra se calcula para que el ancho del texto siga al ancho
+     de pantalla (medido contra el texto real, ver commit); por debajo de
+     eso no alcanza el espacio sin quedar ilegible, así que vuelve a partirse. */
+  @media(min-width:641px){
+    .clientes-strip .sec-head .cs-title,.clientes-strip .sec-head .cs-sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+    .clientes-strip .sec-head .cs-title{font-size:clamp(1.5rem, calc(5.05vw - 4.55px), 2.6rem);}
+    .clientes-strip .sec-head .cs-sub{font-size:clamp(.6rem, calc(1.98vw - 1.78px), 1.02rem);}
+  }
   .cs-mask{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);}
   .cs-mask::-webkit-scrollbar{display:none;}
   .cs-track{display:flex;align-items:center;gap:44px;width:max-content;padding:4px 32px;}
@@ -1100,8 +1109,8 @@
     <div class="wrap">
       <div class="sec-head" data-reveal>
         <span class="kicker">Nuestra comunidad</span>
-        <h2>Conozca quienes ya confiaron en nosotros</h2>
-        <p>De heladerías de barrio a cadenas nacionales e internacionales, en Argentina, Uruguay, Paraguay y Bolivia.</p>
+        <h2 class="cs-title">Conozca quienes ya confiaron en nosotros</h2>
+        <p class="cs-sub">De heladerías de barrio a cadenas nacionales e internacionales, en Argentina, Uruguay, Paraguay y Bolivia.</p>
       </div>
     </div>
     <div class="cs-mask" id="clientesStripMask">
