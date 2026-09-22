@@ -1285,6 +1285,13 @@
           <div class="tags"><span>Calderas</span></div>
           <div class="arrow">Ver catálogo →</div>
         </div>
+        <div class="brand-card" data-reveal data-marca="cryma" role="button" tabindex="0">
+          <div class="glow" style="background:var(--muted-2)"></div>
+          <img class="brand-logo brand-logo-img" src="assets/img/cryma-logo.png" alt="Cryma">
+          <p>Molinos coloidales homogeneizadores: mezcla pareja del mix, pulpas de fruta frescas y pastas de frutos secos.</p>
+          <div class="tags"><span>Homogeneizadores</span></div>
+          <div class="arrow">Ver catálogo →</div>
+        </div>
       </div>
     </div>
   </section>
@@ -3729,6 +3736,13 @@
       tagline: 'Calderas y generación térmica para tu planta.',
       desc: 'JIT provee la generación térmica que sostiene silenciosamente toda tu línea de producción.',
       tags: ['Calderas','Generación térmica']
+    },
+    cryma: {
+      nombre: 'Cryma',
+      logo: 'assets/img/cryma-logo.png',
+      tagline: 'Molinos coloidales homogeneizadores para la industria del helado.',
+      desc: 'Cryma Metalúrgica Pardo fabrica molinos coloidales homogeneizadores desde hace décadas, con presencia en toda la Argentina y exportaciones a América y Europa. En la heladería se usan para homogeneizar el mix, elaborar pulpas de fruta frescas y pastas de frutos secos.',
+      tags: ['Homogeneizadores','Molinos coloidales']
     }
   };
 
@@ -3935,7 +3949,15 @@
       titulo:'Dualmet Recipientes de Acero Inoxidable', subtitulo:'Recipientes en acero inoxidable a medida, con tapa y manija, para producción y almacenamiento.',
       img: 'assets/img/nuevas-ia/dualmet-recipientes.jpg',
       g:['#5E7188','#98A4B4'],
-      specs:[['Construcción','Acero inoxidable'],['Incluye','Tapa con manija, ruedas'],['Medidas','A medida según necesidad']]}
+      specs:[['Construcción','Acero inoxidable'],['Incluye','Tapa con manija, ruedas'],['Medidas','A medida según necesidad']]},
+
+    // ---- CRYMA ----
+    {id:'cryma-cmx', marca:'cryma', cat:'homogeneizadores', catLabel:'Molino coloidal homogeneizador',
+      titulo:'Cryma Molino Coloidal Homogeneizador CMX', subtitulo:'Muele, homogeneiza y dispersa productos húmedos, semi-líquidos o viscosos. En heladería se usa para homogeneizar el mix, elaborar pulpas de fruta frescas y pastas de frutos secos y bebidas vegetales; también sirve para mayonesa, mostaza y salsas.',
+      img: 'assets/img/nuevas-ia/cryma-cmx.jpg',
+      video: 'assets/video/cryma-cmx.mp4',
+      g:['#5E7188','#1a2433'],
+      specs:[['Producción en helados (homogeneización)','100 a 6.000 l/h según modelo (CMX-65 a CMX-180)'],['Potencia','2 a 50 HP según modelo'],['Velocidad','3000 RPM'],['Construcción','Acero inoxidable sanitario AISI 304 / 316 / 316L / 420, motor blindado IP65'],['Otros usos frecuentes','Pulpas de fruta, pastas de frutos secos y bebidas vegetales, mayonesa, mostaza y salsas'],['Modelos','CMX-65 · CMX-80 · CMX-95 · CMX-115 · CMX-150 · CMX-180']]}
   ];
 
   // ---- página "Nuestros clientes" ----
@@ -4080,7 +4102,7 @@
     var mkLogoImg = document.getElementById('mkLogoImg');
     var mkDemoFlag = document.getElementById('mkDemoFlag');
     // Technogel ya tiene catálogo real cargado; Dualmet y JIT todavía no
-    if (mkDemoFlag) mkDemoFlag.style.display = (key === 'technogel' || key === 'dualmet') ? 'none' : '';
+    if (mkDemoFlag) mkDemoFlag.style.display = (key === 'technogel' || key === 'dualmet' || key === 'cryma') ? 'none' : '';
     // el logo de JIT es texto oscuro sobre fondo transparente -- se invierte
     // para que se lea sobre este fondo oscuro, en vez de reemplazarlo por texto
     if (brand.logo){
