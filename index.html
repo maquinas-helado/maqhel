@@ -433,6 +433,16 @@
   .live-arrow-prev{left:6px;}
   .live-arrow-next{right:6px;}
   @media(max-width:640px){.live-arrow{width:34px;height:34px;font-size:1.2rem;}}
+  .clientes-strip{padding:64px 0 88px;}
+  .clientes-strip .sec-head{margin-bottom:36px;}
+  .cs-mask{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);}
+  .cs-mask::-webkit-scrollbar{display:none;}
+  .cs-track{display:flex;align-items:center;gap:44px;width:max-content;padding:4px 32px;}
+  .cs-logo{display:flex;align-items:center;height:46px;flex-shrink:0;opacity:.72;transition:opacity .25s var(--ease),transform .25s var(--ease);}
+  .cs-logo:hover{opacity:1;transform:translateY(-2px);}
+  .cs-logo img{max-height:100%;width:auto;max-width:132px;object-fit:contain;display:block;}
+  .cs-foot{text-align:center;margin-top:8px;}
+  @media(max-width:640px){.cs-track{gap:30px;}.cs-logo{height:36px;}.cs-logo img{max-width:100px;}}
   .live-card{width:230px;flex-shrink:0;background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .3s var(--ease), border-color .3s;}
   .live-card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.22);}
   .live-card .shot{height:120px;position:relative;overflow:hidden;}
@@ -1082,6 +1092,23 @@
           <span class="a-arrow">→</span>
         </a>
       </div>
+    </div>
+  </section>
+
+  <!-- NUESTROS CLIENTES (franja de logos, home) -->
+  <section class="sec clientes-strip" id="clientesStripSec">
+    <div class="wrap">
+      <div class="sec-head" data-reveal>
+        <span class="kicker">Nuestra comunidad</span>
+        <h2><span id="clientesStripCount">0</span> heladerías y fábricas ya confían en MAQ.HEL</h2>
+        <p>De heladerías de barrio a cadenas nacionales, en Argentina, Uruguay, Paraguay y Bolivia.</p>
+      </div>
+    </div>
+    <div class="cs-mask" id="clientesStripMask">
+      <div class="cs-track" id="clientesStripTrack"></div>
+    </div>
+    <div class="wrap cs-foot">
+      <a href="#clientes" class="btn btn-ghost">Ver todos los clientes →</a>
     </div>
   </section>
 
@@ -4539,6 +4566,21 @@
 
   initAutoScrollTrack({maskId:'liveTrackMask', trackId:'liveTrack', prevId:'liveArrowPrev', nextId:'liveArrowNext', cardSelector:'.live-card', gap:16, speed:32});
   initAutoScrollTrack({maskId:'testiTrackMask', trackId:'testiTrack', cardSelector:'.testi-card', gap:22, speed:26, duplicate:true});
+
+  // ---- home: franja de logos de "Nuestros clientes" ----
+  function renderClientesStrip(){
+    var sec = document.getElementById('clientesStripSec');
+    var track = document.getElementById('clientesStripTrack');
+    if (!sec || !track) return;
+    if (!CLIENTES.length){ sec.style.display = 'none'; return; }
+    var countEl = document.getElementById('clientesStripCount');
+    if (countEl) countEl.textContent = CLIENTES.length;
+    track.innerHTML = CLIENTES.map(function(c){
+      return '<a class="cs-logo" href="'+c.url+'" target="_blank" rel="noopener noreferrer" title="'+c.nombre+'"><img src="'+c.logo+'" alt="'+c.nombre+'" loading="lazy"></a>';
+    }).join('');
+    initAutoScrollTrack({maskId:'clientesStripMask', trackId:'clientesStripTrack', cardSelector:'.cs-logo', gap:44, speed:22, duplicate:true});
+  }
+  renderClientesStrip();
 
   // ---- hero: rotación de fotos del catálogo con nombre y capacidad ----
   // para sumar una máquina más a la rotación, agregar un objeto acá.
