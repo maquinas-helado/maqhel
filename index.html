@@ -1100,8 +1100,8 @@
     <div class="wrap">
       <div class="sec-head" data-reveal>
         <span class="kicker">Nuestra comunidad</span>
-        <h2><span id="clientesStripCount">0</span> heladerías y fábricas ya confían en MAQ.HEL</h2>
-        <p>De heladerías de barrio a cadenas nacionales, en Argentina, Uruguay, Paraguay y Bolivia.</p>
+        <h2>Conozca quienes ya confiaron en nosotros</h2>
+        <p>De heladerías de barrio a cadenas nacionales e internacionales, en Argentina, Uruguay, Paraguay y Bolivia.</p>
       </div>
     </div>
     <div class="cs-mask" id="clientesStripMask">
@@ -4573,8 +4573,6 @@
     var track = document.getElementById('clientesStripTrack');
     if (!sec || !track) return;
     if (!CLIENTES.length){ sec.style.display = 'none'; return; }
-    var countEl = document.getElementById('clientesStripCount');
-    if (countEl) countEl.textContent = CLIENTES.length;
     track.innerHTML = CLIENTES.map(function(c){
       return '<a class="cs-logo" href="'+c.url+'" target="_blank" rel="noopener noreferrer" title="'+c.nombre+'"><img src="'+c.logo+'" alt="'+c.nombre+'" loading="lazy"></a>';
     }).join('');
