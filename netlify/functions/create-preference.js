@@ -1,4 +1,4 @@
-// Crea una preferencia de pago (Checkout Pro) en Mercado Pago por el 10% de
+// Crea una preferencia de pago (Checkout Pro) en Mercado Pago por el 9% de
 // seña de una publicación puntual, y devuelve el link para redirigir al
 // comprador. El monto se calcula acá adentro (server-side) a partir del precio
 // real guardado en Supabase — nunca se confía en un monto que mande el navegador.
@@ -47,9 +47,9 @@ exports.handler = async function (event) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Esta publicación no tiene precio cargado' }) };
   }
 
-  const monto = Math.round(listing.precio * 0.10 * 100) / 100;
+  const monto = Math.round(listing.precio * 0.09 * 100) / 100;
   const moneda = listing.moneda === 'ARS' ? 'ARS' : 'USD';
-  const titulo = 'Seña 10% - ' + [listing.marca, listing.modelo || listing.tipo].filter(Boolean).join(' ');
+  const titulo = 'Seña 9% - ' + [listing.marca, listing.modelo || listing.tipo].filter(Boolean).join(' ');
 
   const { data: reservation, error: resErr } = await supabase
     .from('reservations')
