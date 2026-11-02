@@ -480,6 +480,7 @@
   .brand-logo-img{height:30px;width:auto;display:block;filter:brightness(0) saturate(0) invert(1) opacity(.92);transition:filter .35s var(--ease);}
   .brand-card:hover .brand-logo-img{filter:none;}
   .brand-card[data-marca="jit"] .brand-logo-img{height:40px;}
+  .brand-card[data-marca="jem"] .brand-logo-img{height:48px;margin:-6px 0 -2px;}
   .brand-card[data-marca="abatidores"] .brand-logo-img{height:34px;}
   .brand-card[data-marca="pozos"] .brand-logo-img{height:56px;margin:-10px 0 -4px;}
   .brand-card p{color:var(--muted);font-size:.92rem;line-height:1.55;margin-bottom:18px;}
@@ -1074,7 +1075,7 @@
       <div class="hero-actions">
         <a href="#nueva" class="action-card nueva">
           <span class="a-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 9l8-5 8 5v10a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1V9z" fill="currentColor"/></svg></span>
-          <span class="a-text"><strong>Máquinas nuevas</strong><small>Technogel · Dualmet · JIT · Cryma</small></span>
+          <span class="a-text"><strong>Máquinas nuevas</strong><small>Technogel · Dualmet · JIT · Cryma · JEM</small></span>
           <span class="a-arrow">→</span>
         </a>
         <a href="#usada" class="action-card usada">
@@ -1279,11 +1280,18 @@
           <div class="tags"><span>Homogeneizadores</span></div>
           <div class="arrow">Ver catálogo →</div>
         </div>
+        <div class="brand-card" data-reveal data-marca="jem" role="button" tabindex="0">
+          <div class="glow" style="background:var(--frio-2)"></div>
+          <img class="brand-logo brand-logo-img" src="assets/img/jem-logo.png" alt="JEM">
+          <p>Máquinas de helado de mesada, económicas: para hacer pruebas o empezar de manera rápida y sencilla.</p>
+          <div class="tags"><span>Mesada</span><span>Económica</span></div>
+          <div class="arrow">Ver catálogo →</div>
+        </div>
         <div class="brand-card" data-reveal data-marca="abatidores" role="button" tabindex="0">
           <div class="glow" style="background:var(--frio-1)"></div>
           <img class="brand-logo brand-logo-img" src="assets/img/abatidores-logo.png" alt="Abatidores de frío">
-          <p>Abatidores y túneles de frío para enfriar rápido tu producción.</p>
-          <div class="tags"><span>Frío rápido</span><span>2 modelos</span></div>
+          <p>Abatidores para estantes y para carros, y túneles de frío para enfriar rápido tu producción.</p>
+          <div class="tags"><span>Frío rápido</span><span>3 modelos</span></div>
           <div class="arrow">Ver catálogo →</div>
         </div>
         <div class="brand-card" data-reveal data-marca="pozos" role="button" tabindex="0">
@@ -2826,7 +2834,8 @@
     {k:'chocolatera', t:'Chocolatera', d:'Para trabajar chocolate en tu producción.', c:['#C23361','#EC4878','#3a0e1a']},
     {k:'varios', t:'Varios', d:'Mesadas y recipientes en acero inoxidable.', c:['#98A4B4','#5E7188','#1a2433']},
     {k:'abatidores', t:'Abatidores de frío', d:'Enfriamiento rápido para conservar tu producción.', c:['#38BDF8','#0C3FA0','#0B4A6B']},
-    {k:'pozos-frio', t:'Pozos de frío', d:'Conservación del helado a baño de glicol.', c:['#7DD3E8','#1078D6','#0B4A6B']}
+    {k:'pozos-frio', t:'Pozos de frío', d:'Conservación del helado a baño de glicol.', c:['#7DD3E8','#1078D6','#0B4A6B']},
+    {k:'mesada', t:'Máquinas de mesada', d:'Económicas, para empezar de manera rápida y sencilla.', c:['#38BDF8','#0C3FA0','#0B4A6B']}
   ];
 
 
@@ -3748,13 +3757,20 @@
       desc: 'Cryma Metalúrgica Pardo fabrica molinos coloidales homogeneizadores desde hace décadas, con presencia en toda la Argentina y exportaciones a América y Europa. En la heladería se usan para homogeneizar el mix, elaborar pulpas de fruta frescas y pastas de frutos secos.',
       tags: ['Homogeneizadores','Molinos coloidales']
     },
+    jem: {
+      nombre: 'JEM',
+      logo: 'assets/img/jem-logo.png',
+      tagline: 'Máquinas de helado de mesada, económicas y simples.',
+      desc: 'Máquinas de helado de mesada pensadas para hacer pruebas o para empezar de una manera rápida y sencilla, sin una gran inversión. Cuerpo de acero inoxidable, compresor GMCC y panel de control simple.',
+      tags: ['Mesada','Económica']
+    },
     // Líneas de frío: se muestran con marca propia (logo) y sin nombre de fabricante.
     abatidores: {
       nombre: 'Abatidores de frío',
       logo: 'assets/img/abatidores-logo.png',
       sinMarca: true, // el renglón de marca en la ficha repetiría el nombre del equipo
       tagline: 'Enfriamiento rápido para tu producción.',
-      desc: 'Abatidor para estantes y túnel de frío de paso continuo, con capacidad para bandejas GN 2/1. Consultá precio y disponibilidad.',
+      desc: 'Abatidores en dos tamaños (para estantes y para carros) y túnel de frío de paso continuo, con capacidad para bandejas GN 2/1. Consultá precio y disponibilidad.',
       tags: ['Abatidores','Frío rápido']
     },
     pozos: {
@@ -3972,12 +3988,14 @@
       specs:[['Construcción','Acero inoxidable'],['Incluye','Tapa con manija, ruedas'],['Medidas','A medida según necesidad']]},
 
     // ---- EQUIPOS DE FRÍO (sin marca) ----
-    {id:'abatidor-estantes', marca:'abatidores', cat:'abatidores', catLabel:'Abatidor para estantes',
-      titulo:'Abatidor de frío para estantes', subtitulo:'Abatidor de temperatura con estantes para bandejas GN 2/1: baja rápido la temperatura de tu producción para conservarla en condiciones.',
+    {id:'abatidor-frio', marca:'abatidores', cat:'abatidores', catLabel:'Abatidor para estantes y para carros',
+      titulo:'Abatidor de frío (para estantes y para carros)', subtitulo:'Abatidor de temperatura para bandejas GN 2/1: baja rápido la temperatura de tu producción para conservarla en condiciones. Se ofrece en dos tamaños: el modelo para carros es el más grande y recibe un carro completo.',
       img: 'assets/img/nuevas-ia/abatidor-estantes.jpg',
-      imgs: ['assets/img/nuevas-ia/abatidor-estantes.jpg','assets/img/nuevas-ia/abatidor-estantes-abierto.jpg'],
+      imgs: ['assets/img/nuevas-ia/abatidor-estantes.jpg','assets/img/nuevas-ia/abatidor-estantes-abierto.jpg','assets/img/nuevas-ia/abatidor-carros.jpg'],
       g:['#38BDF8','#0C3FA0'],
-      specs:[['Capacidad','12 bandejas GN 2/1 (530 × 650 mm)'],['Potencia frigorífica','3 HP'],['Dimensiones exteriores','Frente 850 × largo 800 × alto 2.000 mm'],['Alto útil','1.250 mm']]},
+      specs:[['Para estantes · Capacidad','12 bandejas GN 2/1'],['Para estantes · Potencia frigorífica','3 HP'],['Para estantes · Medidas (frente × largo × alto)','850 × 800 × 2.000 mm'],['Para estantes · Alto útil','1.250 mm'],
+        ['Para carros · Capacidad','1 carro con 20 bandejas GN 2/1'],['Para carros · Potencia frigorífica','5 HP'],['Para carros · Medidas (frente × largo × alto)','1.350 × 1.270 × 2.100 mm'],['Para carros · Alto útil','1.900 mm'],
+        ['Bandejas','530 × 650 mm (GN 2/1)']]},
     {id:'tunel-frio', marca:'abatidores', cat:'abatidores', catLabel:'Túnel de frío',
       titulo:'Túnel de frío', subtitulo:'Túnel de enfriamiento de paso continuo para líneas de producción: trabaja con 3 carros de 20 bandejas GN 2/1 cada uno.',
       img: 'assets/img/nuevas-ia/tunel-frio.jpg',
@@ -3988,6 +4006,15 @@
       img: 'assets/img/nuevas-ia/pozos-frio.jpg',
       g:['#7DD3E8','#1078D6'],
       specs:[['Modelos','6, 8, 10, 12 y 14 bocas'],['Sistema','Conservación a baño de glicol'],['A medida','Se consultan trabajos especiales']]},
+
+    // ---- JEM ----
+    {id:'jem-mesada', marca:'jem', cat:'mesada', catLabel:'Máquina de mesada',
+      titulo:'JEM Máquina de helado de mesada', subtitulo:'Máquina económica de mesada, ideal para pruebas o para comenzar de una manera rápida y sencilla. Cuerpo de acero inoxidable y compresor GMCC.',
+      img: 'assets/img/nuevas-ia/jem-mesada.jpg',
+      imgs: ['assets/img/nuevas-ia/jem-mesada.jpg','assets/img/nuevas-ia/jem-mesada-frente.jpg','assets/img/nuevas-ia/jem-mesada-lateral.jpg','assets/img/nuevas-ia/jem-mesada-lateral-2.jpg','assets/img/nuevas-ia/jem-mesada-tapa.jpg','assets/img/nuevas-ia/jem-mesada-cuba.jpg'],
+      video: 'assets/video/jem-mesada.mp4',
+      g:['#38BDF8','#0C3FA0'],
+      specs:[['Producción','16 L/h'],['Tolva de mezcla','4,3 L'],['Potencia','1.400 W'],['Alimentación','220 V · 60 Hz'],['Refrigerante','R410A'],['Compresor','GMCC'],['Cuerpo','Acero inoxidable'],['Medidas','525 × 490 × 640 mm'],['Peso neto','60 kg']]},
 
     // ---- CRYMA ----
     {id:'cryma-cmx', marca:'cryma', cat:'homogeneizadores', catLabel:'Molino coloidal homogeneizador',
@@ -4146,7 +4173,7 @@
     var mkEyebrowEl = document.getElementById('mkEyebrow');
     if (mkEyebrowEl) mkEyebrowEl.textContent = brand.eyebrow || 'Marca representada por MAQ.HEL';
     // Technogel ya tiene catálogo real cargado; Dualmet y JIT todavía no
-    if (mkDemoFlag) mkDemoFlag.style.display = (key === 'technogel' || key === 'dualmet' || key === 'cryma' || key === 'pozos' || brand.sinMarca) ? 'none' : '';
+    if (mkDemoFlag) mkDemoFlag.style.display = (key === 'technogel' || key === 'dualmet' || key === 'cryma' || key === 'pozos' || key === 'jem' || brand.sinMarca) ? 'none' : '';
     // el logo de JIT es texto oscuro sobre fondo transparente -- se invierte
     // para que se lea sobre este fondo oscuro, en vez de reemplazarlo por texto
     if (brand.logo){
