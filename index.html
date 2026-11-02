@@ -483,7 +483,6 @@
   /* líneas sin marca: el nombre del equipo ocupa el lugar del logo */
   .brand-logo-text{display:flex;align-items:center;min-height:30px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.45rem;letter-spacing:-.01em;color:var(--plata-1);opacity:.92;transition:color .35s var(--ease), opacity .35s var(--ease);}
   .brand-card:hover .brand-logo-text{color:#7FC4F5;opacity:1;}
-  .brands-sub{margin-top:84px;}
   .brand-card p{color:var(--muted);font-size:.92rem;line-height:1.55;margin-bottom:18px;}
   .brand-card .tags{display:flex;gap:8px;flex-wrap:wrap;}
   .brand-card .tags span{font-family:'IBM Plex Mono';font-size:.72rem;color:var(--muted-2);border:1px solid var(--line);padding:4px 10px;border-radius:100px;}
@@ -1281,29 +1280,20 @@
           <div class="tags"><span>Homogeneizadores</span></div>
           <div class="arrow">Ver catálogo →</div>
         </div>
-      </div>
-
-      <div class="brands-sub">
-        <div class="sec-head" data-reveal>
-          <span class="kicker">Equipos de frío</span>
-          <h2>Abatidores y pozos para tu heladería.</h2>
-          <p>Completá tu producción con equipos de frío. Consultá precio y disponibilidad.</p>
+        <!-- sin logo todavía: el nombre del equipo ocupa su lugar (.brand-logo-text) -->
+        <div class="brand-card" data-reveal data-marca="abatidores" role="button" tabindex="0">
+          <div class="glow" style="background:var(--frio-1)"></div>
+          <div class="brand-logo brand-logo-text">Abatidores de frío</div>
+          <p>Abatidores para estantes, para carros y de paso continuo, para enfriar rápido tu producción.</p>
+          <div class="tags"><span>Frío rápido</span><span>3 modelos</span></div>
+          <div class="arrow">Ver catálogo →</div>
         </div>
-        <div class="brands-grid">
-          <div class="brand-card" data-reveal data-marca="abatidores" role="button" tabindex="0">
-            <div class="glow" style="background:var(--frio-1)"></div>
-            <div class="brand-logo brand-logo-text">Abatidores de frío</div>
-            <p>Abatidores para estantes, para carros y de paso continuo, para enfriar rápido tu producción.</p>
-            <div class="tags"><span>Frío rápido</span><span>3 modelos</span></div>
-            <div class="arrow">Ver modelos →</div>
-          </div>
-          <div class="brand-card" data-reveal data-marca="pozos" role="button" tabindex="0">
-            <div class="glow" style="background:var(--calor-2)"></div>
-            <div class="brand-logo brand-logo-text">Pozos de frío</div>
-            <p>Conservadoras de helado a baño de glicol, de 6 a 14 bocas, también a medida.</p>
-            <div class="tags"><span>Baño de glicol</span><span>6 a 14 bocas</span></div>
-            <div class="arrow">Ver modelos →</div>
-          </div>
+        <div class="brand-card" data-reveal data-marca="pozos" role="button" tabindex="0">
+          <div class="glow" style="background:var(--calor-2)"></div>
+          <div class="brand-logo brand-logo-text">Pozos de frío</div>
+          <p>Conservadoras de helado a baño de glicol, de 6 a 14 bocas, también a medida.</p>
+          <div class="tags"><span>Baño de glicol</span><span>6 a 14 bocas</span></div>
+          <div class="arrow">Ver catálogo →</div>
         </div>
       </div>
     </div>
@@ -3989,6 +3979,7 @@
     {id:'abatidor-estantes', marca:'abatidores', cat:'abatidores', catLabel:'Abatidor para estantes',
       titulo:'Abatidor de frío para estantes', subtitulo:'Abatidor de temperatura con estantes para bandejas GN 2/1: baja rápido la temperatura de tu producción para conservarla en condiciones.',
       img: 'assets/img/nuevas-ia/abatidor-estantes.jpg',
+      imgs: ['assets/img/nuevas-ia/abatidor-estantes.jpg','assets/img/nuevas-ia/abatidor-estantes-abierto.jpg'],
       g:['#38BDF8','#0C3FA0'],
       specs:[['Capacidad','12 bandejas GN 2/1 (530 × 650 mm)'],['Potencia frigorífica','3 HP'],['Dimensiones exteriores','Frente 850 × largo 800 × alto 2.000 mm'],['Alto útil','1.250 mm']]},
     {id:'abatidor-carros', marca:'abatidores', cat:'abatidores', catLabel:'Abatidor para carros',
@@ -4383,6 +4374,20 @@
     thumbs.innerHTML = '';
     var thumbsWrap = document.querySelector('.pf-thumbs');
     if (thumbsWrap) thumbsWrap.style.display = 'none';
+    if (p.img && p.imgs && p.imgs.length > 1){
+      thumbsWrap.style.display = '';
+      p.imgs.forEach(function(u, i){
+        var t = document.createElement('div');
+        t.className = 'pf-thumb' + (i === 0 ? ' is-active' : '');
+        t.style.backgroundImage = 'url(' + u + ')';
+        t.onclick = function(){
+          main.style.backgroundImage = 'url(' + u + ')';
+          Array.prototype.forEach.call(thumbs.children, function(c){ c.classList.remove('is-active'); });
+          t.classList.add('is-active');
+        };
+        thumbs.appendChild(t);
+      });
+    }
 
     document.getElementById('pfSpecsGrid').innerHTML = p.specs.map(function(s){
       return '<div class="pf-spec-item"><span>'+s[0]+'</span><strong>'+s[1]+'</strong></div>';
