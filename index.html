@@ -480,6 +480,10 @@
   .brand-logo-img{height:30px;width:auto;display:block;filter:brightness(0) saturate(0) invert(1) opacity(.92);transition:filter .35s var(--ease);}
   .brand-card:hover .brand-logo-img{filter:none;}
   .brand-card[data-marca="jit"] .brand-logo-img{height:40px;}
+  /* líneas sin marca: el nombre del equipo ocupa el lugar del logo */
+  .brand-logo-text{display:flex;align-items:center;min-height:30px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.45rem;letter-spacing:-.01em;color:var(--plata-1);opacity:.92;transition:color .35s var(--ease), opacity .35s var(--ease);}
+  .brand-card:hover .brand-logo-text{color:#7FC4F5;opacity:1;}
+  .brands-sub{margin-top:84px;}
   .brand-card p{color:var(--muted);font-size:.92rem;line-height:1.55;margin-bottom:18px;}
   .brand-card .tags{display:flex;gap:8px;flex-wrap:wrap;}
   .brand-card .tags span{font-family:'IBM Plex Mono';font-size:.72rem;color:var(--muted-2);border:1px solid var(--line);padding:4px 10px;border-radius:100px;}
@@ -1276,6 +1280,30 @@
           <p>Molinos coloidales homogeneizadores: mezcla pareja del mix, pulpas de fruta frescas y pastas de frutos secos.</p>
           <div class="tags"><span>Homogeneizadores</span></div>
           <div class="arrow">Ver catálogo →</div>
+        </div>
+      </div>
+
+      <div class="brands-sub">
+        <div class="sec-head" data-reveal>
+          <span class="kicker">Equipos de frío</span>
+          <h2>Abatidores y pozos para tu heladería.</h2>
+          <p>Completá tu producción con equipos de frío. Consultá precio y disponibilidad.</p>
+        </div>
+        <div class="brands-grid">
+          <div class="brand-card" data-reveal data-marca="abatidores" role="button" tabindex="0">
+            <div class="glow" style="background:var(--frio-1)"></div>
+            <div class="brand-logo brand-logo-text">Abatidores de frío</div>
+            <p>Abatidores para estantes, para carros y de paso continuo, para enfriar rápido tu producción.</p>
+            <div class="tags"><span>Frío rápido</span><span>3 modelos</span></div>
+            <div class="arrow">Ver modelos →</div>
+          </div>
+          <div class="brand-card" data-reveal data-marca="pozos" role="button" tabindex="0">
+            <div class="glow" style="background:var(--calor-2)"></div>
+            <div class="brand-logo brand-logo-text">Pozos de frío</div>
+            <p>Conservadoras de helado a baño de glicol, de 6 a 14 bocas, también a medida.</p>
+            <div class="tags"><span>Baño de glicol</span><span>6 a 14 bocas</span></div>
+            <div class="arrow">Ver modelos →</div>
+          </div>
         </div>
       </div>
     </div>
@@ -2808,7 +2836,9 @@
     {k:'cocinas', t:'Cocinador', d:'Artesanal e industrial.', c:['#EC4878','#C23361','#3a0e1a']},
     {k:'otras', t:'Otros equipos', d:'Tinas, torres, bancos de agua y más.', c:['#98A4B4','#5E7188','#1a2433']},
     {k:'chocolatera', t:'Chocolatera', d:'Para trabajar chocolate en tu producción.', c:['#C23361','#EC4878','#3a0e1a']},
-    {k:'varios', t:'Varios', d:'Mesadas y recipientes en acero inoxidable.', c:['#98A4B4','#5E7188','#1a2433']}
+    {k:'varios', t:'Varios', d:'Mesadas y recipientes en acero inoxidable.', c:['#98A4B4','#5E7188','#1a2433']},
+    {k:'abatidores', t:'Abatidores de frío', d:'Enfriamiento rápido para conservar tu producción.', c:['#38BDF8','#0C3FA0','#0B4A6B']},
+    {k:'pozos-frio', t:'Pozos de frío', d:'Conservación del helado a baño de glicol.', c:['#7DD3E8','#1078D6','#0B4A6B']}
   ];
 
 
@@ -3729,6 +3759,24 @@
       tagline: 'Molinos coloidales homogeneizadores para la industria del helado.',
       desc: 'Cryma Metalúrgica Pardo fabrica molinos coloidales homogeneizadores desde hace décadas, con presencia en toda la Argentina y exportaciones a América y Europa. En la heladería se usan para homogeneizar el mix, elaborar pulpas de fruta frescas y pastas de frutos secos.',
       tags: ['Homogeneizadores','Molinos coloidales']
+    },
+    // Líneas de frío sin marca visible: se muestran por tipo de equipo. Para ponerles marca más adelante: logo + nombre,
+    // y sacar sinMarca/eyebrow.
+    abatidores: {
+      nombre: 'Abatidores de frío',
+      sinMarca: true,
+      eyebrow: 'Línea de equipos de frío',
+      tagline: 'Enfriamiento rápido para tu producción.',
+      desc: 'Abatidores para estantes, para carros y de paso continuo, con capacidad para bandejas GN 2/1. Consultá precio y disponibilidad.',
+      tags: ['Abatidores','Frío rápido']
+    },
+    pozos: {
+      nombre: 'Pozos de frío',
+      sinMarca: true,
+      eyebrow: 'Línea de equipos de frío',
+      tagline: 'Conservadoras de helado a baño de glicol.',
+      desc: 'Pozos de helado de 6 a 14 bocas, con baño de glicol. También se hacen trabajos especiales y a medida. Consultá precio y disponibilidad.',
+      tags: ['Pozos de helado','Baño de glicol']
     }
   };
 
@@ -3937,6 +3985,28 @@
       g:['#5E7188','#98A4B4'],
       specs:[['Construcción','Acero inoxidable'],['Incluye','Tapa con manija, ruedas'],['Medidas','A medida según necesidad']]},
 
+    // ---- EQUIPOS DE FRÍO (sin marca) ----
+    {id:'abatidor-estantes', marca:'abatidores', cat:'abatidores', catLabel:'Abatidor para estantes',
+      titulo:'Abatidor de frío para estantes', subtitulo:'Abatidor de temperatura con estantes para bandejas GN 2/1: baja rápido la temperatura de tu producción para conservarla en condiciones.',
+      img: 'assets/img/nuevas-ia/abatidor-estantes.jpg',
+      g:['#38BDF8','#0C3FA0'],
+      specs:[['Capacidad','12 bandejas GN 2/1 (530 × 650 mm)'],['Potencia frigorífica','3 HP'],['Dimensiones exteriores','Frente 850 × largo 800 × alto 2.000 mm'],['Alto útil','1.250 mm']]},
+    {id:'abatidor-carros', marca:'abatidores', cat:'abatidores', catLabel:'Abatidor para carros',
+      titulo:'Abatidor de frío para carros', subtitulo:'Abatidor de temperatura donde entra un carro completo con 20 bandejas GN 2/1: ideal para mayores volúmenes de producción.',
+      img: 'assets/img/nuevas-ia/abatidor-carros.jpg',
+      g:['#38BDF8','#0C3FA0'],
+      specs:[['Capacidad','1 carro con 20 bandejas GN 2/1 (530 × 650 mm)'],['Potencia frigorífica','5 HP'],['Dimensiones exteriores','Frente 1.350 × largo 1.270 × alto 2.100 mm'],['Alto útil','1.900 mm']]},
+    {id:'abatidor-paso-continuo', marca:'abatidores', cat:'abatidores', catLabel:'Abatidor de paso continuo',
+      titulo:'Abatidor de frío de paso continuo', subtitulo:'Abatidor de paso continuo para líneas de producción: trabaja con 3 carros de 20 bandejas GN 2/1 cada uno.',
+      img: 'assets/img/nuevas-ia/abatidor-paso-continuo.jpg',
+      g:['#0C3FA0','#38BDF8'],
+      specs:[['Capacidad','3 carros con 20 bandejas GN 2/1 cada uno'],['Potencia frigorífica','10 HP'],['Dimensiones exteriores','Frente 1.700 × largo 2.600 × alto 2.200 mm'],['Alto útil','1.900 mm']]},
+    {id:'pozos-helado-glicol', marca:'pozos', cat:'pozos-frio', catLabel:'Pozos de helado a baño de glicol',
+      titulo:'Pozos de helado a baño de glicol (6 a 14 bocas)', subtitulo:'Conservadoras de helado de baño de glicol, con tapas individuales para cada balde. Disponibles de 6 a 14 bocas; también se fabrican trabajos especiales y a medida.',
+      img: 'assets/img/nuevas-ia/pozos-frio.jpg',
+      g:['#7DD3E8','#1078D6'],
+      specs:[['Modelos','6, 8, 10, 12 y 14 bocas'],['Sistema','Conservación a baño de glicol'],['A medida','Se consultan trabajos especiales']]},
+
     // ---- CRYMA ----
     {id:'cryma-cmx', marca:'cryma', cat:'homogeneizadores', catLabel:'Molino coloidal homogeneizador',
       titulo:'Cryma Molino Coloidal Homogeneizador CMX', subtitulo:'Muele, homogeneiza y dispersa productos húmedos, semi-líquidos o viscosos. En heladería se usa para homogeneizar el mix, elaborar pulpas de fruta frescas y pastas de frutos secos y bebidas vegetales; también sirve para mayonesa, mostaza y salsas.',
@@ -4091,8 +4161,10 @@
     var mkTitleEl = document.getElementById('mkTitle');
     var mkLogoImg = document.getElementById('mkLogoImg');
     var mkDemoFlag = document.getElementById('mkDemoFlag');
+    var mkEyebrowEl = document.getElementById('mkEyebrow');
+    if (mkEyebrowEl) mkEyebrowEl.textContent = brand.eyebrow || 'Marca representada por MAQ.HEL';
     // Technogel ya tiene catálogo real cargado; Dualmet y JIT todavía no
-    if (mkDemoFlag) mkDemoFlag.style.display = (key === 'technogel' || key === 'dualmet' || key === 'cryma') ? 'none' : '';
+    if (mkDemoFlag) mkDemoFlag.style.display = (key === 'technogel' || key === 'dualmet' || key === 'cryma' || brand.sinMarca) ? 'none' : '';
     // el logo de JIT es texto oscuro sobre fondo transparente -- se invierte
     // para que se lea sobre este fondo oscuro, en vez de reemplazarlo por texto
     if (brand.logo){
@@ -4290,7 +4362,9 @@
     var brand = brandsData[p.marca] || {nombre: p.marca};
 
     document.getElementById('pfCategoria').innerHTML = p.catLabel + (p.nuevo ? ' <b class="badge-nuevo">Nuevo modelo</b>' : '');
-    document.getElementById('pfMarca').textContent = brand.nombre;
+    var pfMarcaEl = document.getElementById('pfMarca');
+    pfMarcaEl.textContent = brand.sinMarca ? '' : brand.nombre;
+    pfMarcaEl.style.display = brand.sinMarca ? 'none' : '';
     document.getElementById('pfTitulo').textContent = stripBrandPrefix(p.titulo, p.marca);
     document.getElementById('pfSubtitulo').textContent = p.subtitulo;
     document.getElementById('pfBackMarca').href = '#marca-' + p.marca + '--' + p.cat;
