@@ -994,6 +994,14 @@
   .pf-spec-item{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 16px;}
   .pf-spec-item span{display:block;color:var(--muted-2);font-size:.66rem;font-family:'IBM Plex Mono';text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;}
   .pf-spec-item strong{font-size:.87rem;color:var(--hielo);font-weight:600;line-height:1.45;}
+  .pf-tabla{width:100%;border-collapse:separate;border-spacing:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:.84rem;}
+  .pf-tabla th,.pf-tabla td{padding:11px 14px;text-align:center;border-bottom:1px solid var(--line);line-height:1.4;vertical-align:middle;}
+  .pf-tabla tr:last-child th,.pf-tabla tr:last-child td{border-bottom:0;}
+  .pf-tabla thead th{color:var(--frio-1);font-family:'IBM Plex Mono';font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;font-weight:600;background:rgba(56,189,248,.07);}
+  .pf-tabla thead th:first-child,.pf-tabla tbody th{text-align:left;}
+  .pf-tabla tbody th{color:var(--muted-2);font-weight:500;font-size:.78rem;}
+  .pf-tabla td{color:var(--hielo);font-weight:600;border-left:1px solid var(--line);}
+  @media(max-width:560px){.pf-tabla{font-size:.78rem;}.pf-tabla th,.pf-tabla td{padding:9px 8px;}}
 </style>
 </head>
 <body>
@@ -1283,8 +1291,8 @@
         <div class="brand-card" data-reveal data-marca="jem" role="button" tabindex="0">
           <div class="glow" style="background:var(--frio-2)"></div>
           <img class="brand-logo brand-logo-img" src="assets/img/jem-logo.png" alt="JEM">
-          <p>Máquinas de helado de mesada, económicas y a 220 V: para hacer pruebas o empezar de manera rápida y sencilla.</p>
-          <div class="tags"><span>Mesada</span><span>Económica</span><span>220 V</span></div>
+          <p>Máquinas de helado de mesada, económicas y a 220 V monofásica: para hacer pruebas o empezar de manera rápida y sencilla.</p>
+          <div class="tags"><span>Mesada</span><span>Económica</span><span>220 V monofásica</span></div>
           <div class="arrow">Ver catálogo →</div>
         </div>
         <div class="brand-card" data-reveal data-marca="abatidores" role="button" tabindex="0">
@@ -3761,8 +3769,8 @@
       nombre: 'JEM',
       logo: 'assets/img/jem-logo.png',
       tagline: 'Máquinas de helado de mesada, económicas y simples.',
-      desc: 'Máquinas de helado de mesada pensadas para hacer pruebas o para empezar de una manera rápida y sencilla, sin una gran inversión. Funcionan a 220 V, así que se enchufan en tu casa sin problema, y son condensadas por aire. Cuerpo de acero inoxidable, compresor GMCC y panel de control simple.',
-      tags: ['Mesada','Económica','220 V']
+      desc: 'Máquinas de helado de mesada pensadas para hacer pruebas o para empezar de una manera rápida y sencilla, sin una gran inversión. Funcionan a 220 V monofásica, así que se enchufan en tu casa sin problema, y son condensadas por aire. Cuerpo de acero inoxidable, compresor GMCC y panel de control simple.',
+      tags: ['Mesada','Económica','220 V monofásica']
     },
     // Líneas de frío: se muestran con marca propia (logo) y sin nombre de fabricante.
     abatidores: {
@@ -3991,11 +3999,18 @@
     {id:'abatidor-frio', marca:'abatidores', cat:'abatidores', catLabel:'Abatidor para estantes y para carros',
       titulo:'Abatidor de frío (para estantes y para carros)', subtitulo:'Abatidor de temperatura para bandejas GN 2/1: baja rápido la temperatura de tu producción para conservarla en condiciones. Se ofrece en dos tamaños: el modelo para carros es el más grande y recibe un carro completo.',
       img: 'assets/img/nuevas-ia/abatidor-estantes.jpg',
-      imgs: ['assets/img/nuevas-ia/abatidor-estantes.jpg','assets/img/nuevas-ia/abatidor-estantes-abierto.jpg','assets/img/nuevas-ia/abatidor-carros.jpg'],
+      imgs: ['assets/img/nuevas-ia/abatidor-estantes.jpg','assets/img/nuevas-ia/abatidor-estantes-abierto.jpg'],
       g:['#38BDF8','#0C3FA0'],
-      specs:[['Para estantes · Capacidad','12 bandejas GN 2/1'],['Para estantes · Potencia frigorífica','3 HP'],['Para estantes · Medidas (frente × largo × alto)','850 × 800 × 2.000 mm'],['Para estantes · Alto útil','1.250 mm'],
-        ['Para carros · Capacidad','1 carro con 20 bandejas GN 2/1'],['Para carros · Potencia frigorífica','5 HP'],['Para carros · Medidas (frente × largo × alto)','1.350 × 1.270 × 2.100 mm'],['Para carros · Alto útil','1.900 mm'],
-        ['Bandejas','530 × 650 mm (GN 2/1)']]},
+      specs:[],
+      tabla:{cols:['Para estantes','Para carros'], rows:[
+        ['Frente','850 mm','1.350 mm'],
+        ['Largo','800 mm','1.270 mm'],
+        ['Alto','2.000 mm','2.100 mm'],
+        ['Potencia frigorífica','3 HP','5 HP'],
+        ['Alto útil','1.250 mm','1.900 mm'],
+        ['Capacidad para bandejas','12 bandejas GN 2/1','1 carro con 20 bandejas GN 2/1'],
+        ['Dimensiones de bandejas','530 mm × 650 mm','530 mm × 650 mm']
+      ]}},
     {id:'tunel-frio', marca:'abatidores', cat:'abatidores', catLabel:'Túnel de frío',
       titulo:'Túnel de frío', subtitulo:'Túnel de enfriamiento de paso continuo para líneas de producción: trabaja con 3 carros de 20 bandejas GN 2/1 cada uno.',
       img: 'assets/img/nuevas-ia/tunel-frio.jpg',
@@ -4009,12 +4024,12 @@
 
     // ---- JEM ----
     {id:'jem-mesada', marca:'jem', cat:'mesada', catLabel:'Máquina de mesada',
-      titulo:'JEM Máquina de helado de mesada', subtitulo:'Máquina económica de mesada, ideal para pruebas o para comenzar de una manera rápida y sencilla. Funciona a 220 V: la enchufás en tu casa sin problema. Condensada por aire.',
+      titulo:'JEM Máquina de helado de mesada', subtitulo:'Máquina económica de mesada, ideal para pruebas o para comenzar de una manera rápida y sencilla. Funciona a 220 V monofásica: la enchufás en tu casa sin problema. Condensada por aire.',
       img: 'assets/img/nuevas-ia/jem-mesada.jpg',
       imgs: ['assets/img/nuevas-ia/jem-mesada.jpg','assets/img/nuevas-ia/jem-mesada-frente.jpg','assets/img/nuevas-ia/jem-mesada-lateral.jpg','assets/img/nuevas-ia/jem-mesada-lateral-2.jpg','assets/img/nuevas-ia/jem-mesada-tapa.jpg','assets/img/nuevas-ia/jem-mesada-cuba.jpg'],
       video: 'assets/video/jem-mesada.mp4',
       g:['#38BDF8','#0C3FA0'],
-      specs:[['Producción','16 L/h'],['Tolva de mezcla','4,3 L'],['Potencia','1.400 W'],['Alimentación','220 V · 60 Hz (se enchufa en tu casa)'],['Condensación','Por aire'],['Refrigerante','R410A'],['Compresor','GMCC'],['Cuerpo','Acero inoxidable'],['Medidas','525 × 490 × 640 mm'],['Peso neto','60 kg']]},
+      specs:[['Producción','16 L/h'],['Tolva de mezcla','4,3 L'],['Potencia','1.400 W'],['Alimentación','220 V monofásica · 60 Hz (se enchufa en tu casa)'],['Condensación','Por aire'],['Refrigerante','R410A'],['Compresor','GMCC'],['Cuerpo','Acero inoxidable'],['Medidas','525 × 490 × 640 mm'],['Peso neto','60 kg']]},
 
     // ---- CRYMA ----
     {id:'cryma-cmx', marca:'cryma', cat:'homogeneizadores', catLabel:'Molino coloidal homogeneizador',
@@ -4407,9 +4422,12 @@
       });
     }
 
-    document.getElementById('pfSpecsGrid').innerHTML = p.specs.map(function(s){
-      return '<div class="pf-spec-item"><span>'+s[0]+'</span><strong>'+s[1]+'</strong></div>';
-    }).join('');
+    document.getElementById('pfSpecsGrid').innerHTML = p.tabla
+      ? '<table class="pf-tabla"><thead><tr><th>Características</th>' + p.tabla.cols.map(function(c){ return '<th>'+c+'</th>'; }).join('') + '</tr></thead><tbody>' +
+        p.tabla.rows.map(function(r){ return '<tr>' + r.map(function(c, i){ return i ? '<td>'+c+'</td>' : '<th scope="row">'+c+'</th>'; }).join('') + '</tr>'; }).join('') + '</tbody></table>'
+      : p.specs.map(function(s){
+          return '<div class="pf-spec-item"><span>'+s[0]+'</span><strong>'+s[1]+'</strong></div>';
+        }).join('');
 
     // video: opción B — un botón play sobre la foto principal la reemplaza por el video
     var pfVideo = document.getElementById('pfMainVideo');
