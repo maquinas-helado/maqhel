@@ -480,9 +480,8 @@
   .brand-logo-img{height:30px;width:auto;display:block;filter:brightness(0) saturate(0) invert(1) opacity(.92);transition:filter .35s var(--ease);}
   .brand-card:hover .brand-logo-img{filter:none;}
   .brand-card[data-marca="jit"] .brand-logo-img{height:40px;}
-  /* líneas sin marca: el nombre del equipo ocupa el lugar del logo */
-  .brand-logo-text{display:flex;align-items:center;min-height:30px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.45rem;letter-spacing:-.01em;color:var(--plata-1);opacity:.92;transition:color .35s var(--ease), opacity .35s var(--ease);}
-  .brand-card:hover .brand-logo-text{color:#7FC4F5;opacity:1;}
+  .brand-card[data-marca="abatidores"] .brand-logo-img{height:34px;}
+  .brand-card[data-marca="pozos"] .brand-logo-img{height:56px;margin:-10px 0 -4px;}
   .brand-card p{color:var(--muted);font-size:.92rem;line-height:1.55;margin-bottom:18px;}
   .brand-card .tags{display:flex;gap:8px;flex-wrap:wrap;}
   .brand-card .tags span{font-family:'IBM Plex Mono';font-size:.72rem;color:var(--muted-2);border:1px solid var(--line);padding:4px 10px;border-radius:100px;}
@@ -1280,17 +1279,16 @@
           <div class="tags"><span>Homogeneizadores</span></div>
           <div class="arrow">Ver catálogo →</div>
         </div>
-        <!-- sin logo todavía: el nombre del equipo ocupa su lugar (.brand-logo-text) -->
         <div class="brand-card" data-reveal data-marca="abatidores" role="button" tabindex="0">
           <div class="glow" style="background:var(--frio-1)"></div>
-          <div class="brand-logo brand-logo-text">Abatidores de frío</div>
+          <img class="brand-logo brand-logo-img" src="assets/img/abatidores-logo.png" alt="Abatidores de frío">
           <p>Abatidores para estantes, para carros y de paso continuo, para enfriar rápido tu producción.</p>
           <div class="tags"><span>Frío rápido</span><span>3 modelos</span></div>
           <div class="arrow">Ver catálogo →</div>
         </div>
         <div class="brand-card" data-reveal data-marca="pozos" role="button" tabindex="0">
           <div class="glow" style="background:var(--calor-2)"></div>
-          <div class="brand-logo brand-logo-text">Pozos de frío</div>
+          <img class="brand-logo brand-logo-img" src="assets/img/pozos-logo.png" alt="Friowell, pozos de frío">
           <p>Conservadoras de helado a baño de glicol, de 6 a 14 bocas, también a medida.</p>
           <div class="tags"><span>Baño de glicol</span><span>6 a 14 bocas</span></div>
           <div class="arrow">Ver catálogo →</div>
@@ -3750,20 +3748,18 @@
       desc: 'Cryma Metalúrgica Pardo fabrica molinos coloidales homogeneizadores desde hace décadas, con presencia en toda la Argentina y exportaciones a América y Europa. En la heladería se usan para homogeneizar el mix, elaborar pulpas de fruta frescas y pastas de frutos secos.',
       tags: ['Homogeneizadores','Molinos coloidales']
     },
-    // Líneas de frío sin marca visible: se muestran por tipo de equipo. Para ponerles marca más adelante: logo + nombre,
-    // y sacar sinMarca/eyebrow.
+    // Líneas de frío: se muestran con marca propia (logo) y sin nombre de fabricante.
     abatidores: {
       nombre: 'Abatidores de frío',
-      sinMarca: true,
-      eyebrow: 'Línea de equipos de frío',
+      logo: 'assets/img/abatidores-logo.png',
+      sinMarca: true, // el renglón de marca en la ficha repetiría el nombre del equipo
       tagline: 'Enfriamiento rápido para tu producción.',
       desc: 'Abatidores para estantes, para carros y de paso continuo, con capacidad para bandejas GN 2/1. Consultá precio y disponibilidad.',
       tags: ['Abatidores','Frío rápido']
     },
     pozos: {
-      nombre: 'Pozos de frío',
-      sinMarca: true,
-      eyebrow: 'Línea de equipos de frío',
+      nombre: 'Friowell',
+      logo: 'assets/img/pozos-logo.png',
       tagline: 'Conservadoras de helado a baño de glicol.',
       desc: 'Pozos de helado de 6 a 14 bocas, con baño de glicol. También se hacen trabajos especiales y a medida. Consultá precio y disponibilidad.',
       tags: ['Pozos de helado','Baño de glicol']
@@ -4155,7 +4151,7 @@
     var mkEyebrowEl = document.getElementById('mkEyebrow');
     if (mkEyebrowEl) mkEyebrowEl.textContent = brand.eyebrow || 'Marca representada por MAQ.HEL';
     // Technogel ya tiene catálogo real cargado; Dualmet y JIT todavía no
-    if (mkDemoFlag) mkDemoFlag.style.display = (key === 'technogel' || key === 'dualmet' || key === 'cryma' || brand.sinMarca) ? 'none' : '';
+    if (mkDemoFlag) mkDemoFlag.style.display = (key === 'technogel' || key === 'dualmet' || key === 'cryma' || key === 'pozos' || brand.sinMarca) ? 'none' : '';
     // el logo de JIT es texto oscuro sobre fondo transparente -- se invierte
     // para que se lea sobre este fondo oscuro, en vez de reemplazarlo por texto
     if (brand.logo){
