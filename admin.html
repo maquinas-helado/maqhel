@@ -702,8 +702,28 @@
         if (row) row.status = newStatus;
         updateCounts();
         renderTab();
+        // al aprobar, el vendedor recibe por WhatsApp el link de su publicación
+        if (action === 'publish') notifySellerPublished(id);
       });
     });
+  }
+
+  // la función valida con el token de la sesión que quien pide es admin; el aviso
+  // se manda una sola vez por publicación (si la despublicás y la volvés a aprobar no se repite)
+  async function notifySellerPublished(listingId){
+    try {
+      var { data: { session } } = await sb.auth.getSession();
+      var res = await fetch('/.netlify/functions/wa-notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (session ? session.access_token : '') },
+        body: JSON.stringify({ tipo: 'aprobada', listingId: listingId })
+      });
+      var out = await res.json().catch(function(){ return {}; });
+      if (out.sent || out.skipped === 'not_configured' || out.skipped === 'already_sent') return;
+      alert('La publicación quedó aprobada, pero no se pudo enviar el WhatsApp al vendedor (' + (out.error || out.skipped || 'error desconocido') + '). Escribile vos desde su ficha.');
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   function renderPriceRequests(){

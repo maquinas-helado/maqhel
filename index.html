@@ -1541,7 +1541,7 @@
               <p class="vd-note">Estos datos no se muestran públicamente. Solo los verá el comprador una vez confirmada la venta.</p>
               <div class="vd-grid2">
                 <div class="vd-field"><label>Nombre</label><input type="text" name="nombre" required></div>
-                <div class="vd-field"><label>Contacto (WhatsApp / email)</label><input type="text" name="contacto" required></div>
+                <div class="vd-field"><label>WhatsApp</label><div class="ld-phone-row"><select id="vdCountryCode" class="ld-country-select"></select><input type="text" name="whatsapp_local" required placeholder="Ej: 11 5555-5555"></div></div>
                 <div class="vd-field"><label>Dirección</label><input type="text" name="direccion"></div>
                 <div class="vd-field"><label>Localidad</label><input type="text" name="localidad"></div>
                 <div class="vd-field"><label>Provincia</label><input type="text" name="provincia"></div>
@@ -1591,7 +1591,7 @@
             <div class="vd-card vd-done">
               <div class="vd-done-icon">✓</div>
               <h3>¡Recibimos tu máquina!</h3>
-              <p>La estamos revisando y en breve sale a la vidriera para empezar a recibir consultas de compradores reales. Te avisamos por el contacto que nos dejaste.</p>
+              <p>La estamos revisando y en breve sale a la vidriera para empezar a recibir consultas de compradores reales. Te avisamos por WhatsApp: ahora te llega la confirmación de recepción y, cuando la aprobemos, el link de tu publicación.</p>
               <a href="#usada" class="btn btn-primary">Ver la vidriera →</a>
               <a href="#vender" id="vdPublishAnother" class="btn btn-ghost" style="margin-top:10px;">Publicar otra máquina →</a>
             </div>
@@ -2620,7 +2620,13 @@
             if (slotNum === '7') videoUrl = url; else fotos.push(url);
           }
 
+          // el id se arma acá (en vez de dejarlo a la base) porque el público no puede
+          // leer publicaciones pendientes: sin esto no sabríamos cuál avisar por WhatsApp
+          var listingId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : null;
+          var telVendedor = '+' + document.getElementById('vdCountryCode').value + (fd.get('whatsapp_local') || '').replace(/[^\d]/g, '');
+
           var listing = {
+            id: listingId || undefined,
             status: 'pending',
             marca: marca || '',
             tipo: tipo || '',
@@ -2642,12 +2648,25 @@
             cuotas: fd.get('cuotas') === 'si',
             cuotas_como: fd.get('cuotas_como') || '',
             contacto_nombre: fd.get('nombre') || '',
-            contacto_info: fd.get('contacto') || '',
+            contacto_info: telVendedor,
             direccion: fd.get('direccion') || ''
           };
 
           var { error } = await window.mhSupabase.from('listings').insert(listing);
           if (error) throw error;
+
+          // WhatsApp automático de "recibimos tu solicitud": si falla o todavía no
+          // está configurado, la publicación igual quedó guardada
+          if (listingId){
+            try {
+              fetch('/.netlify/functions/wa-notify', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ tipo: 'recibida', listingId: listingId }),
+                keepalive: true
+              }).catch(function(){});
+            } catch (e) {}
+          }
 
           current = 6;
           renderStep();
@@ -3362,7 +3381,7 @@
       return '<option value="'+c.c+'">'+c.f+' +'+c.c+'</option>';
     }).join('');
   }
-  ['ldCountryCode','smCountryCode','spCountryCode','mrCountryCode','ldPreventaCountryCode'].forEach(fillCountrySelect);
+  ['ldCountryCode','smCountryCode','spCountryCode','mrCountryCode','ldPreventaCountryCode','vdCountryCode'].forEach(fillCountrySelect);
 
   function ldPlaceholderBg(l){
     var c = (l.g && l.g[0]) ? l.g[0] : '#1078D6';
