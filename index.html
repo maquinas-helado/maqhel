@@ -540,6 +540,9 @@
   .sort-field select{background:var(--panel);border:1px solid var(--line);color:var(--hielo);border-radius:100px;padding:8px 14px;font-size:.82rem;font-family:inherit;cursor:pointer;}
   .sort-field select:focus{outline:none;border-color:var(--frio-1);}
   .listing-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;align-items:start;}
+  .listing-group-head{grid-column:1/-1;display:flex;align-items:baseline;gap:10px;margin:18px 0 -2px;padding-bottom:10px;border-bottom:1px solid var(--line);font-size:1.02rem;font-weight:700;color:var(--hielo);}
+  .listing-group-head:first-child{margin-top:0;}
+  .listing-group-head span{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.74rem;font-weight:400;color:var(--muted-2);}
   @media(max-width:640px){.listing-grid{grid-template-columns:repeat(2,1fr);gap:10px;}}
   .listing{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:transform .4s var(--ease), border-color .4s;cursor:pointer;display:flex;flex-direction:column;}
   .listing:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.18);}
@@ -1329,6 +1332,7 @@
             <div class="chips">
               <div class="chip active" data-filter="todas">Todas</div>
               <div class="chip" data-filter="Fabricadoras">Fabricadoras</div>
+              <div class="chip" data-filter="Vitrinas">Vitrinas</div>
               <div class="chip" data-filter="Cocinas">Cocinas</div>
               <div class="chip" data-filter="Pasteurizadores">Pasteurizadoras</div>
               <div class="chip" data-filter="Tinas">Tinas</div>
@@ -2870,6 +2874,30 @@
     return 'Otras';
   }
 
+  // grupo visual de la vidriera: "tipo" es texto libre cuando se elige "Otras"
+  // (vitrina, Vitrina, Heladera exhibidora...), así que se agrupa por palabras clave.
+  // El orden de este arreglo es el orden en que aparecen los grupos.
+  var GRUPOS_USADAS = [
+    {k:'Vitrinas', t:'Vitrinas y exhibidoras', re:/vitrina|exhibidora|armario|mostrador/},
+    {k:'Fabricadoras continuas', t:'Fabricadoras continuas', re:/fabricadora continua/},
+    {k:'Fabricadoras discontinuas', t:'Fabricadoras discontinuas', re:/fabricadora discontinua/},
+    {k:'Soft', t:'Soft, combinadas y cremeras', re:/soft|candy|combinada|cremera/},
+    {k:'Pasteurizadores', t:'Pasteurizadores', re:/pasteuriz/},
+    {k:'Cocinas', t:'Cocinadores', re:/cocin/},
+    {k:'Tinas', t:'Tinas de maduración', re:/tina/},
+    {k:'Sembradoras', t:'Dosificadoras', re:/dosificadora|sembradora/},
+    {k:'Molinos', t:'Molinos y homogeneizadores', re:/molino|homogeneiz/},
+    {k:'Frio', t:'Equipos de frío', re:/placa|c[aá]mara|enfria/},
+    {k:'Calderas', t:'Calderas', re:/caldera/}
+  ];
+  function grupoDe(tipo){
+    var s = String(tipo || '').toLowerCase();
+    for (var i = 0; i < GRUPOS_USADAS.length; i++){
+      if (GRUPOS_USADAS[i].re.test(s)) return GRUPOS_USADAS[i].k;
+    }
+    return 'Otras';
+  }
+
   // publicaciones reales, ya aprobadas (status = 'published'), traídas de Supabase
   var realListings = [];
   var realListingsLoaded = false;
@@ -2894,6 +2922,7 @@
           cond: isPreventa ? 'Pre-venta' : 'Usada · Publicada por heladero',
           g: isPreventa ? ['#FFC24B','#C2861A'] : ['#1078D6','#0C3FA0'],
           cat: categorize(u.tipo),
+          grupo: grupoDe(u.tipo),
           tag: isPreventa ? 'Pre-venta' : 'Publicada',
           img: (u.fotos && u.fotos[0]) || null,
           imgs: u.fotos || [],
@@ -2935,7 +2964,7 @@
       if (filter === 'garantia') return l.garantia === 'si';
       if (filter === 'financiacion') return l.cuotas === 'si';
       if (filter === 'oportunidad') return !!l.etiqueta;
-      return l.cat === filter;
+      return l.cat === filter || l.grupo === filter;
     });
     // "más recientes" ya viene así de Supabase (order by created_at desc);
     // para precio, las que no tienen precio cargado (pre-venta, por ejemplo)
@@ -2955,8 +2984,16 @@
       grid.innerHTML = '<p style="color:var(--muted);padding:20px 0;">No hay máquinas en esta categoría todavía.</p>';
       return;
     }
-    grid.innerHTML = filtered.map(function(l){
-      var bg = l.img ? ('background-image:url(' + l.img + ');background-color:var(--panel-2);background-size:contain;background-repeat:no-repeat;background-position:center;')
+    // agrupa por tipo de máquina (dentro de cada grupo se respeta el orden elegido);
+    // con un solo grupo no hace falta encabezado
+    var porGrupo = {};
+    filtered.forEach(function(l){ (porGrupo[l.grupo] = porGrupo[l.grupo] || []).push(l); });
+    var ordenGrupos = GRUPOS_USADAS.map(function(g){ return g.k; }).concat('Otras')
+      .filter(function(k){ return porGrupo[k]; });
+    var tituloGrupo = {Otras:'Otras máquinas'};
+    GRUPOS_USADAS.forEach(function(g){ tituloGrupo[g.k] = g.t; });
+    var cardHtml = function(l){
+      var bg =l.img ? ('background-image:url(' + l.img + ');background-color:var(--panel-2);background-size:contain;background-repeat:no-repeat;background-position:center;')
                       : ('background:linear-gradient(135deg,' + l.g[0] + ',#0F1B2E 70%);');
       var reservada = isReserved(l);
       return '<div class="listing'+(reservada?' is-reserved':'')+'" data-reveal data-id="'+l.id+'" role="button" tabindex="0">'+
@@ -2967,6 +3004,12 @@
           '<span class="mh-status-badge">'+l.cond+'</span>'+
         '</div>'+
       '</div>';
+    };
+    grid.innerHTML = ordenGrupos.map(function(k){
+      var head = ordenGrupos.length > 1
+        ? '<h3 class="listing-group-head">' + tituloGrupo[k] + ' <span>' + porGrupo[k].length + '</span></h3>'
+        : '';
+      return head + porGrupo[k].map(cardHtml).join('');
     }).join('');
     observeReveal();
   }
