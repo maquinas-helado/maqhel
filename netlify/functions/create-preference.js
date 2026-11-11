@@ -30,7 +30,7 @@ exports.handler = async function (event) {
 
   const { data: listing, error: listingErr } = await supabase
     .from('listings')
-    .select('id, marca, modelo, tipo, precio, moneda, status, reserved_until')
+    .select('*')
     .eq('id', listingId)
     .single();
 
@@ -39,6 +39,9 @@ exports.handler = async function (event) {
   }
   if (listing.status !== 'published') {
     return { statusCode: 400, body: JSON.stringify({ error: 'Esta publicación no está disponible' }) };
+  }
+  if (listing.vendida) {
+    return { statusCode: 409, body: JSON.stringify({ error: 'Esta máquina ya fue vendida' }) };
   }
   if (listing.reserved_until && new Date(listing.reserved_until) > new Date()) {
     return { statusCode: 409, body: JSON.stringify({ error: 'Esta máquina ya está reservada' }) };

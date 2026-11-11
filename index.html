@@ -461,8 +461,8 @@
   .live-card h5{font-size:.84rem;margin:5px 0 3px;font-weight:600;text-transform:uppercase;}
   .live-card .mo-label{display:block;color:var(--muted-2);font-size:.62rem;font-family:'IBM Plex Mono';text-transform:uppercase;letter-spacing:.05em;}
   .live-card .meta{font-size:.7rem;color:var(--muted-2);display:flex;justify-content:space-between;}
-  .live-card.is-reserved .shot{filter:grayscale(.5) brightness(.55);}
-  .live-card.is-reserved .body{opacity:.6;}
+  .live-card.is-reserved .shot, .live-card.is-sold .shot{filter:grayscale(.5) brightness(.55);}
+  .live-card.is-reserved .body, .live-card.is-sold .body{opacity:.6;}
 
   .brands-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
   @media(max-width:880px){.brands-grid{grid-template-columns:1fr;}}
@@ -554,8 +554,19 @@
   .listing .body h4{font-size:.86rem;margin:5px 0 3px;font-weight:600;line-height:1.3;}
   .listing .body .meta{font-size:.72rem;color:var(--muted-2);}
   .mh-status-badge{display:inline-flex;align-items:center;margin-top:8px;background:rgba(6,11,20,.5);color:var(--muted-2);font-size:.68rem;padding:5px 10px;border-radius:100px;font-family:'IBM Plex Mono';border:1px solid var(--line);}
-  .listing.is-reserved .stage{filter:grayscale(.5) brightness(.55);}
-  .listing.is-reserved .body{opacity:.6;}
+  .listing.is-reserved .stage, .listing.is-sold .stage{filter:grayscale(.5) brightness(.55);}
+  .listing.is-reserved .body, .listing.is-sold .body{opacity:.6;}
+  /* franja roja cruzada sobre la foto: VENDIDA / RESERVADA (la máquina no se puede comprar) */
+  .estado-band{
+    position:absolute;left:50%;top:50%;width:160%;transform:translate(-50%,-50%) rotate(-24deg);
+    padding:.55em 0;text-align:center;background:#D4162C;color:#fff;
+    font-family:'IBM Plex Mono';font-weight:800;font-size:1rem;letter-spacing:.24em;text-transform:uppercase;line-height:1;
+    border-top:2px solid rgba(255,255,255,.4);border-bottom:2px solid rgba(255,255,255,.4);
+    box-shadow:0 6px 18px rgba(0,0,0,.55);z-index:3;pointer-events:none;
+  }
+  .live-card .estado-band{font-size:.72rem;}
+  .ld-main-photo{overflow:hidden;}
+  .ld-main-photo .estado-band{font-size:clamp(1.2rem,4vw,2rem);padding:.6em 0;}
   .reserved-ribbon{
     position:absolute;top:22px;right:-46px;width:190px;padding:9px 0;text-align:center;
     background:linear-gradient(135deg,var(--calor-1),var(--calor-2));color:#fff;
@@ -2121,6 +2132,7 @@
     <div class="ld-view" id="ldViewInfo">
       <div class="ld-gallery">
         <div class="ld-main-photo" id="ldMainPhoto">
+          <span class="estado-band" id="ldEstadoBand" style="display:none;"></span>
           <video id="ldVideoPlayer" controls playsinline style="display:none;position:absolute;inset:0;width:100%;height:100%;border-radius:16px;background:#000;"></video>
           <button type="button" class="ld-copylink-btn" id="ldCopyLinkBtn" aria-label="Copiar link de esta publicación" title="Copiar link">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
@@ -2958,6 +2970,7 @@
           cuotas_como: u.cuotas_como || '',
           etiqueta: u.etiqueta || '',
           reservedUntil: u.reserved_until || null,
+          vendida: !!u.vendida,
           seller: {nombre: u.contacto_nombre || '', contacto: u.contacto_info || '', direccion: u.direccion || ''}
         };
       });
@@ -3014,10 +3027,10 @@
     var cardHtml = function(l){
       var bg =l.img ? ('background-image:url(' + l.img + ');background-color:var(--panel-2);background-size:contain;background-repeat:no-repeat;background-position:center;')
                       : ('background:linear-gradient(135deg,' + l.g[0] + ',#0F1B2E 70%);');
-      var reservada = isReserved(l);
-      return '<div class="listing'+(reservada?' is-reserved':'')+'" data-reveal data-id="'+l.id+'" role="button" tabindex="0">'+
+      var estado = estadoDe(l);
+      return '<div class="listing'+(estado==='vendida'?' is-sold':(estado?' is-reserved':''))+'" data-reveal data-id="'+l.id+'" role="button" tabindex="0">'+
         '<div class="shot"><div class="stage" style="'+bg+'"></div>'+mhBadgesHtml(l)+
-          (reservada ? '<span class="reserved-ribbon">Reservada</span>' : '')+
+          estadoBandHtml(l)+
         '</div>'+
         '<div class="body"><div class="price mono">'+l.p+'</div><h4>'+l.t+'</h4><div class="meta">'+l.loc+'</div>'+
           '<span class="mh-status-badge">'+l.cond+'</span>'+
@@ -3034,6 +3047,14 @@
   }
   function isReserved(l){
     return !!(l.reservedUntil && new Date(l.reservedUntil) > new Date());
+  }
+  // 'vendida' | 'reservada' | '' -- la vendida manda sobre la reservada
+  function estadoDe(l){
+    return l.vendida ? 'vendida' : (isReserved(l) ? 'reservada' : '');
+  }
+  function estadoBandHtml(l){
+    var e = estadoDe(l);
+    return e ? '<span class="estado-band">' + (e === 'vendida' ? 'Vendida' : 'Reservada') + '</span>' : '';
   }
   // tiritas de confianza: oportunidad (curada a mano por MAQ.HEL desde el panel admin),
   // garantía y financiación — mismos datos que ya viven en los specs, pero destacados
@@ -3489,11 +3510,24 @@
     var reservedNote = document.getElementById('ldReservedNote');
     var payLink = document.getElementById('ldPayLink');
     var whatsInput = document.getElementById('ldBuyerWhatsapp');
-    if (l.reservedUntil && new Date(l.reservedUntil) > new Date()){
+    var estado = estadoDe(l);
+    var estadoBand = document.getElementById('ldEstadoBand');
+    estadoBand.style.display = estado ? '' : 'none';
+    estadoBand.textContent = estado === 'vendida' ? 'Vendida' : 'Reservada';
+    // vendida o reservada: no hay botón para comprar
+    document.getElementById('ldWantBtn').style.display = estado ? 'none' : '';
+    if (estado){
       payLink.style.display = 'none';
       whatsInput.closest('.vd-field').style.display = 'none';
       reservedNote.style.display = 'block';
-      reservedNote.textContent = '🔒 Esta máquina ya está reservada hasta el ' + new Date(l.reservedUntil).toLocaleDateString('es-AR') + '.';
+      if (estado === 'vendida'){
+        reservedNote.textContent = '🔒 Esta máquina ya fue vendida.';
+      } else {
+        // "hasta que la quite el admin" se guarda como una fecha lejana: ahí no mostramos fecha
+        var hasta = new Date(l.reservedUntil);
+        var lejana = hasta.getTime() - Date.now() > 2 * 365 * 24 * 3600 * 1000;
+        reservedNote.textContent = '🔒 Esta máquina ya está reservada' + (lejana ? '.' : ' hasta el ' + hasta.toLocaleDateString('es-AR') + '.');
+      }
     } else {
       payLink.style.display = '';
       whatsInput.closest('.vd-field').style.display = '';
@@ -4679,10 +4713,10 @@
       var bg = l.img
         ? ('background-image:url(' + l.img + ');background-color:var(--panel-2);background-size:contain;background-repeat:no-repeat;background-position:center;')
         : ('background:linear-gradient(135deg,' + l.g[0] + ',#14161A 75%);');
-      var reservada = isReserved(l);
-      return '<div class="live-card'+(reservada?' is-reserved':'')+'" data-id="'+l.id+'" role="button" tabindex="0">'+
+      var estado = estadoDe(l);
+      return '<div class="live-card'+(estado==='vendida'?' is-sold':(estado?' is-reserved':''))+'" data-id="'+l.id+'" role="button" tabindex="0">'+
         '<div class="shot" style="'+bg+'"><span class="tag">'+l.tag+'</span>'+
-          (reservada ? '<span class="reserved-ribbon">Reservada</span>' : '')+
+          estadoBandHtml(l)+
         '</div>'+
         '<div class="body"><div class="price">'+l.p+'</div><h5>'+l.t+'</h5><div class="meta"><span>'+l.loc+'</span></div></div>'+
       '</div>';
